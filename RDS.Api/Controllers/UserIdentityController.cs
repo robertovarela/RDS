@@ -25,11 +25,11 @@ public class UserIdentityController : ControllerBase
     }
 
     [HttpPost("userlogin")]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest? request)
+    public async Task<Response<LoginResponse>> LoginAsync([FromBody] LoginRequest? request)
     {
         if (request == null)
         {
-            return new Response<object>(null, 400, "Dados inválidos").ToActionResult();
+            return new Response<LoginResponse>(null, 400, "Dados inválidos");
         }
 
         try
@@ -37,7 +37,7 @@ public class UserIdentityController : ControllerBase
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                return new Response<object>(null, 401, "Usuário não encontrado").ToActionResult();
+                return new Response<LoginResponse>(null, 401, "Usuário não encontrado");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
@@ -45,27 +45,29 @@ public class UserIdentityController : ControllerBase
 
             if (!result.Succeeded)
             {
-                return new Response<object>(null, 401, "Credenciais inválidas").ToActionResult();
+                return new Response<LoginResponse>(null, 401, "Credenciais inválidas");
             }
-
+            
             var token = _jwtTokenService.GenerateToken(user);
-            return new Response<object>(new { Token = token }, 200, "Login realizado com sucesso").ToActionResult();
+            var response = new LoginResponse(request.Email, token);
+
+            return new Response<LoginResponse>(response, 200, "Login realizado com sucesso");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred during the login process.");
-            return new Response<object>(null, 500, "Erro interno no servidor").ToActionResult();
+            return new Response<LoginResponse>(null, 500, "Erro interno no servidor");
         }
     }
 
     [HttpPost("createuser")]
-    public async Task<IActionResult> CreateUserAsync([FromBody] CreateApplicationUserRequest request)
+    public async Task<Response<ApplicationUser?>> CreateUserAsync([FromBody] CreateApplicationUserRequest request)
     {
         try
         {
             if (request.RepeatPassword != request.Password)
             {
-                return new Response<ApplicationUser?>(null, 400, "As senhas digitadas não são iguais").ToActionResult();
+                return new Response<ApplicationUser?>(null, 400, "As senhas digitadas não são iguais");
             }
 
             var user = new User
@@ -80,20 +82,20 @@ public class UserIdentityController : ControllerBase
 
             if (!result.Succeeded)
             {
-                return new Response<ApplicationUser?>(null, 400, "Não foi possível criar o usuário").ToActionResult();
+                return new Response<ApplicationUser?>(null, 400, "Não foi possível criar o usuário");
             }
 
-            return new Response<ApplicationUser?>(user, 201, "Usuário criado com sucesso!").ToActionResult();
+            return new Response<ApplicationUser?>(user, 201, "Usuário criado com sucesso!");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while creating the user.");
-            return new Response<ApplicationUser?>(null, 500, "Erro interno no servidor").ToActionResult();
+            return new Response<ApplicationUser?>(null, 500, "Erro interno no servidor");
         }
     }
 
     [HttpPut("updateuser")]
-    public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateApplicationUserRequest request)
+    public async Task<Response<ApplicationUser?>> UpdateUserAsync([FromBody] UpdateApplicationUserRequest request)
     {
         try
         {
@@ -101,7 +103,7 @@ public class UserIdentityController : ControllerBase
 
             if (user == null)
             {
-                return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado").ToActionResult();
+                return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado");
             }
 
             user.Name = request.Name;
@@ -115,20 +117,19 @@ public class UserIdentityController : ControllerBase
             var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded)
-                return new Response<ApplicationUser?>(user, message: "Usuário atualizado com sucesso!")
-                    .ToActionResult();
+                return new Response<ApplicationUser?>(user, message: "Usuário atualizado com sucesso!");
 
-            return new Response<ApplicationUser?>(null, 400, "Não foi possível atualizar o usuário").ToActionResult();
+            return new Response<ApplicationUser?>(null, 400, "Não foi possível atualizar o usuário");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while updating the user.");
-            return new Response<ApplicationUser?>(null, 500, "Erro interno no servidor").ToActionResult();
+            return new Response<ApplicationUser?>(null, 500, "Erro interno no servidor");
         }
     }
 
     [HttpDelete("deleteuser")]
-    public async Task<IActionResult> DeleteUserAsync([FromBody] DeleteApplicationUserRequest request)
+    public async Task<Response<ApplicationUser?>> DeleteUserAsync([FromBody] DeleteApplicationUserRequest request)
     {
         try
         {
@@ -136,27 +137,27 @@ public class UserIdentityController : ControllerBase
 
             if (user == null)
             {
-                return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado").ToActionResult();
+                return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado");
             }
 
             var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
             {
-                return new Response<ApplicationUser?>(null, 400, "Não foi possível excluir o usuário").ToActionResult();
+                return new Response<ApplicationUser?>(null, 400, "Não foi possível excluir o usuário");
             }
 
-            return new Response<ApplicationUser?>(user, message: "Usuário excluído com sucesso!").ToActionResult();
+            return new Response<ApplicationUser?>(user, message: "Usuário excluído com sucesso!");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while deleting the user.");
-            return new Response<ApplicationUser?>(null, 500, "Erro interno no servidor").ToActionResult();
+            return new Response<ApplicationUser?>(null, 500, "Erro interno no servidor");
         }
     }
 
     [HttpGet("allusers")]
-    public async Task<IActionResult> GetAllUsersAsync(
+    public async Task<PagedResponse<List<ApplicationUser>>> GetAllUsersAsync(
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
         [FromQuery] int pageSize = Configuration.DefaultPageSize)
     {
@@ -177,18 +178,17 @@ public class UserIdentityController : ControllerBase
 
             var count = await query.CountAsync();
             return count == 0
-                ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado").ToActionResult()
-                : new PagedResponse<List<ApplicationUser>>(users, count, pageNumber, pageSize).ToActionResult();
+                ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado")
+                : new PagedResponse<List<ApplicationUser>>(users, count, pageNumber, pageSize);
         }
         catch
         {
-            return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível consultar os usuários")
-                .ToActionResult();
+            return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível consultar os usuários");
         }
     }
 
     [HttpPost("userbyid")]
-    public async Task<IActionResult> GetUserByIdAsync([FromBody] GetApplicationUserByIdRequest request)
+    public async Task<Response<ApplicationUser?>> GetUserByIdAsync([FromBody] GetApplicationUserByIdRequest request)
     {
         try
         {
@@ -196,20 +196,20 @@ public class UserIdentityController : ControllerBase
 
             if (user == null)
             {
-                return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado").ToActionResult();
+                return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado");
             }
 
-            return new Response<ApplicationUser?>(user).ToActionResult();
+            return new Response<ApplicationUser?>(user);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the user.");
-            return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário").ToActionResult();
+            return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário");
         }
     }
 
     [HttpPost("userbycpf")]
-    public async Task<IActionResult> GetUserByCpfAsync([FromBody] GetApplicationUserByCpfRequest request)
+    public async Task<Response<ApplicationUser?>> GetUserByCpfAsync([FromBody] GetApplicationUserByCpfRequest request)
     {
         try
         {
@@ -218,20 +218,20 @@ public class UserIdentityController : ControllerBase
 
             if (user == null)
             {
-                return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado").ToActionResult();
+                return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado");
             }
 
-            return new Response<ApplicationUser?>(user).ToActionResult();
+            return new Response<ApplicationUser?>(user);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the user.");
-            return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário").ToActionResult();
+            return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário");
         }
     }
 
     [HttpPost("userbyname")]
-    public async Task<IActionResult> GetUserByNameAsync([FromBody] GetApplicationUserByNameRequest request,
+    public async Task<PagedResponse<List<ApplicationUser>>> GetUserByNameAsync([FromBody] GetApplicationUserByNameRequest request,
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
         [FromQuery] int pageSize = Configuration.DefaultPageSize)
     {
@@ -252,18 +252,18 @@ public class UserIdentityController : ControllerBase
             var count = await query.CountAsync();
 
             return count == 0
-                ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado").ToActionResult()
-                : new PagedResponse<List<ApplicationUser>>(users, count, pageNumber, pageSize).ToActionResult();
+                ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado")
+                : new PagedResponse<List<ApplicationUser>>(users, count, pageNumber, pageSize);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the user.");
-            return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário").ToActionResult();
+            return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar o usuário");
         }
     }
 
     [HttpPost("userbyfullname")]
-    public async Task<IActionResult> GetUserByFullNameAsync([FromBody] GetApplicationUserByFullNameRequest request,
+    public async Task<PagedResponse<List<ApplicationUser>>> GetUserByFullNameAsync([FromBody] GetApplicationUserByFullNameRequest request,
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
         [FromQuery] int pageSize = Configuration.DefaultPageSize)
     {
@@ -284,13 +284,25 @@ public class UserIdentityController : ControllerBase
             var count = await query.CountAsync();
 
             return count == 0
-                ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado").ToActionResult()
-                : new PagedResponse<List<ApplicationUser>>(users, count, pageNumber, pageSize).ToActionResult();
+                ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado")
+                : new PagedResponse<List<ApplicationUser>>(users, count, pageNumber, pageSize);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred while getting the user.");
-            return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário").ToActionResult();
+            return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar o usuário");
         }
+    }
+}
+
+public class LoginResponse
+{
+    public string Email { get; set; }
+    public string Token { get; set; }
+
+    public LoginResponse(string email, string token)
+    {
+        Email = email;
+        Token = token;
     }
 }

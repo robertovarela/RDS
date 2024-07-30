@@ -4,8 +4,8 @@ namespace RDS.Api.Controllers;
 [Microsoft.AspNetCore.Components.Route("")]
 public class HomeController : ControllerBase
 {
-    [HttpGet("")]
-    public IActionResult Get(
+    [HttpGet("root")]
+    public IActionResult Get2(
         [FromServices] IConfiguration config)
     {
         var env = config.GetValue<string>("Env");
@@ -15,26 +15,32 @@ public class HomeController : ControllerBase
         });
     }
 
-    [HttpGet("ping")]
-    public IActionResult Ping()
-    {
-        return Ok("pong");
-    }
+    
+    [HttpGet("")]
 
-    [HttpGet("health")]
-    public IActionResult Health()
+    public Response<string> Get(
+        [FromServices] IConfiguration config)
     {
-        return Ok("ok");
+        var env = config.GetValue<string>("Env");
+        var environament = new Response<string>(env);
+        return new Response<string>(null, 200, $"Environament: {env}");
+        
+    }
+    
+    [HttpGet("health")]
+    public Response<string> Health()
+    {
+        return new Response<string>("API => Ok");
     }
 
     [HttpGet("version")]
-    public IActionResult Version()
+    public Response<string> Version()
     {
-        return Ok("1.0.0");
+        return new Response<string>("1.0.0");
     }
 
     [HttpGet("/home")]
-    public IActionResult GetHome(
+    public void GetHome(
         [FromBody] UserStateService userState,
         [FromServices] NavigationManager navigationManager)
     {
@@ -43,6 +49,6 @@ public class HomeController : ControllerBase
         {
             navigationManager.NavigateTo("/logout");
         }
-        return Ok();
+        //return Ok();
     }
 }
