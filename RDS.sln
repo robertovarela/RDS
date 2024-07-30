@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDS.Core", "RDS.Core\RDS.Core.csproj", "{B67CBA5C-23A8-41E0-A22C-95D5A1AEE959}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDS.Api", "RDS.Api\RDS.Api.csproj", "{C52382F6-B152-4126-8C69-6CF91BAF7BDF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B67CBA5C-23A8-41E0-A22C-95D5A1AEE959} = {B67CBA5C-23A8-41E0-A22C-95D5A1AEE959}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B67CBA5C-23A8-41E0-A22C-95D5A1AEE959}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B67CBA5C-23A8-41E0-A22C-95D5A1AEE959}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B67CBA5C-23A8-41E0-A22C-95D5A1AEE959}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B67CBA5C-23A8-41E0-A22C-95D5A1AEE959}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C52382F6-B152-4126-8C69-6CF91BAF7BDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C52382F6-B152-4126-8C69-6CF91BAF7BDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C52382F6-B152-4126-8C69-6CF91BAF7BDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C52382F6-B152-4126-8C69-6CF91BAF7BDF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
