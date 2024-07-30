@@ -1,0 +1,11 @@
+@RDS.Api_HostAddress = http://localhost:5501
+
+GET {{RDS.Api_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{RDS.Api_HostAddress}}/todos/1
+Accept: application/json
+
+###
