@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RDS.Core.Requests.Categories;
 
-public abstract class UpdateCategoryRequest : Request
+public class UpdateCategoryRequest : Request
 {
     public long Id { get; set; }
 

@@ -1,0 +1,30 @@
+﻿@using RDS.Web.Services
+@inject NavigationManager NavigationManager
+@inject ManipulateUserStateValuesService ManipulateUserStateValuesService
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <h1>Você não tem acesso a esta funcionalidade!</h1>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <h1>Erro 404</h1>
+                <p>Página não encontrada</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    protected override void OnInitialized()
+    {
+        NavigationService.Initialize(NavigationManager);
+        StartService.Initialize(ManipulateUserStateValuesService);
+    }
+}

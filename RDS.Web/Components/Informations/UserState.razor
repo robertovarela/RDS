@@ -1,0 +1,20 @@
+﻿@using RDS.Core.Services
+
+<MudPaper Class="pa-2">
+    <div class="d-flex justify-content-between align-items-center ma-4">
+        <MudPaper Class="pa-4 bg-appbarbackground" Style="margin-right: 8px;">
+            <MudText Typo="Typo.h6">Usuário Logado: @UserStateService.LoggedUserId</MudText>
+            <MudText Typo="Typo.h6">Usuário Selecionado: @UserStateService.SelectedUserId</MudText>
+            <MudText Typo="Typo.h6">Endereço Selecionado: @UserStateService.SelectedUserAddressId</MudText>
+            <MudText Typo="Typo.h6">Categoria Selecionada: @UserStateService.SelectedCategoryId</MudText>
+        </MudPaper>
+    </div>
+</MudPaper>
+
+
+@code {
+    [Inject]
+    UserStateService UserStateService { get; set; } = null!;
+
+    protected override void OnInitialized() => StateHasChanged();
+}

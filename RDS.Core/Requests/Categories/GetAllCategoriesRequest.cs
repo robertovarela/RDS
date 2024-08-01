@@ -1,6 +1,6 @@
 namespace RDS.Core.Requests.Categories;
 
-public abstract class GetAllCategoriesRequest : PagedRequest
+public class GetAllCategoriesRequest : PagedRequest
 {
     
 }

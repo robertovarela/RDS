@@ -1,7 +1,7 @@
 namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Components.Route("")]
+[Microsoft.AspNetCore.Mvc.Route("")]
 public class HomeController : ControllerBase
 {
     [HttpGet("root")]

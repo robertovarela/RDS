@@ -1,5 +1,5 @@
 ﻿namespace RDS.Core.Requests.ApplicationUsers;
 
-    public abstract class GetAllApplicationUserRequest : PagedRequest
+    public class GetAllApplicationUserRequest : PagedRequest
     {
     }

@@ -1,0 +1,58 @@
+﻿@using RDS.Core.Handlers
+@inherits LayoutComponentBase
+
+<MudThemeProvider @ref="_mudThemeProvider"
+                  @bind-IsDarkMode="_isDarkMode"
+                  Theme="Configuration.Theme" />
+<MudSnackbarProvider />
+<MudDialogProvider />
+
+<MudLayout>
+    <MudAppBar>
+        <MudText Typo="Typo.caption">
+            <span style="font-weight:800; font-size:large;">RDS</span>
+        </MudText>
+        
+        <MudSpacer />
+             
+        <MudSwitch Color="Color.Inherit"
+                   @bind-Value="@_isDarkMode"
+                   T="bool"
+                   Class="ma-4"
+                   ThumbIcon="@Icons.Material.TwoTone.Lightbulb" />
+    </MudAppBar>
+
+    <MudMainContent>
+        <MudContainer Class="mt-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+
+@code {
+
+    #region Properties
+
+    private bool _isDarkMode = true;
+    private MudThemeProvider _mudThemeProvider = null!;
+
+    #endregion
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
+            //StateHasChanged();
+        }
+    }
+
+    private Task OnSystemPreferenceChanged(bool newValue)
+    {
+        _isDarkMode = newValue;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+}

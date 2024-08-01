@@ -1,0 +1,25 @@
+@inherits LayoutComponentBase
+
+<MudPopoverProvider />
+<MudThemeProvider @ref="_mudThemeProvider"
+                  @bind-IsDarkMode="_isDarkMode"
+                  Theme="Configuration.Theme" />
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudMainContent>
+        <MudContainer>
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code{
+
+    #region Properties
+
+    private bool _isDarkMode = true;
+    private MudThemeProvider _mudThemeProvider = null!;
+
+    #endregion
+}

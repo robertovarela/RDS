@@ -1,6 +1,6 @@
 namespace RDS.Core.Requests.Transactions;
 
-public abstract class CreateTransactionRequest : Request
+public class CreateTransactionRequest : Request
 {
     [Required(ErrorMessage = "Título inválido")]
     public string Title { get; set; } = string.Empty;

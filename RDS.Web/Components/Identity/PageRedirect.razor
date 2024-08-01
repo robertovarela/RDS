@@ -1,0 +1,18 @@
+@inject NavigationManager NavigationManager
+
+<h3>@message</h3>
+
+@code {
+    [Parameter]
+    public string pageRedirect { get; set; } = "/login";
+
+    [Parameter]
+
+    public string message { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.NavigateTo(pageRedirect);
+    }
+
+}

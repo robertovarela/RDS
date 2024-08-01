@@ -1,6 +1,6 @@
 namespace RDS.Core.Requests.Reports;
 
-public abstract class GetIncomesByCategoryRequest : Request
+public class GetIncomesByCategoryRequest : Request
 {
     
 }

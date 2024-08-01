@@ -1,0 +1,20 @@
+﻿<MudPaper Class="pa-2">
+    <div class="d-flex">
+        <MudButton ButtonType="ButtonType.Button"
+                   Variant="Variant.Filled"
+                   Color="Color.Secondary"
+                   OnClick="@(() => NavigationService.NavigateTo(Page))">
+            Cancelar
+        </MudButton>
+        <MudSpacer />
+        <MudButton ButtonType="ButtonType.Submit"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary">
+            Salvar
+        </MudButton>
+    </div>
+</MudPaper>
+@code {
+    [Parameter]
+    public string Page { get; set; } = "/";
+}

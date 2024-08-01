@@ -1,0 +1,109 @@
+﻿@using RDS.Core.Handlers
+@using RDS.Core.Services
+@using RDS.Web.Services
+@inherits LayoutComponentBase
+
+<MudPopoverProvider/>
+<MudThemeProvider @ref="_mudThemeProvider"
+                  @bind-IsDarkMode="_isDarkMode"
+                  Theme="Configuration.Theme"/>
+<MudSnackbarProvider/>
+<MudDialogProvider/>
+
+<AuthorizeView>
+    <Authorized>
+        <MudLayout>
+            <MudAppBar>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                               Color="Color.Inherit"
+                               Edge="Edge.Start"
+                               OnClick="ToggleDrawer"/>
+                <span style="font-weight:800; font-size:large;">@Company</span>
+                <MudSpacer/>
+                <MudButton Href="/lancamentos/novo"
+                           Variant="Variant.Text" StartIcon="@Icons.Material.TwoTone.Add">
+                    NOVO LANÇAMENTO
+                </MudButton>
+                <MudSpacer/>
+                <MudText Typo="Typo.caption">
+                    <span style="font-weight:800">
+                        @context.User.Identity?.Name
+                    </span>
+                </MudText>
+                <MudSwitch Color="Color.Inherit"
+                           @bind-Value="@_isDarkMode"
+                           T="bool"
+                           Class="ma-4"
+                           ThumbIcon="@Icons.Material.TwoTone.Lightbulb"/>
+            </MudAppBar>
+            <MudDrawer @bind-Open="@_isDrawerOpened">
+                <NavMenu/>
+            </MudDrawer>
+            <MudMainContent>
+                <MudContainer Class="mt-4">
+                    @Body
+                    <div class="mb-8"></div>
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
+    </Authorized>
+    <NotAuthorized>
+        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    #region Properties
+
+    private bool _isDrawerOpened = true;
+    private bool _isDarkMode = true;
+    private MudThemeProvider _mudThemeProvider = null!;
+    private const string Company = "RDS*";
+    private void ToggleDrawer() => _isDrawerOpened = !_isDrawerOpened;
+
+    #endregion
+
+    #region Services
+    
+    [Inject] private ManipulateUserStateValuesService ManipulateUserStateValues { get; set; } = null!;
+
+    [Inject] public IAccountHandler Handler { get; set; } = null!;
+
+    [Inject] public UserStateService UserState { get; set; } = null!;
+
+    [Inject] public NavigationManager NavigationManager { get; set; } = null!;
+
+    #endregion
+
+    #region Dependencies
+
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
+    #endregion
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //await ManipulateUserStateValues.Initialize();
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadUserInfo()
+    {
+        var userInfo = await Handler.GetUserInfo();
+        //UserState.SetLoggedInUser();
+    }
+
+    private Task OnSystemPreferenceChanged(bool newValue)
+    {
+        _isDarkMode = newValue;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+}

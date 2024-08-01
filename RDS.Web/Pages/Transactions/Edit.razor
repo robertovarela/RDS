@@ -1,0 +1,58 @@
+@page "/lancamentos/editar/{id}"
+@inherits EditTransactionPage
+
+<MudText Typo="Typo.h3">Editar Lançamento</MudText>
+
+<MudPaper Class="pa-8 mt-4">
+    <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
+        <DataAnnotationsValidator />
+
+        <MudTextField Label="Título"
+                      HelperText="Campo obrigatório"
+                      @bind-Value="InputModel.Title"
+                      For="@(() => InputModel.Title)"
+                      Variant="Variant.Outlined" AutoFocus/>
+
+        <MudTextField Label="Valor?"
+                      T="decimal"
+                      Format="C"
+                      HelperText="Informe o valor que será pago ou recebido"
+                      @bind-Value="InputModel.Amount"
+                      For="@(() => InputModel.Amount)"
+                      Variant="Variant.Outlined" />
+
+        <MudDatePicker Label="Quando?"
+                       @bind-Date="@InputModel.PaidOrReceivedAt"
+                       HelperText="Selecione a data que o valor será pago ou recebido"
+                       Orientation="Orientation.Portrait"
+                       Variant="Variant.Outlined" />
+
+        <MudSelect Label="Tipo de Movimentação"
+                   T="ETransactionType"
+                   AnchorOrigin="Origin.BottomCenter"
+                   @bind-Value="InputModel.Type"
+                   Variant="Variant.Outlined">
+            <MudSelectItem T="ETransactionType" Value="ETransactionType.Deposit">
+                Entrada
+            </MudSelectItem>
+            <MudSelectItem T="ETransactionType" Value="ETransactionType.Withdraw">
+                Saída
+            </MudSelectItem>
+        </MudSelect>
+
+        <MudSelect Label="Categoria"
+                   T="long"
+                   @bind-Value="InputModel.CategoryId"
+                   AnchorOrigin="Origin.BottomCenter"
+                   Variant="Variant.Outlined">
+            @foreach (var category in Categories)
+            {
+                <MudSelectItem T="long" Value="@category.Id">
+                    @category.Title
+                </MudSelectItem>
+            }
+        </MudSelect>
+
+        <SaveAndCancelButtons Page="/lancamentos/historico" />
+    </EditForm>
+</MudPaper>

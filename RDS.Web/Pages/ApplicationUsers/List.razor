@@ -1,0 +1,56 @@
+@page "/usuarios"
+@using RDS.Web.Services
+@inherits ListApplicationUsersPage
+<UserState/>
+<div class="d-flex justify-end">
+    <MudButton
+        Variant="Variant.Filled"
+        Color="Color.Primary"
+        StartIcon="@Icons.Material.TwoTone.Add"
+        OnClick="() => OnNewUserButton()">
+        NOVO USUÁRIO
+    </MudButton>
+</div>
+<TitleBar Title="Usuários" />
+
+<MudDataGrid
+    Class="mt-4"
+    Items="@ApplicationUsers"
+    Filterable="true"
+    QuickFilter="Filter"
+    Hideable="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Usuários</MudText>
+        <MudSpacer/>
+        <MudTextField
+            @bind-Value="SearchTerm"
+            Placeholder="Filtrar..."
+            Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search"
+            Immediate="true"
+            IconSize="Size.Medium"
+            Class="mt-0">
+        </MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="#"/>
+        <PropertyColumn Property="x => x.Name" Title="Nome"/>
+        <TemplateColumn Class="d-flex justify-end">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudIconButton
+                        Icon="@Icons.Material.Filled.Edit"
+                        Color="Color.Primary"
+                        OnClick="@(() => Link.LinkToUrlUser(Url, context.Item.Id))">
+                    </MudIconButton>
+                    <MudIconButton 
+                        Icon="@Icons.Material.Filled.Delete"
+                        Color="Color.Error"
+                        aria-label="Excluir"
+                        OnClick="() => OnDeleteButtonClickedAsync(context.Item.Id, context.Item.UserName??string.Empty)">
+                    </MudIconButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>

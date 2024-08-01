@@ -1,0 +1,144 @@
+﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using RDS.Core.Handlers;
+using RDS.Core.Requests.ApplicationUsers;
+using RDS.Core.Requests.ApplicationUsers.Address;
+using RDS.Core.Services;
+using RDS.Web.Common;
+using System;
+
+namespace RDS.Web.Pages.ApplicationUsers.Address;
+
+public partial class EditApplicationUserAddressPage : ComponentBase
+{
+    #region Properties
+
+    private long UserId { get; set; }
+    public bool IsBusy { get; set; } = false;
+    public UpdateApplicationUserAddressRequest InputModel { get; set; } = new();
+
+    #endregion
+
+    #region Parameters
+
+    [Parameter]
+    public IMask BrazilPostalCode { get; set; } = new PatternMask("00000-000");
+
+    #endregion
+
+    #region Services
+
+    [Inject]
+    public ISnackbar Snackbar { get; set; } = null!;
+
+    [Inject]
+    public IApplicationUserHandler UserHandler { get; set; } = null!;
+
+    [Inject]
+    public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
+
+    [Inject]
+    public UserStateService UserState { get; set; } = null!;
+
+    #endregion
+
+    #region Overrides
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsBusy = true;
+        try
+        {
+            var request = new GetApplicationUserActiveRequest();
+            var response = await UserHandler.GetActiveAsync(request);
+
+            if (response is { IsSuccess: true, Data: not null })
+                UserId = response.Data.Id;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+
+        IsBusy = true;
+        try
+        {
+            var requestAddress = new GetApplicationUserAddressByIdRequest
+            {
+                UserId = UserState.SelectedUserId,
+                Id = UserState.SelectedUserAddressId
+            };
+            var responseAddress = await AddressHandler.GetByIdAsync(requestAddress);
+            if (responseAddress is { IsSuccess: true, Data: not null })
+            {
+                InputModel = new UpdateApplicationUserAddressRequest
+                {
+                    UserId = responseAddress.Data.UserId,
+                    Id = responseAddress.Data.Id,
+                    PostalCode = responseAddress.Data.PostalCode,
+                    Street = responseAddress.Data.Street,
+                    Number = responseAddress.Data.Number,
+                    Complement = responseAddress.Data.Complement,
+                    Neighborhood = responseAddress.Data.Neighborhood,
+                    City = responseAddress.Data.City,
+                    Country = responseAddress.Data.Country,
+                    TypeOfAddress = responseAddress.Data.TypeOfAddress
+                };
+            }
+            else
+            {
+                Snackbar.Add("Endereço não encontrado", Severity.Warning);
+                Thread.Sleep(2000);
+                NavigationService.NavigateTo("/usuarios/enderecos");
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    #endregion
+
+    #region Methods
+
+    public async Task OnValidSubmitAsync()
+    {
+        IsBusy = true;
+
+        try
+        {
+            var result = await AddressHandler.UpdateAsync(InputModel);
+
+            if (result.IsSuccess && result.Data is not null)
+            {
+                Snackbar.Add("Endereço atualizado", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add($"O endereço {InputModel.UserId} - {InputModel.Id} - {InputModel.PostalCode} não foi encontrado", Severity.Warning);
+
+            }
+
+            NavigationService.NavigateTo("/usuarios/enderecos");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    #endregion
+}

@@ -1,0 +1,108 @@
+@page "/registrar"
+@layout DarkLessLayout
+@inherits RegisterPage
+
+<PageTitle>RDS - Cadastrar Cliente</PageTitle>
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="12" md="8" lg="6" xl="6" xxl="6">
+        <MudPaper Class="mud-width-full pa-4">
+            <div class="d-flex justify-center pb-2 pt-2">
+                <img src="/imgs/RDS-01.webp"
+                     alt="RDS - Soluções em softwares"
+                     width="150" />
+            </div>
+            <div class="d-flex justify-center pb-4 pt-4">
+                <MudText Typo="Typo.caption" Class="responsive-text title-software">
+                    <span>
+                        Sistema de Agendamentos
+                    </span>
+                </MudText>
+            </div>
+            <div class="d-flex justify-center pb-4 pt-4">
+                <MudText Typo="Typo.caption" Class="responsive-text title-screen">
+                    <span>
+                        REGISTRAR
+                    </span>
+                </MudText>
+            </div>
+
+            <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
+                <DataAnnotationsValidator />
+
+                <MudTextField ShrinkLabel
+                              Immediate="true"
+                              MaxLength="256"
+                              T="string"
+                              Label="Nome"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Text"
+                              For="@(() => InputModel.Name)"
+                              @bind-Value="InputModel.Name"
+                              Variant="Variant.Outlined"
+                              AutoFocus/>
+
+                <MudTextField ShrinkLabel
+                              Immediate="true"
+                              MaxLength="256"
+                              T="string"
+                              Label="E-mail"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Email"
+                              For="@(() => InputModel.Email)"
+                              @bind-Value="InputModel.Email"
+                              Variant="Variant.Outlined" />
+
+
+                <MudTextField ShrinkLabel
+                              Immediate="true"
+                              MaxLength="25"
+                              T="string"
+                              Label="Senha"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="@PasswordInput"
+                              For="@(() => InputModel.Password)"
+                              @bind-Value="InputModel.Password"
+                              Variant="Variant.Outlined" 
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@PasswordInputIcon"
+                              OnAdornmentClick="ButtonVisibilityPassword"
+                              AdornmentAriaLabel="Show Password" 
+                              Clearable="true"/>
+
+                <MudTextField ShrinkLabel
+                              Immediate="true"
+                              MaxLength="25"
+                              T="string"
+                              Label="Repetir Senha"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="@PasswordInput"
+                              For="@(() => InputModel.RepeatPassword)"
+                              @bind-Value="InputModel.RepeatPassword"
+                              Variant="Variant.Outlined" 
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@PasswordInputIcon"
+                              OnAdornmentClick="ButtonVisibilityPassword"
+                              AdornmentAriaLabel="Show Password" 
+                              Clearable="true" />
+
+                <div class="d-flex mt-8">
+                    @if (IsBusy)
+                    {
+                        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="responsive-text title-software">REGISTRAR</MudButton>
+                        <MudSpacer />
+                        <MudButton Href="/login" Class="responsive-text title-software">JÁ TENHO UMA CONTA</MudButton>
+                    }
+                </div>
+            </EditForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

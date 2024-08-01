@@ -4,7 +4,7 @@ using RDS.Core.Enums;
 
 namespace RDS.Core.Requests.Transactions;
 
-public abstract class UpdateTransactionRequest : Request
+public class UpdateTransactionRequest : Request
 {
     public long Id { get; set; }
     

@@ -1,6 +1,6 @@
 ﻿namespace RDS.Core.Requests.ApplicationUsers.Address;
 
-public abstract class CreateApplicationUserAddressRequest : Request
+public class CreateApplicationUserAddressRequest : Request
 {
     [Required(ErrorMessage = "É obrigatório informar o CEP")]
     [Length(9, 9, ErrorMessage = "O CEP deve conter 9 caracteres")]

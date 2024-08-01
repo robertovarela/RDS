@@ -1,29 +1,15 @@
 namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Components.Route("v1/useridentity")]
-public class UserIdentityController : ControllerBase
+[Microsoft.AspNetCore.Mvc.Route("v1/useridentity")]
+public class UserIdentityController(
+    SignInManager<User> signInManager,
+    UserManager<User> userManager,
+    JwtTokenService jwtTokenService,
+    ILogger<UserIdentityController> logger,
+    AppDbContext context)
+    : ControllerBase
 {
-    private readonly SignInManager<User> _signInManager;
-    private readonly UserManager<User> _userManager;
-    private readonly JwtTokenService _jwtTokenService;
-    private readonly ILogger<UserIdentityController> _logger;
-    private readonly AppDbContext _context;
-
-    public UserIdentityController(
-        SignInManager<User> signInManager,
-        UserManager<User> userManager,
-        JwtTokenService jwtTokenService,
-        ILogger<UserIdentityController> logger,
-        AppDbContext context)
-    {
-        _signInManager = signInManager;
-        _userManager = userManager;
-        _jwtTokenService = jwtTokenService;
-        _logger = logger;
-        _context = context;
-    }
-
     [HttpPost("userlogin")]
     public async Task<Response<UserLogin>> LoginAsync([FromBody] LoginRequest? request)
     {
@@ -34,28 +20,28 @@ public class UserIdentityController : ControllerBase
 
         try
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
                 return new Response<UserLogin>(null, 401, "Usuário não encontrado");
             }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-            _logger.LogInformation("SignIn result: {Result}", result);
+            var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+            logger.LogInformation("SignIn result: {Result}", result);
 
             if (!result.Succeeded)
             {
                 return new Response<UserLogin>(null, 401, "Credenciais inválidas");
             }
 
-            var token = _jwtTokenService.GenerateToken(user);
+            var token = jwtTokenService.GenerateToken(user);
             var response = new UserLogin(request.Email, token);
 
             return new Response<UserLogin>(response, 200, "Login realizado com sucesso");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred during the login process.");
+            logger.LogError(ex, "An error occurred during the login process.");
             return new Response<UserLogin>(null, 500, "Erro interno no servidor");
         }
     }
@@ -78,7 +64,7 @@ public class UserIdentityController : ControllerBase
                 CreateAt = DateTime.Now,
             };
 
-            var result = await _userManager.CreateAsync(user, request.Password);
+            var result = await userManager.CreateAsync(user, request.Password);
 
             if (!result.Succeeded)
             {
@@ -89,7 +75,7 @@ public class UserIdentityController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while creating the user.");
+            logger.LogError(ex, "An error occurred while creating the user.");
             return new Response<ApplicationUser?>(null, 500, "Erro interno no servidor");
         }
     }
@@ -99,7 +85,7 @@ public class UserIdentityController : ControllerBase
     {
         try
         {
-            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            var user = await userManager.FindByIdAsync(request.UserId.ToString());
 
             if (user == null)
             {
@@ -114,7 +100,7 @@ public class UserIdentityController : ControllerBase
             user.Cpf = request.Cpf;
             user.BirthDate = request.BirthDate;
 
-            var result = await _userManager.UpdateAsync(user);
+            var result = await userManager.UpdateAsync(user);
 
             if (result.Succeeded)
                 return new Response<ApplicationUser?>(user, message: "Usuário atualizado com sucesso!");
@@ -123,7 +109,7 @@ public class UserIdentityController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while updating the user.");
+            logger.LogError(ex, "An error occurred while updating the user.");
             return new Response<ApplicationUser?>(null, 500, "Erro interno no servidor");
         }
     }
@@ -133,14 +119,14 @@ public class UserIdentityController : ControllerBase
     {
         try
         {
-            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            var user = await userManager.FindByIdAsync(request.UserId.ToString());
 
             if (user == null)
             {
                 return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado");
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            var result = await userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
             {
@@ -151,7 +137,7 @@ public class UserIdentityController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while deleting the user.");
+            logger.LogError(ex, "An error occurred while deleting the user.");
             return new Response<ApplicationUser?>(null, 500, "Erro interno no servidor");
         }
     }
@@ -163,7 +149,7 @@ public class UserIdentityController : ControllerBase
     {
         try
         {
-            var query = _context
+            var query = context
                 .Users
                 .AsNoTracking()
                 //.Where(x => x.Id == request.UserId)
@@ -192,7 +178,7 @@ public class UserIdentityController : ControllerBase
     {
         try
         {
-            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            var user = await userManager.FindByIdAsync(request.UserId.ToString());
 
             if (user == null)
             {
@@ -203,7 +189,7 @@ public class UserIdentityController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting the user.");
+            logger.LogError(ex, "An error occurred while getting the user.");
             return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário");
         }
     }
@@ -213,7 +199,7 @@ public class UserIdentityController : ControllerBase
     {
         try
         {
-            var user = await _context.Users
+            var user = await context.Users
                 .FirstOrDefaultAsync(u => u.Cpf == request.Cpf);
 
             if (user == null)
@@ -225,7 +211,7 @@ public class UserIdentityController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting the user.");
+            logger.LogError(ex, "An error occurred while getting the user.");
             return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário");
         }
     }
@@ -238,7 +224,7 @@ public class UserIdentityController : ControllerBase
     {
         try
         {
-            var query = _context
+            var query = context
                 .Users
                 .AsNoTracking()
                 .Where(u => EF.Functions.Like(u.UserName, $"%{request.UserName}%"))
@@ -258,7 +244,7 @@ public class UserIdentityController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting the user.");
+            logger.LogError(ex, "An error occurred while getting the user.");
             return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar o usuário");
         }
     }
@@ -271,7 +257,7 @@ public class UserIdentityController : ControllerBase
     {
         try
         {
-            var query = _context
+            var query = context
                 .Users
                 .AsNoTracking()
                 .Where(u => EF.Functions.Like(u.UserName, $"{request.UserName}%"))
@@ -291,7 +277,7 @@ public class UserIdentityController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting the user.");
+            logger.LogError(ex, "An error occurred while getting the user.");
             return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar o usuário");
         }
     }

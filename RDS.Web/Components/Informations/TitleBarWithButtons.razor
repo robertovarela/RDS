@@ -1,0 +1,32 @@
+﻿<MudPaper Class="pr-8 pl-8 pt-4 pb-4 mt-4 bg-drawer">
+    <div class="d-flex">
+        <MudButton ButtonType="ButtonType.Button"
+                   Variant="Variant.Filled"
+                   Color="Color.Secondary"
+                   OnClick="@(() => NavigationService.NavigateTo(LeftButton))">@LeftButtonTitle</MudButton>
+        <MudSpacer />
+        <MudText Typo="Typo.h4">@Title</MudText>
+        <MudSpacer />
+        <MudButton ButtonType="ButtonType.Button"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   OnClick="@(() => NavigationService.NavigateTo(RightButton))">@RightButtonTitle</MudButton>
+    </div>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public string LeftButton { get; set; } = "";
+
+    [Parameter]
+    public string LeftButtonTitle { get; set; } = "Voltar";
+
+    [Parameter]
+    public string RightButton { get; set; } = "";
+
+    [Parameter]
+    public string RightButtonTitle { get; set; } = "Adicionar";
+}

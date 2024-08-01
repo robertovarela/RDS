@@ -1,6 +1,6 @@
 ﻿namespace RDS.Core.Requests.ApplicationUsers.Address;
 
-public abstract class UpdateApplicationUserAddressRequest : Request
+public class UpdateApplicationUserAddressRequest : Request
 {
     public long Id { get; set; }
 

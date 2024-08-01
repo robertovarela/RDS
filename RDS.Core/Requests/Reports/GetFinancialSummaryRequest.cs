@@ -1,6 +1,6 @@
 namespace RDS.Core.Requests.Reports;
 
-public abstract class GetFinancialSummaryRequest : Request
+public class GetFinancialSummaryRequest : Request
 {
     
 }

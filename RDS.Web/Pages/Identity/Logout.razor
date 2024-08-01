@@ -1,0 +1,35 @@
+@page "/sair"
+@inherits LogoutPage
+@layout DarkLessLayout
+
+<PageTitle>RDS - Sair</PageTitle>
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="12" md="8" lg="6" xl="6" xxl="6">
+        <MudPaper Class="pa-8 mt-4">
+            <div class="d-flex justify-center pb-4 pt-4">
+                <img src="/imgs/RDS-01.webp"
+                     alt="RDS - Controle Empresarial"
+                     width="150" />
+            </div>
+            <div class="d-flex justify-center pb-4 pt-4">
+                <MudText Typo="Typo.caption" Style="font-size:x-large;">
+                    <span style="font-weight:800">
+                        Sistema de Agendamentos
+                    </span>
+                </MudText>
+            </div>
+
+            <MudAlert Severity="Severity.Info" style="width: 100%;">
+                <div class="d-flex">
+                    <MudText Typo="Typo.caption" Style="font-size:medium; font-weight:800;">Sessão Finalizada...</MudText>
+                    <MudSpacer />
+                </div>
+            </MudAlert>
+            <div class="d-flex">
+                <MudSpacer />
+                <MudButton Variant="Variant.Text" Href="/login">IR PARA TELA DE LOGIN</MudButton>
+            </div>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

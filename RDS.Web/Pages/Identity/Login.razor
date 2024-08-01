@@ -1,0 +1,64 @@
+@page "/login"
+@layout DarkLessLayout
+@inherits LoginPage
+
+<PageTitle>RDS - Entrar</PageTitle>
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="12" md="8" lg="6" xl="6" xxl="6">
+        <MudPaper Class="mud-width-full pa-4">
+            <div class="d-flex justify-center pb-2 pt-2">
+                <img src="imgs/RDS-01.webp"
+                     alt="RDS - Soluções em softwares"
+                     width="150" />
+            </div>
+            <div class="d-flex justify-center pb-4 pt-4">
+                <MudText Typo="Typo.caption" Class="responsive-text title-software">
+                    <span>
+                        Sistema de Agendamentos
+                    </span>
+                </MudText>
+            </div>
+            <div class="d-flex justify-center pb-4 pt-4">
+                <MudText Class="responsive-text title-screen" Typo="Typo.caption">
+                    <span>
+                        ENTRAR
+                    </span>
+                </MudText>
+            </div>
+
+            <EditForm Model="@LoginModel" OnValidSubmit="OnValidSubmitAsync">
+                <DataAnnotationsValidator />
+                <MudTextField T="string"
+                              Label="E-mail"
+                              HelperText="Campo obrigatório"
+                              InputType="InputType.Email"
+                              For="@(() => LoginModel.Email)"
+                              @bind-Value="LoginModel.Email"
+                              Class="responsive-text title-input" 
+                              Variant="Variant.Outlined" AutoFocus />
+
+                <MudTextField T="string"
+                              Label="Senha"
+                              HelperText="Campo obrigatório"
+                              InputType="InputType.Password"
+                              For="@(() => LoginModel.Password)"
+                              @bind-Value="LoginModel.Password" 
+                              Variant="Variant.Outlined" />
+
+                <div class="d-flex mt-8">
+                    @if (IsBusy)
+                    {
+                        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+                    }
+                    else
+                    {
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="responsive-text title-software">ENTRAR</MudButton>
+                        <MudSpacer />
+                        <MudButton Href="/registrar" Class="responsive-text title-software">QUERO ME CADASTRAR</MudButton>
+                    }
+                </div>
+            </EditForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
