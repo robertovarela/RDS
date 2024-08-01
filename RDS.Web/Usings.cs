@@ -27,6 +27,7 @@ global using RDS.Core.Requests.Orders;
 global using RDS.Core.Requests.Reports;
 global using RDS.Core.Requests.Transactions;
 global using RDS.Core.Responses;
+global using RDS.Core.Services;
 
 global using RDS.Web.Services;
 

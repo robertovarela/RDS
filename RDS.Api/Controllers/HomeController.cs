@@ -22,9 +22,8 @@ public class HomeController : ControllerBase
         [FromServices] IConfiguration config)
     {
         var env = config.GetValue<string>("Env");
-        var environament = new Response<string>(env);
-        return new Response<string>(null, 200, $"Environament: {env}");
-        
+
+        return new Response<string>($"Environament => {env}");
     }
     
     [HttpGet("health")]

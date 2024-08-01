@@ -142,7 +142,7 @@ public class UserIdentityController(
         }
     }
 
-    [HttpGet("allusers")]
+    [HttpPost("allusers")]
     public async Task<PagedResponse<List<ApplicationUser>>> GetAllUsersAsync(
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
         [FromQuery] int pageSize = Configuration.DefaultPageSize)

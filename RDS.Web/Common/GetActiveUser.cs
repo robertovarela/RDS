@@ -1,10 +1,4 @@
-﻿using MudBlazor;
-using RDS.Core.Handlers;
-using RDS.Core.Requests.ApplicationUsers;
-using RDS.Core.Services;
-using RDS.Web.Services;
-
-namespace RDS.Web.Common;
+﻿namespace RDS.Web.Common;
 
 public class GetActiveUser
 {
