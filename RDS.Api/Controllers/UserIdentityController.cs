@@ -25,11 +25,11 @@ public class UserIdentityController : ControllerBase
     }
 
     [HttpPost("userlogin")]
-    public async Task<Response<LoginResponse>> LoginAsync([FromBody] LoginRequest? request)
+    public async Task<Response<UserLogin>> LoginAsync([FromBody] LoginRequest? request)
     {
         if (request == null)
         {
-            return new Response<LoginResponse>(null, 400, "Dados inválidos");
+            return new Response<UserLogin>(null, 400, "Dados inválidos");
         }
 
         try
@@ -37,7 +37,7 @@ public class UserIdentityController : ControllerBase
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                return new Response<LoginResponse>(null, 401, "Usuário não encontrado");
+                return new Response<UserLogin>(null, 401, "Usuário não encontrado");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
@@ -45,18 +45,18 @@ public class UserIdentityController : ControllerBase
 
             if (!result.Succeeded)
             {
-                return new Response<LoginResponse>(null, 401, "Credenciais inválidas");
+                return new Response<UserLogin>(null, 401, "Credenciais inválidas");
             }
-            
-            var token = _jwtTokenService.GenerateToken(user);
-            var response = new LoginResponse(request.Email, token);
 
-            return new Response<LoginResponse>(response, 200, "Login realizado com sucesso");
+            var token = _jwtTokenService.GenerateToken(user);
+            var response = new UserLogin(request.Email, token);
+
+            return new Response<UserLogin>(response, 200, "Login realizado com sucesso");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An error occurred during the login process.");
-            return new Response<LoginResponse>(null, 500, "Erro interno no servidor");
+            return new Response<UserLogin>(null, 500, "Erro interno no servidor");
         }
     }
 
@@ -231,7 +231,8 @@ public class UserIdentityController : ControllerBase
     }
 
     [HttpPost("userbyname")]
-    public async Task<PagedResponse<List<ApplicationUser>>> GetUserByNameAsync([FromBody] GetApplicationUserByNameRequest request,
+    public async Task<PagedResponse<List<ApplicationUser>>> GetUserByNameAsync(
+        [FromBody] GetApplicationUserByNameRequest request,
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
         [FromQuery] int pageSize = Configuration.DefaultPageSize)
     {
@@ -263,7 +264,8 @@ public class UserIdentityController : ControllerBase
     }
 
     [HttpPost("userbyfullname")]
-    public async Task<PagedResponse<List<ApplicationUser>>> GetUserByFullNameAsync([FromBody] GetApplicationUserByFullNameRequest request,
+    public async Task<PagedResponse<List<ApplicationUser>>> GetUserByFullNameAsync(
+        [FromBody] GetApplicationUserByFullNameRequest request,
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
         [FromQuery] int pageSize = Configuration.DefaultPageSize)
     {
@@ -292,17 +294,5 @@ public class UserIdentityController : ControllerBase
             _logger.LogError(ex, "An error occurred while getting the user.");
             return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar o usuário");
         }
-    }
-}
-
-public class LoginResponse
-{
-    public string Email { get; set; }
-    public string Token { get; set; }
-
-    public LoginResponse(string email, string token)
-    {
-        Email = email;
-        Token = token;
     }
 }
