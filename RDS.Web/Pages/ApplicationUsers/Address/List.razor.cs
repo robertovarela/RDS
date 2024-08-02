@@ -1,13 +1,4 @@
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using RDS.Core.Handlers;
-using RDS.Core.Models.ApplicationUser;
-using RDS.Core.Requests.ApplicationUsers.Address;
-using RDS.Core.Services;
-using RDS.Web.Services;
-
-namespace RDS.Web.Pages.ApplicationUsers;
+namespace RDS.Web.Pages.ApplicationUsers.Address;
 
 public partial class ListApplicationUserAdressesPage : ComponentBase
 {
@@ -40,8 +31,8 @@ public partial class ListApplicationUserAdressesPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = await ManipulateUserStateValues.GetSelectedUserId();
-        userId = await StartService.GetSelectedUserId();
+       // var userId = await ManipulateUserStateValues.GetSelectedUserId();
+        var userId = await StartService.GetSelectedUserId();
         IsBusy = true; 
 
         try

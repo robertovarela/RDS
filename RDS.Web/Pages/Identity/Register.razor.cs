@@ -16,7 +16,7 @@ public partial class RegisterPage : ComponentBase
     public ISnackbar Snackbar { get; set; } = null!;
 
     [Inject]
-    public IAccountHandler Handler { get; set; } = null!;
+    public IApplicationUserHandler Handler { get; set; } = null!;
 
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
@@ -66,7 +66,7 @@ public partial class RegisterPage : ComponentBase
         
         try
         {
-            var result = await Handler.RegisterAsync(InputModel);
+            var result = await Handler.CreateAsync(InputModel);
 
             if (result.IsSuccess)
             {

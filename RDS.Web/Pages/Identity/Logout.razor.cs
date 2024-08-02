@@ -9,17 +9,11 @@ public partial class LogoutPage : ComponentBase
 {
     #region Services
     
-    [Inject]
-    AuthenticationService AuthenticationService { get; set; } = null!;
+    [Inject] AuthenticationService AuthenticationService { get; set; } = null!;
     
-    [Inject]
-    NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] NavigationManager NavigationManager { get; set; } = null!;
     
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
-
-    [Inject]
-    public IAccountHandler Handler { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
     

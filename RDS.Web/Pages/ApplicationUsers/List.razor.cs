@@ -1,12 +1,3 @@
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using RDS.Core.Handlers;
-using RDS.Core.Models.ApplicationUser;
-using RDS.Core.Requests.ApplicationUsers;
-using RDS.Core.Services;
-using RDS.Web.Services;
-
 namespace RDS.Web.Pages.ApplicationUsers;
 
 public class ListApplicationUsersPage : ComponentBase
@@ -25,10 +16,8 @@ public class ListApplicationUsersPage : ComponentBase
     [Inject] private TokenService TokenService { get; set; } = null!;
     [Inject] private HttpClientService HttpClientService { get; set; } = null!;
     [Inject] private ILocalStorageService LocalStorage { get; set; } = null!;
-    //[Inject] private ManipulateUserStateValuesService ManipulateUserStateValues { get; set; } = null!;
     [Inject] public UserStateService UserState { get; set; } = null!;
     [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
-    [Inject] public IAccountHandler AccountHandler { get; set; } = null!;
     [Inject] public LinkUserStateService Link { get; set; } = null!;
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
@@ -43,8 +32,6 @@ public class ListApplicationUsersPage : ComponentBase
         //var userId = await ManipulateUserStateValues.SetDefaultValues();
         var userId = await StartService.SetDefaultValues();
         
-        var userIdTemp = await StartService.GetSelectedUserId();
-
         IsBusy = true;
         try
         {

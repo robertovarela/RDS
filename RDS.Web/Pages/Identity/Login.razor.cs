@@ -28,9 +28,6 @@ public partial class LoginPage : ComponentBase
     [Inject]
     public ISnackbar Snackbar { get; set; } = null!;
 
-    [Inject]
-    public IAccountHandler Handler { get; set; } = null!;
-
     #endregion
 
     #region Properties

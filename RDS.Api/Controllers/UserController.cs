@@ -1,12 +1,12 @@
 namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("v1/useridentity")]
-public class UserIdentityController(
+[Microsoft.AspNetCore.Mvc.Route("v1/users")]
+public class UserController(
     SignInManager<User> signInManager,
     UserManager<User> userManager,
     JwtTokenService jwtTokenService,
-    ILogger<UserIdentityController> logger,
+    ILogger<UserController> logger,
     AppDbContext context)
     : ControllerBase
 {
@@ -47,7 +47,7 @@ public class UserIdentityController(
     }
 
     [HttpPost("createuser")]
-    public async Task<Response<ApplicationUser?>> CreateUserAsync([FromBody] CreateApplicationUserRequest request)
+    public async Task<Response<ApplicationUser?>> CreateAsync([FromBody] CreateApplicationUserRequest request)
     {
         try
         {
@@ -81,7 +81,7 @@ public class UserIdentityController(
     }
 
     [HttpPut("updateuser")]
-    public async Task<Response<ApplicationUser?>> UpdateUserAsync([FromBody] UpdateApplicationUserRequest request)
+    public async Task<Response<ApplicationUser?>> UpdateAsync([FromBody] UpdateApplicationUserRequest request)
     {
         try
         {
@@ -115,7 +115,7 @@ public class UserIdentityController(
     }
 
     [HttpDelete("deleteuser")]
-    public async Task<Response<ApplicationUser?>> DeleteUserAsync([FromBody] DeleteApplicationUserRequest request)
+    public async Task<Response<ApplicationUser?>> DeleteAsync([FromBody] DeleteApplicationUserRequest request)
     {
         try
         {
@@ -143,7 +143,7 @@ public class UserIdentityController(
     }
 
     [HttpPost("allusers")]
-    public async Task<PagedResponse<List<ApplicationUser>>> GetAllUsersAsync(
+    public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
         [FromQuery] int pageSize = Configuration.DefaultPageSize)
     {
@@ -174,7 +174,7 @@ public class UserIdentityController(
     }
 
     [HttpPost("userbyid")]
-    public async Task<Response<ApplicationUser?>> GetUserByIdAsync([FromBody] GetApplicationUserByIdRequest request)
+    public async Task<Response<ApplicationUser?>> GetByIdAsync([FromBody] GetApplicationUserByIdRequest request)
     {
         try
         {
@@ -195,7 +195,7 @@ public class UserIdentityController(
     }
 
     [HttpPost("userbycpf")]
-    public async Task<Response<ApplicationUser?>> GetUserByCpfAsync([FromBody] GetApplicationUserByCpfRequest request)
+    public async Task<Response<ApplicationUser?>> GetByCpfAsync([FromBody] GetApplicationUserByCpfRequest request)
     {
         try
         {
@@ -217,7 +217,7 @@ public class UserIdentityController(
     }
 
     [HttpPost("userbyname")]
-    public async Task<PagedResponse<List<ApplicationUser>>> GetUserByNameAsync(
+    public async Task<PagedResponse<List<ApplicationUser>>> GetByNameAsync(
         [FromBody] GetApplicationUserByNameRequest request,
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
         [FromQuery] int pageSize = Configuration.DefaultPageSize)
@@ -250,7 +250,7 @@ public class UserIdentityController(
     }
 
     [HttpPost("userbyfullname")]
-    public async Task<PagedResponse<List<ApplicationUser>>> GetUserByFullNameAsync(
+    public async Task<PagedResponse<List<ApplicationUser>>> GetByFullNameAsync(
         [FromBody] GetApplicationUserByFullNameRequest request,
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
         [FromQuery] int pageSize = Configuration.DefaultPageSize)

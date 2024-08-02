@@ -68,8 +68,6 @@
     
     [Inject] private ManipulateUserStateValuesService ManipulateUserStateValues { get; set; } = null!;
 
-    [Inject] public IAccountHandler Handler { get; set; } = null!;
-
     [Inject] public UserStateService UserState { get; set; } = null!;
 
     [Inject] public NavigationManager NavigationManager { get; set; } = null!;
@@ -92,12 +90,6 @@
 
             StateHasChanged();
         }
-    }
-
-    private async Task LoadUserInfo()
-    {
-        var userInfo = await Handler.GetUserInfo();
-        //UserState.SetLoggedInUser();
     }
 
     private Task OnSystemPreferenceChanged(bool newValue)

@@ -12,7 +12,7 @@ public class AuthenticationService(
 
         try
         {
-            var response = await httpClient.PostAsJsonAsync("v1/useridentity/userlogin", request);
+            var response = await httpClient.PostAsJsonAsync("v1/users/userlogin", request);
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();

@@ -9,6 +9,7 @@ global using System.Text.Json;
 
 /* add global usage directives for Microsoft namespaces here */
 
+global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Authorization;
 
 /* add global usage directives for Comanda namespaces here */

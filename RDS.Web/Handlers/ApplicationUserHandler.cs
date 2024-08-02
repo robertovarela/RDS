@@ -10,7 +10,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 
     public async Task<Response<ApplicationUser?>> CreateAsync(CreateApplicationUserRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/create")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/createuser")
         {
             Content = JsonContent.Create(request)
         };
@@ -22,7 +22,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 
     public async Task<Response<ApplicationUser?>> UpdateAsync(UpdateApplicationUserRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Put, $"v1/useridentity/updateuser")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Put, $"v1/users/updateuser")
         {
             Content = JsonContent.Create(request)
         };
@@ -34,7 +34,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 
     public async Task<Response<ApplicationUser?>> DeleteAsync(DeleteApplicationUserRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Delete, "v1/useridentity/deleteuser")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Delete, "v1/users/deleteuser")
         {
             Content = JsonContent.Create(request)
         };
@@ -46,7 +46,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 
     public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(GetAllApplicationUserRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/useridentity/allusers")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/allusers")
         {
             Content = JsonContent.Create(request)
         };
@@ -58,7 +58,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 
     public async Task<Response<ApplicationUser?>> GetByIdAsync(GetApplicationUserByIdRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/useridentity/userbyid")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/userbyid")
         {
             Content = JsonContent.Create(request)
         };
@@ -70,7 +70,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 
     public async Task<Response<ApplicationUser?>> GetByCpfAsync(GetApplicationUserByCpfRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/useridentity/userbycpf")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/v/userbycpf")
         {
             Content = JsonContent.Create(request)
         };
@@ -82,7 +82,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 
     public async Task<PagedResponse<List<ApplicationUser>>> GetByNameAsync(GetApplicationUserByNameRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/useridentity/userbyname")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/userbyname")
         {
             Content = JsonContent.Create(request)
         };
@@ -95,7 +95,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
     public async Task<PagedResponse<List<ApplicationUser>>> GetByFullNameAsync(
         GetApplicationUserByFullNameRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/useridentity/userbyfullname")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/userbyfullname")
         {
             Content = JsonContent.Create(request)
         };
@@ -142,7 +142,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 //     public async Task<Response<ApplicationUser?>> UpdateAsync(UpdateApplicationUserRequest request)
 //     {
 //         await EnsureHttpClientInitializedAsync();
-//         var requestMessage = new HttpRequestMessage(HttpMethod.Put, $"v1/useridentity/updateuser")
+//         var requestMessage = new HttpRequestMessage(HttpMethod.Put, $"v1/users/updateuser")
 //         {
 //             Content = JsonContent.Create(request)
 //         };
@@ -154,7 +154,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 //     public async Task<Response<ApplicationUser?>> DeleteAsync(DeleteApplicationUserRequest request)
 //     {
 //         await EnsureHttpClientInitializedAsync();
-//         var requestMessage = new HttpRequestMessage(HttpMethod.Delete, "v1/useridentity/deleteuser")
+//         var requestMessage = new HttpRequestMessage(HttpMethod.Delete, "v1/users/deleteuser")
 //         {
 //             Content = JsonContent.Create(request)
 //         };
@@ -166,14 +166,14 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 //     public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(GetAllApplicationUserRequest request)
 //     {
 //         await EnsureHttpClientInitializedAsync();
-//         return await httpClientJwt.GetFromJsonAsync<PagedResponse<List<ApplicationUser>>>("v1/useridentity/allusers")
+//         return await httpClientJwt.GetFromJsonAsync<PagedResponse<List<ApplicationUser>>>("v1/users/allusers")
 //                ?? new PagedResponse<List<ApplicationUser>>(null, 400, "Não foi possível obter os usuários");
 //     }
 //
 //     public async Task<Response<ApplicationUser?>> GetByIdAsync(GetApplicationUserByIdRequest request)
 //     {
 //         await EnsureHttpClientInitializedAsync();
-//         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/useridentity/userbyid")
+//         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/userbyid")
 //         {
 //             Content = JsonContent.Create(request)
 //         };
@@ -185,7 +185,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 //     public async Task<Response<ApplicationUser?>> GetByCpfAsync(GetApplicationUserByCpfRequest request)
 //     {
 //         await EnsureHttpClientInitializedAsync();
-//         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/useridentity/userbycpf")
+//         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/userbycpf")
 //         {
 //             Content = JsonContent.Create(request)
 //         };
@@ -197,7 +197,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 //     public async Task<PagedResponse<List<ApplicationUser>>> GetByNameAsync(GetApplicationUserByNameRequest request)
 //     {
 //         await EnsureHttpClientInitializedAsync();
-//         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/useridentity/userbyname")
+//         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/userbyname")
 //         {
 //             Content = JsonContent.Create(request)
 //         };
@@ -209,7 +209,7 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
 //     public async Task<PagedResponse<List<ApplicationUser>>> GetByFullNameAsync(GetApplicationUserByFullNameRequest request)
 //     {
 //         await EnsureHttpClientInitializedAsync();
-//         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/useridentity/userbyfullname")
+//         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/userbyfullname")
 //         {
 //             Content = JsonContent.Create(request)
 //         };
