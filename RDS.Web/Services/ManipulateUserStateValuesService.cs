@@ -8,8 +8,10 @@ namespace RDS.Web.Services
         ILocalStorageService localStorage,
         TokenService tokenService)
     {
-        public async Task<long> SetDefaultValues()
+        public async Task<long> SetDefaultValues(bool disableNavigation = false)
         {
+            if(disableNavigation) return 0;
+            
             long userId = await GetUserLoggedIdFromToken();
             userState.SetLoggedUserId(userId);
             userState.SetSelectedUserId(userId);
@@ -39,6 +41,15 @@ namespace RDS.Web.Services
             return userId;
         }
         
+        public async Task<long> GetLoggedUserId()
+        {
+            long loggedUserId = userState.GetLoggedUserId();
+            if (loggedUserId != 0) return loggedUserId;
+            loggedUserId = await SetDefaultValues();
+            NavigationService.NavigateTo("/");
+
+            return loggedUserId;
+        }
         public async Task<long> GetSelectedUserId()
         {
             long selectedUserId = userState.GetSelectedUserId();
@@ -57,6 +68,16 @@ namespace RDS.Web.Services
             NavigationService.NavigateTo("/");
 
             return selectedAddressId;
+        }
+        
+        public async Task<long> GetSelectedCategoryId()
+        {
+            long selectedCategoryId = userState.GetSelectedCategoryId();
+            if (selectedCategoryId != 0) return selectedCategoryId;
+            selectedCategoryId = await SetDefaultValues(true);
+            NavigationService.NavigateTo("/");
+
+            return selectedCategoryId;
         }
     }
 }

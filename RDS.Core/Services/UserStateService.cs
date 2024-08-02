@@ -2,10 +2,10 @@
 {
     public class UserStateService
     {
-        public long LoggedUserId { get; private set; }
-        public long SelectedUserId { get; set; }
-        public long SelectedUserAddressId { get; set; }
-        public long SelectedCategoryId { get; set; }
+        private long LoggedUserId { get; set; }
+        private long SelectedUserId { get; set; }
+        private long SelectedUserAddressId { get; set; }
+        private long SelectedCategoryId { get; set; }
         
         public long GetLoggedUserId() => LoggedUserId;
 
@@ -13,7 +13,7 @@
 
         public long GetSelectedAddressId() => SelectedUserAddressId;
 
-        public long GetSelectedCategoryId() => SelectedCategoryId;
+        public  long GetSelectedCategoryId() => SelectedCategoryId;
 
         public void SetLoggedUserId(long loggedUserId) => LoggedUserId = loggedUserId;
 
