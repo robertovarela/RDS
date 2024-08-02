@@ -1,20 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using RDS.Core.Handlers;
-using RDS.Core.Requests.ApplicationUsers;
-using RDS.Core.Requests.ApplicationUsers.Address;
-using RDS.Core.Services;
-using RDS.Web.Common;
-using System;
+﻿namespace RDS.Web.Pages.ApplicationUsers.Address;
 
-namespace RDS.Web.Pages.ApplicationUsers.Address;
-
-public partial class EditApplicationUserAddressPage : ComponentBase
+public class EditApplicationUserAddressPage : ComponentBase
 {
     #region Properties
 
-    private long UserId { get; set; }
-    public bool IsBusy { get; set; } = false;
+    protected bool IsBusy { get; private set; }
     public UpdateApplicationUserAddressRequest InputModel { get; set; } = new();
 
     #endregion
@@ -36,17 +26,8 @@ public partial class EditApplicationUserAddressPage : ComponentBase
 
     #region Services
 
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
-
-    [Inject]
-    public IApplicationUserHandler UserHandler { get; set; } = null!;
-
-    [Inject]
-    public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
-
-    [Inject]
-    public UserStateService UserState { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
 
     #endregion
 

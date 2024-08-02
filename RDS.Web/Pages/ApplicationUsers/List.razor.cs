@@ -4,22 +4,17 @@ public class ListApplicationUsersPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
-    public List<ApplicationUser> ApplicationUsers { get; set; } = [];
+    protected bool IsBusy { get; private set; }
+    protected List<ApplicationUser> ApplicationUsers { get; private set; } = [];
     public string SearchTerm { get; set; } = string.Empty;
-    public string Url { get; set; } = "/usuarios/editar";
+    protected const string Url = "/usuarios/editar";
 
     #endregion
 
     #region Services
-
-    [Inject] private TokenService TokenService { get; set; } = null!;
-    [Inject] private HttpClientService HttpClientService { get; set; } = null!;
-    [Inject] private ILocalStorageService LocalStorage { get; set; } = null!;
-    [Inject] public UserStateService UserState { get; set; } = null!;
+    
     [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
     [Inject] public LinkUserStateService Link { get; set; } = null!;
-
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IDialogService DialogService { get; set; } = null!;
 
@@ -29,7 +24,6 @@ public class ListApplicationUsersPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        //var userId = await ManipulateUserStateValues.SetDefaultValues();
         var userId = await StartService.SetDefaultValues();
         
         IsBusy = true;
@@ -40,9 +34,9 @@ public class ListApplicationUsersPage : ComponentBase
             if (result.IsSuccess)
                 ApplicationUsers = result.Data ?? [];
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Snackbar.Add(ex.Message, Severity.Error);
+            Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
         }
         finally
         {
@@ -68,25 +62,18 @@ public class ListApplicationUsersPage : ComponentBase
         StateHasChanged();
     }
 
-    public async Task OnDeleteAsync(long id)
+    private async Task OnDeleteAsync(long id)
     {
         try
         {
             var request = new DeleteApplicationUserRequest { UserId = id };
             var result = await UserHandler.DeleteAsync(request);
             ApplicationUsers.RemoveAll(x => x.Id == id);
-            if (result.Data != null)
-            {
-                Snackbar.Add(result.Message, Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add(result.Message, Severity.Warning);
-            }
+            Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Snackbar.Add(ex.Message, Severity.Error);
+            Snackbar.Add("Não foi possível excluir o usuário", Severity.Error);
         }
     }
 
@@ -128,11 +115,6 @@ public class ListApplicationUsersPage : ComponentBase
     private void OnNewUser()
     {
         NavigationService.NavigateToRegister();
-    }
-
-    public async Task<long> GetUserSeletctedTemp()
-    {
-        return await StartService.GetSelectedUserId();
     }
     
     #endregion

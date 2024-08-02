@@ -3,46 +3,60 @@
 <UserState/>
 
 <TitleBarWithButtons Title="Endereços" LeftButton="/usuarios/editar" RightButton="/usuarios/enderecos/adicionar" />
-<MudDataGrid
-    Class="mt-4"
-    Items="@ApplicationUsersAddress"
-    Filterable="true"
-    QuickFilter="Filter"
-    Hideable="true">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Endereços</MudText>
-        <MudSpacer/>
-        <MudTextField
-            @bind-Value="SearchTerm"
-            Placeholder="Filtrar..."
-            Adornment="Adornment.Start"
-            AdornmentIcon="@Icons.Material.Filled.Search"
-            Immediate="true"
-            IconSize="Size.Medium"
-            Class="mt-0">
-        </MudTextField>
-    </ToolBarContent>
-    <Columns>
-        <PropertyColumn Property="x => x.Id" Title="#"/>
-        <PropertyColumn Property=@(x => x.Street + ", " + x.Number) Title="Logradouro"/>
-        <PropertyColumn Property="x => x.PostalCode" Title="CEP"/>
-        <TemplateColumn Class="d-flex justify-end">
-            <CellTemplate>
-                <MudStack Row>
-                    <MudIconButton 
-                        Icon="@Icons.Material.Filled.Edit"
-                        Color="Color.Primary"
-                        OnClick="@(() => Link.LinkToUrlAddress(Url, context.Item.UserId, context.Item.Id))">
-                    </MudIconButton>
 
-                    <MudIconButton 
-                        Icon="@Icons.Material.Filled.Delete"
-                        Color="Color.Error"
-                        aria-label="Excluir"
-                        OnClick="() => OnDeleteButtonClickedAsync(context.Item.UserId, context.Item.Id, context.Item.Street)">
-                    </MudIconButton>
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
+@if (IsBusy)
+{
+<MudPaper Class="pa-8 mt-4">
+    <MudSkeleton Height="110px"/>
+    <MudSkeleton Height="110px"/>
+    <MudSkeleton Height="110px"/>
+    <MudSkeleton Height="110px"/>
+    <MudSkeleton Height="110px"/>
+</MudPaper>
+}
+else
+{
+    <MudDataGrid
+        Class="mt-4"
+        Items="@ApplicationUsersAddress"
+        Filterable="true"
+        QuickFilter="Filter"
+        Hideable="true">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Endereços</MudText>
+            <MudSpacer/>
+            <MudTextField
+                @bind-Value="SearchTerm"
+                Placeholder="Filtrar..."
+                Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search"
+                Immediate="true"
+                IconSize="Size.Medium"
+                Class="mt-0">
+            </MudTextField>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x => x.Id" Title="#"/>
+            <PropertyColumn Property=@(x => x.Street + ", " + x.Number) Title="Logradouro"/>
+            <PropertyColumn Property="x => x.PostalCode" Title="CEP"/>
+            <TemplateColumn Class="d-flex justify-end">
+                <CellTemplate>
+                    <MudStack Row>
+                        <MudIconButton
+                            Icon="@Icons.Material.Filled.Edit"
+                            Color="Color.Primary"
+                            OnClick="@(() => Link.LinkToUrlAddress(Url, context.Item.UserId, context.Item.Id))">
+                        </MudIconButton>
+
+                        <MudIconButton
+                            Icon="@Icons.Material.Filled.Delete"
+                            Color="Color.Error"
+                            aria-label="Excluir"
+                            OnClick="() => OnDeleteButtonClickedAsync(context.Item.UserId, context.Item.Id, context.Item.Street)">
+                        </MudIconButton>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+}

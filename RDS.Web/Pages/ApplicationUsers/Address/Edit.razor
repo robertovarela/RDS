@@ -9,7 +9,7 @@
         <MudSkeleton Height="55px"/>
         <MudSkeleton Height="110px"/>
         <MudSkeleton Height="55px"/>
-        <MudSkeleton Height="110px"/>
+        <MudSkeleton Height="55px"/>
         <MudSkeleton Height="55px"/>
     </MudPaper>
 }
@@ -60,7 +60,7 @@ else
 
             <MudTextField Label="Complemento"
                           @bind-Value="InputModel.Complement"
-                          For="@(() => InputModel.Complement)"
+                          For="@(() => InputModel.Complement??string.Empty)"
                           ShrinkLabel
                           Immediate="true"
                           MaxLength="100"
