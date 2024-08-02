@@ -18,4 +18,9 @@ public class StartService()
     {
         return await _manipulateUserStateValuesService?.GetSelectedUserId();
     }
+    
+    public static async Task<long> GetSelectedAddressId()
+    {
+        return await _manipulateUserStateValuesService?.GetSelectedAddressId();
+    }
 }

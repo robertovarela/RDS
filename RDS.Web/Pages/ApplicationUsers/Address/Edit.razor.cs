@@ -23,6 +23,14 @@ public partial class EditApplicationUserAddressPage : ComponentBase
 
     [Parameter]
     public IMask BrazilPostalCode { get; set; } = new PatternMask("00000-000");
+    
+    [Parameter]
+    public List<string> Estados { get; set; } = new List<string>
+    {
+        "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
+        "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
+        "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+    };
 
     #endregion
 
@@ -49,28 +57,13 @@ public partial class EditApplicationUserAddressPage : ComponentBase
         IsBusy = true;
         try
         {
-            var request = new GetApplicationUserActiveRequest();
-            var response = await UserHandler.GetActiveAsync(request);
-
-            if (response is { IsSuccess: true, Data: not null })
-                UserId = response.Data.Id;
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add(ex.Message, Severity.Error);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-
-        IsBusy = true;
-        try
-        {
+            var userId = await StartService.GetSelectedUserId();
+            var id = await StartService.GetSelectedAddressId();
+ 
             var requestAddress = new GetApplicationUserAddressByIdRequest
             {
-                UserId = UserState.SelectedUserId,
-                Id = UserState.SelectedUserAddressId
+                UserId = userId ,
+                Id = id
             };
             var responseAddress = await AddressHandler.GetByIdAsync(requestAddress);
             if (responseAddress is { IsSuccess: true, Data: not null })
@@ -85,6 +78,7 @@ public partial class EditApplicationUserAddressPage : ComponentBase
                     Complement = responseAddress.Data.Complement,
                     Neighborhood = responseAddress.Data.Neighborhood,
                     City = responseAddress.Data.City,
+                    State = responseAddress.Data.State,
                     Country = responseAddress.Data.Country,
                     TypeOfAddress = responseAddress.Data.TypeOfAddress
                 };

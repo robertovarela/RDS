@@ -7,7 +7,8 @@ public class UserAdressController(
     : ControllerBase
 {
     [HttpPost("createuser")]
-    public async Task<Response<ApplicationUserAddress?>> CreateAsync([FromBody] CreateApplicationUserAddressRequest request)
+    public async Task<Response<ApplicationUserAddress?>> CreateAsync(
+        [FromBody] CreateApplicationUserAddressRequest request)
     {
         try
         {
@@ -36,7 +37,8 @@ public class UserAdressController(
     }
 
     [HttpPut("updateuser")]
-    public async Task<Response<ApplicationUserAddress?>> UpdateAsync([FromBody] UpdateApplicationUserAddressRequest request)
+    public async Task<Response<ApplicationUserAddress?>> UpdateAsync(
+        [FromBody] UpdateApplicationUserAddressRequest request)
     {
         try
         {
@@ -53,6 +55,7 @@ public class UserAdressController(
             address.Complement = request.Complement;
             address.Neighborhood = request.Neighborhood;
             address.City = request.City;
+            address.State = request.State;
             address.Country = request.Country;
             address.TypeOfAddress = request.TypeOfAddress;
 
@@ -68,7 +71,8 @@ public class UserAdressController(
     }
 
     [HttpDelete("deleteuser")]
-    public async Task<Response<ApplicationUserAddress?>> DeleteAsync([FromBody] DeleteApplicationUserAddressRequest request)
+    public async Task<Response<ApplicationUserAddress?>> DeleteAsync(
+        [FromBody] DeleteApplicationUserAddressRequest request)
     {
         try
         {
@@ -104,7 +108,7 @@ public class UserAdressController(
                 .Where(x => x.UserId == request.UserId)
                 .OrderBy(x => x.TypeOfAddress)
                 .ThenBy(x => x.Id);
-            
+
             var address = await query
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
@@ -123,7 +127,8 @@ public class UserAdressController(
     }
 
     [HttpPost("userbyid")]
-    public async Task<Response<ApplicationUserAddress?>> GetByIdAsync([FromBody] GetApplicationUserAddressByIdRequest request)
+    public async Task<Response<ApplicationUserAddress?>> GetByIdAsync(
+        [FromBody] GetApplicationUserAddressByIdRequest request)
     {
         try
         {

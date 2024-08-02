@@ -19,16 +19,6 @@ namespace RDS.Web.Services
             return userId;
         }
 
-        public async Task<long> GetSelectedUserId()
-        {
-            long selectedUserId = userState.GetSelectedUserId();
-            if (selectedUserId != 0) return selectedUserId;
-            selectedUserId = await SetDefaultValues();
-            NavigationService.NavigateTo("/");
-
-            return selectedUserId;
-        }
-
         private async Task<long> GetUserLoggedIdFromToken()
         {
             long userId = 0;
@@ -47,6 +37,26 @@ namespace RDS.Web.Services
             }
 
             return userId;
+        }
+        
+        public async Task<long> GetSelectedUserId()
+        {
+            long selectedUserId = userState.GetSelectedUserId();
+            if (selectedUserId != 0) return selectedUserId;
+            selectedUserId = await SetDefaultValues();
+            NavigationService.NavigateTo("/");
+
+            return selectedUserId;
+        }
+        
+        public async Task<long> GetSelectedAddressId()
+        {
+            long selectedAddressId = userState.GetSelectedAddressId();
+            if (selectedAddressId != 0) return selectedAddressId;
+            selectedAddressId = await SetDefaultValues();
+            NavigationService.NavigateTo("/");
+
+            return selectedAddressId;
         }
     }
 }
