@@ -15,7 +15,7 @@ public class UpdateApplicationUserAddressRequest : Request
 
     [Required(ErrorMessage = "É obrigatório informar o número ou SN se não tiver número")]
     public string Number { get; set; } = string.Empty;
-    public string? Complement { get; set; } = string.Empty;
+    public string Complement { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "É obrigatório informar o bairro")]
     [MinLength(3, ErrorMessage = "O bairro deve conter pelo menos 3 caracteres")]

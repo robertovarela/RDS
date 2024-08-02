@@ -6,7 +6,7 @@ public class UserAdressController(
     AppDbContext context)
     : ControllerBase
 {
-    [HttpPost("createuser")]
+    [HttpPost("createuseraddress")]
     public async Task<Response<ApplicationUserAddress?>> CreateAsync(
         [FromBody] CreateApplicationUserAddressRequest request)
     {
@@ -17,9 +17,10 @@ public class UserAdressController(
                 PostalCode = request.PostalCode,
                 Street = request.Street,
                 Number = request.Number,
-                Complement = request.Complement,
+                Complement = request.Complement ?? string.Empty,
                 Neighborhood = request.Neighborhood,
                 City = request.City,
+                State = request.State,
                 Country = request.Country,
                 TypeOfAddress = request.TypeOfAddress,
                 UserId = request.UserId
@@ -30,13 +31,13 @@ public class UserAdressController(
 
             return new Response<ApplicationUserAddress?>(address, 201, "Endereço criado com sucesso!");
         }
-        catch
+        catch (Exception ex)
         {
-            return new Response<ApplicationUserAddress?>(null, 500, "Não foi possível criar o endereço");
+            return new Response<ApplicationUserAddress?>(null, 500, $"{ex}\nNão foi possível criar o endereço");
         }
     }
 
-    [HttpPut("updateuser")]
+    [HttpPut("updateuseraddress")]
     public async Task<Response<ApplicationUserAddress?>> UpdateAsync(
         [FromBody] UpdateApplicationUserAddressRequest request)
     {
@@ -70,7 +71,7 @@ public class UserAdressController(
         }
     }
 
-    [HttpDelete("deleteuser")]
+    [HttpDelete("deleteuseraddress")]
     public async Task<Response<ApplicationUserAddress?>> DeleteAsync(
         [FromBody] DeleteApplicationUserAddressRequest request)
     {
@@ -94,7 +95,7 @@ public class UserAdressController(
         }
     }
 
-    [HttpPost("allusers")]
+    [HttpPost("allusersaddress")]
     public async Task<PagedResponse<List<ApplicationUserAddress>>> GetAllAsync(
         [FromBody] GetAllApplicationUserAddressRequest request,
         [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
@@ -126,7 +127,7 @@ public class UserAdressController(
         }
     }
 
-    [HttpPost("userbyid")]
+    [HttpPost("useraddressbyid")]
     public async Task<Response<ApplicationUserAddress?>> GetByIdAsync(
         [FromBody] GetApplicationUserAddressByIdRequest request)
     {

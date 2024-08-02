@@ -81,17 +81,18 @@
                       InputType="InputType.Text"
                       Variant="Variant.Outlined"/>
 
-        <MudTextField Label="Estado"
-                      @bind-Value="InputModel.State"
-                      For="@(() => InputModel.State)"
-                      ShrinkLabel
-                      Immediate="true"
-                      MaxLength="2"
-                      T="string"
-                      HelperText="Campo obrigatório"
-                      HelperTextOnFocus="true"
-                      InputType="InputType.Text"
-                      Variant="Variant.Outlined"/>
+        <MudSelect Label="Estado"
+                   @bind-Value="InputModel.State"
+                   For="@(() => InputModel.State)"
+                   HelperText="Campo obrigatório"
+                   HelperTextOnFocus="true"
+                   Variant="Variant.Outlined"
+                   T="string">
+            @foreach (var estado in Estados)
+            {
+            <MudSelectItem Value="@estado">@estado</MudSelectItem>
+            }
+        </MudSelect>
 
         <MudTextField Label="País"
                       @bind-Value="InputModel.Country"

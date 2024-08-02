@@ -14,8 +14,7 @@ public class EditApplicationUserAddressPage : ComponentBase
     [Parameter]
     public IMask BrazilPostalCode { get; set; } = new PatternMask("00000-000");
     
-    [Parameter]
-    public List<string> Estados { get; set; } = new List<string>
+    [Parameter] public List<string> Estados { get; set; } = new List<string>
     {
         "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
         "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
@@ -56,7 +55,7 @@ public class EditApplicationUserAddressPage : ComponentBase
                     PostalCode = responseAddress.Data.PostalCode,
                     Street = responseAddress.Data.Street,
                     Number = responseAddress.Data.Number,
-                    Complement = responseAddress.Data.Complement,
+                    Complement = responseAddress.Data.Complement ?? string.Empty,
                     Neighborhood = responseAddress.Data.Neighborhood,
                     City = responseAddress.Data.City,
                     State = responseAddress.Data.State,

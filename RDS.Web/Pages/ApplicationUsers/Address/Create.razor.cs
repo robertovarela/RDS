@@ -1,63 +1,55 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using RDS.Core.Handlers;
-using RDS.Core.Requests.ApplicationUsers.Address;
+﻿namespace RDS.Web.Pages.ApplicationUsers.Address;
 
-namespace RDS.Web.Pages.ApplicationUsers.Address
+public partial class CreateApplicationUserAddresPage : ComponentBase
 {
-    public partial class CreateApplicationUserAddresPage : ComponentBase
+    #region Properties
+
+    public CreateApplicationUserAddressRequest InputModel { get; set; } = new();
+
+    #endregion
+
+    #region Parameters
+
+    [Parameter] public IMask BrazilPostalCode { get; set; } = new PatternMask("00000-000");
+    [Parameter] public List<string> Estados { get; set; } = new List<string>
     {
-        #region Properties
+        "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
+        "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
+        "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+    };
 
-        public bool IsBusy { get; set; } = false;
-        public CreateApplicationUserAddressRequest InputModel { get; set; } = new();
+    #endregion
 
-        #endregion
+    #region Services
 
-        #region Parameters
+    [Inject] public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
 
-        [Parameter]
-        public IMask BrazilPostalCode { get; set; } = new PatternMask("00000-000");
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
-        #endregion
+    #endregion
 
-        #region Services
+    #region Methods
 
-        [Inject]
-        public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
-
-        [Inject]
-        public ISnackbar Snackbar { get; set; } = null!;
-
-        #endregion
-
-        #region Methods
-
-        public async Task OnValidSubmitAsync()
+    public async Task OnValidSubmitAsync()
+    {
+        try
         {
-            IsBusy = true;
-
-            try
+            var userId = await StartService.GetSelectedUserId();
+            InputModel.UserId = userId;
+            var result = await AddressHandler.CreateAsync(InputModel);
+            if (result.IsSuccess)
             {
-                var result = await AddressHandler.CreateAsync(InputModel);
-                if (result.IsSuccess)
-                {
-                    Snackbar.Add(result.Message, Severity.Success);
-                    NavigationService.NavigateTo("/usuarios/enderecos");
-                }
-                else
-                    Snackbar.Add(result.Message, Severity.Error);
+                Snackbar.Add(result.Message, Severity.Success);
+                NavigationService.NavigateTo("/usuarios/enderecos");
             }
-            catch (Exception ex)
-            {
-                Snackbar.Add(ex.Message, Severity.Error);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            else
+                Snackbar.Add(result.Message, Severity.Error);
         }
-
-        #endregion
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
     }
+
+    #endregion
 }
