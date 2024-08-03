@@ -9,6 +9,9 @@ public class ListApplicationUsersPage : ComponentBase
     public string SearchTerm { get; set; } = string.Empty;
     protected const string Url = "/usuarios/editar";
 
+    private int _currentPage = 1;
+    private int _pageSize = Configuration.DefaultPageSize;
+    
     #endregion
 
     #region Services
@@ -41,8 +44,10 @@ public class ListApplicationUsersPage : ComponentBase
         finally
         {
             IsBusy = false;
+            ApplicationUsers = PaginateUsers(_currentPage, _pageSize); // Initial pagination
         }
     }
+
 
     #endregion
 
@@ -117,5 +122,12 @@ public class ListApplicationUsersPage : ComponentBase
         NavigationService.NavigateToRegister();
     }
     
+    private List<ApplicationUser> PaginateUsers(int currentPage, int pageSize)
+    {
+        return ApplicationUsers
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
     #endregion
 }

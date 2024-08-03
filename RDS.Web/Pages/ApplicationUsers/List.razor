@@ -10,16 +10,16 @@
         NOVO USUÁRIO
     </MudButton>
 </div>
-<TitleBar Title="Usuários" />
+<TitleBar Title="Usuários"/>
 
 @if (IsBusy)
 {
-<MudPaper Class="pa-8 mt-4">
-    <MudSkeleton Height="55px"/>
-    <MudSkeleton Height="110px"/>
-    <MudSkeleton Height="55px"/>
-    <MudSkeleton Height="55px"/>
-</MudPaper>
+    <MudPaper Class="pa-8 mt-4">
+        <MudSkeleton Height="55px"/>
+        <MudSkeleton Height="110px"/>
+        <MudSkeleton Height="55px"/>
+        <MudSkeleton Height="55px"/>
+    </MudPaper>
 }
 else
 {
@@ -42,6 +42,7 @@ else
                 Class="mt-0">
             </MudTextField>
         </ToolBarContent>
+
         <Columns>
             <PropertyColumn Property="x => x.Id" Title="#"/>
             <PropertyColumn Property="x => x.Name" Title="Nome"/>
@@ -63,5 +64,8 @@ else
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
+        <PagerContent>
+            <MudDataGridPager T="ApplicationUser" RowsPerPageString="Registros por página" InfoFormat="{first_item} - {last_item} de {all_items}" PageSizeOptions="new int[] { 5, 10, 25, 50, 100 }" />
+        </PagerContent>
     </MudDataGrid>
 }

@@ -2,7 +2,7 @@ using MudBlazor;
 
 namespace RDS.Web;
 
-public static class Configuration
+public static class ConfigurationWeb
 {
     public const string HttpClientName = "RDS";
     

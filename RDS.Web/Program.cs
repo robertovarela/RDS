@@ -12,12 +12,12 @@ using RDS.Web.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-Configuration.BackendUrl = builder.Configuration.GetValue<string>("BackendUrl") ?? string.Empty;
-Configuration.jwtKey = builder.Configuration.GetValue<string>("Jwt:Key") 
+ConfigurationWeb.BackendUrl = builder.Configuration.GetValue<string>("BackendUrl") ?? string.Empty;
+ConfigurationWeb.jwtKey = builder.Configuration.GetValue<string>("Jwt:Key") 
                           ?? throw new InvalidOperationException("JwtKey is not configured.");
-Configuration.issuer = builder.Configuration.GetValue<string>("Jwt:Issuer") 
+ConfigurationWeb.issuer = builder.Configuration.GetValue<string>("Jwt:Issuer") 
                               ?? throw new InvalidOperationException("JwtIssuer is not configured.");
-Configuration.audience = builder.Configuration.GetValue<string>("Jwt:Audience") 
+ConfigurationWeb.audience = builder.Configuration.GetValue<string>("Jwt:Audience") 
                           ?? throw new InvalidOperationException("JwtAudience is not configured.");
 
 builder.RootComponents.Add<App>("#app");
@@ -33,14 +33,14 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<TokenService>(sp =>
 {
-    var jwtKey = Configuration.jwtKey;
-    var issuer = Configuration.issuer;
-    var audience = Configuration.audience;
+    var jwtKey = ConfigurationWeb.jwtKey;
+    var issuer = ConfigurationWeb.issuer;
+    var audience = ConfigurationWeb.audience;
 
     return new TokenService(jwtKey, issuer, audience);
 });
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(Configuration.BackendUrl) });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(ConfigurationWeb.BackendUrl) });
 
 builder.Services.AddTransient<IApplicationUserHandler, ApplicationUserHandler>();
 builder.Services.AddTransient<IApplicationUserAddressHandler, ApplicationUserAdressHandler>();

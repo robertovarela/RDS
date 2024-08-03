@@ -14,6 +14,7 @@ global using Microsoft.AspNetCore.Components.Authorization;
 
 /* add global usage directives for Comanda namespaces here */
 
+global using RDS.Core;
 global using RDS.Core.Common.Extensions;
 global using RDS.Core.Handlers;
 global using RDS.Core.Models;
