@@ -144,28 +144,32 @@ public class UserController(
 
     [HttpPost("allusers")]
     public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(
-        [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
-        [FromQuery] int pageSize = Configuration.DefaultPageSize)
+        [FromBody] GetAllApplicationUserRequest request)
+        // [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
+        // [FromQuery] int pageSize = Configuration.DefaultPageSize)
     {
         try
         {
             var query = context
                 .Users
                 .AsNoTracking()
-                //.Where(x => x.Id == request.UserId)
+                .Where(u =>
+                (string.IsNullOrEmpty(request.Filter) || u.Name.Contains(request.Filter)) ||
+                (string.IsNullOrEmpty(request.Filter) || u.Cpf.Contains(request.Filter)))
+                .AsNoTracking()
                 .OrderBy(u => u.Name)
                 .ThenBy(u => u.Id);
 
             var users = await query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
                 .Cast<ApplicationUser>()
                 .ToListAsync();
 
             var count = await query.CountAsync();
             return count == 0
                 ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado")
-                : new PagedResponse<List<ApplicationUser>>(users, count, pageNumber, pageSize);
+                : new PagedResponse<List<ApplicationUser>>(users, count, request.PageNumber, request.PageSize);
         }
         catch
         {

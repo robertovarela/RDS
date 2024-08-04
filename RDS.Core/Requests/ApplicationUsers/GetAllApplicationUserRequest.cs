@@ -2,4 +2,5 @@
 
     public class GetAllApplicationUserRequest : PagedRequest
     {
+        public string? Filter { get; set; }
     }
