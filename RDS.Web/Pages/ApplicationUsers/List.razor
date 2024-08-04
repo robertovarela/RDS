@@ -26,13 +26,13 @@
         <MudSkeleton Height="110px"/>
         <MudSkeleton Height="55px"/>
         <MudSkeleton Height="55px"/>
+        <MudSkeleton Height="55px"/>
     </MudPaper>
 }
 else
 {
     <MudDataGrid T="ApplicationUser" Items="@PagedApplicationUsers" Filterable="true" QuickFilter="Filter" Hideable="true">
         <ToolBarContent>
-            <MudText Typo="Typo.h6">Usuários</MudText>
             <MudSpacer/>
             <MudTextField
                 @bind-Value="SearchTerm"
@@ -49,7 +49,7 @@ else
             <PropertyColumn Property="x => x.Id" Title="#"/>
             <PropertyColumn Property="x => x.Name" Title="Nome"/>
             <PropertyColumn Property="x => x.Email" Title="Email"/>
-            <TemplateColumn Class="d-flex justify-end">
+            <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
                 <CellTemplate Context="context">
                     <MudStack Row>
                         <MudIconButton
