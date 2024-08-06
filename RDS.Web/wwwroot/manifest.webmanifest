@@ -1,6 +1,6 @@
 {
-  "name": "RDS.Web",
-  "short_name": "RDS.Web",
+  "name": "RDS*",
+  "short_name": "RDS*",
   "id": "./",
   "start_url": "./",
   "display": "standalone",
