@@ -2,86 +2,97 @@
 @inherits EditApplicationUsersPage
 <UserState/>
 
-<TitleBar Title="Editar Usuário" />
+<AuthorizeView>
+    <Authorized>
+        <TitleBar Title="Editar Usuário"/>
 
-@if (IsBusy)
-{
-    <MudPaper Class="pa-8 mt-4">
-        <MudSkeleton Height="55px" />
-        <MudSkeleton Height="110px" />
-        <MudSkeleton Height="110px" />
-        <MudSkeleton Height="55px" />
-        <MudSkeleton Height="55px" />
-    </MudPaper>
-}
-else
-{
-    <MudPaper Class="pa-8 mt-4">
-        <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
-            <DataAnnotationsValidator />
-
-            <MudTextField Label="Código"
-                          HelperText="&nbsp;"
-                          @bind-Value="InputModel.UserId"
-                          For="@(() => InputModel.UserId)"
-                          Variant="Variant.Outlined" 
-                          Disabled />
-
-            <MudTextField Label="Nome"
-                          HelperText="Campo obrigatório"
-                          @bind-Value="InputModel.Name"
-                          For="@(() => InputModel.Name)"
-                          Variant="Variant.Outlined" AutoFocus />
-
-            <MudTextField Label="E-mail"
-                          HelperText="Campo obrigatório"
-                          @bind-Value="InputModel.Email"
-                          For="@(() => InputModel.Email)"
-                          Variant="Variant.Outlined" />
-
-            <MudTextField Label="CPF"
-                          HelperText="&nbsp;"
-                          @bind-Value="InputModel.Cpf"
-                          For="@(() => InputModel.Cpf)"
-                          Variant="Variant.Outlined" />
-
-            <MudDatePicker Label="Data de Nascimento"
-                           @ref="Picker"
-                           @bind-Date="@InputModel.BirthDateAsDateTime"
-                           HelperText="Selecione a data de nascimento"
-                           Orientation="Orientation.Portrait"
-                           MinDate="MinDate"
-                           MaxDate="MaxDate"
-                           Variant="Variant.Outlined"
-                           ShowToolbar="false"
-                           Color="Color.Success"
-                           Rounded="true"
-                           PickerVariant="PickerVariant.Dialog"
-                           Elevation="12"
-                           Class="datepicker-custom" />
-
-
-            <MudPaper Class="pa-2">
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <MudSpacer />
-                    <MudPaper Class="pa-4 bg-appbarbackground" Style="margin-right: 8px;">
-                        <MudButton Class="pa-8" ButtonType="ButtonType.Button"
-                                    Variant="Variant.Outlined"
-                                    Color="Color.Primary"
-                                   OnClick="@(() => Link.LinkToUrlUser(Url, UserState.GetSelectedUserId()))">Endereço</MudButton>
-                    </MudPaper>
-                    <MudSpacer />
-                        <MudPaper Class="pa-4 bg-appbarbackground" Style="margin-left: 8px;">
-                        <MudButton Class="pa-8" ButtonType="ButtonType.Button"
-                                    Variant="Variant.Outlined"
-                                    Color="Color.Primary"
-                                    OnClick="@(() => NavigationService.NavigateTo("/usuarios/telefones"))">Telefone</MudButton>
-                    </MudPaper>
-                        <MudSpacer />
-                </div>
+        @if (IsBusy)
+        {
+            <MudPaper Class="pa-8 mt-4">
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
             </MudPaper>
+        }
+        else
+        {
+            <MudPaper Class="pa-8 mt-4">
+                <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="editContext">
+                    <DataAnnotationsValidator/>
 
-            <SaveAndCancelButtons Page="/" />
-        </EditForm>
-    </MudPaper>
-}
+                    <MudTextField Label="Código"
+                                  HelperText="&nbsp;"
+                                  @bind-Value="InputModel.UserId"
+                                  For="@(() => InputModel.UserId)"
+                                  Variant="Variant.Outlined"
+                                  Disabled/>
+
+                    <MudTextField Label="Nome"
+                                  HelperText="Campo obrigatório"
+                                  @bind-Value="InputModel.Name"
+                                  For="@(() => InputModel.Name)"
+                                  Variant="Variant.Outlined" AutoFocus/>
+
+                    <MudTextField Label="E-mail"
+                                  HelperText="Campo obrigatório"
+                                  @bind-Value="InputModel.Email"
+                                  For="@(() => InputModel.Email)"
+                                  Variant="Variant.Outlined"/>
+
+                    <MudTextField Label="CPF"
+                                  HelperText="&nbsp;"
+                                  @bind-Value="InputModel.Cpf"
+                                  For="@(() => InputModel.Cpf)"
+                                  Variant="Variant.Outlined"/>
+
+                    <MudDatePicker Label="Data de Nascimento"
+                                   @ref="Picker"
+                                   @bind-Date="@InputModel.BirthDateAsDateTime"
+                                   HelperText="Selecione a data de nascimento"
+                                   Orientation="Orientation.Portrait"
+                                   MinDate="MinDate"
+                                   MaxDate="MaxDate"
+                                   Variant="Variant.Outlined"
+                                   ShowToolbar="false"
+                                   Color="Color.Success"
+                                   Rounded="true"
+                                   PickerVariant="PickerVariant.Dialog"
+                                   Elevation="12"
+                                   Class="datepicker-custom"/>
+
+
+                    <MudPaper Class="pa-2">
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <MudSpacer/>
+                            <MudPaper Class="pa-4 bg-appbarbackground" Style="margin-right: 8px;">
+                                <MudButton Class="pa-8" ButtonType="ButtonType.Button"
+                                           Variant="Variant.Outlined"
+                                           Color="Color.Primary"
+                                           OnClick="@(() => Link.LinkToUrlUser(Url, UserState.GetSelectedUserId()))">
+                                    Endereço
+                                </MudButton>
+                            </MudPaper>
+                            <MudSpacer/>
+                            <MudPaper Class="pa-4 bg-appbarbackground" Style="margin-left: 8px;">
+                                <MudButton Class="pa-8" ButtonType="ButtonType.Button"
+                                           Variant="Variant.Outlined"
+                                           Color="Color.Primary"
+                                           OnClick="@(() => NavigationService.NavigateTo("/usuarios/telefones"))">
+                                    Telefone
+                                </MudButton>
+                            </MudPaper>
+                            <MudSpacer/>
+                        </div>
+                    </MudPaper>
+
+                    <SaveAndCancelButtons Page="/"/>
+                </EditForm>
+            </MudPaper>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
+    </NotAuthorized>
+</AuthorizeView>

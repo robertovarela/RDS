@@ -1,123 +1,130 @@
 ﻿@page "/usuarios/enderecos/adicionar"
 @inherits CreateApplicationUserAddresPage
 
-<TitleBar Title="Novo Endereço"/>
-<MudPaper Class="pa-8 mt-4">
-    <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
-        <DataAnnotationsValidator/>
+<AuthorizeView>
+    <Authorized>
+        <TitleBar Title="Novo Endereço"/>
+        <MudPaper Class="pa-8 mt-4">
+            <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
+                <DataAnnotationsValidator/>
 
-        <MudTextField Label="CEP"
-                      @bind-Value="InputModel.PostalCode"
-                      For="@(() => InputModel.PostalCode)"
-                      Mask="@BrazilPostalCode"
-                      ShrinkLabel
-                      Immediate="true"
-                      MaxLength="8"
-                      T="string"
-                      HelperText="Campo obrigatório"
-                      HelperTextOnFocus="true"
-                      InputType="InputType.Text"
-                      Variant="Variant.Outlined"
-                      Clearable
-                      AutoFocus/>
+                <MudTextField Label="CEP"
+                              @bind-Value="InputModel.PostalCode"
+                              For="@(() => InputModel.PostalCode)"
+                              Mask="@BrazilPostalCode"
+                              ShrinkLabel
+                              Immediate="true"
+                              MaxLength="8"
+                              T="string"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Text"
+                              Variant="Variant.Outlined"
+                              Clearable
+                              AutoFocus/>
 
-        <MudTextField Label="Logradouro"
-                      @bind-Value="InputModel.Street"
-                      For="@(() => InputModel.Street)"
-                      ShrinkLabel
-                      Immediate="true"
-                      MaxLength="160"
-                      T="string"
-                      HelperText="Campo obrigatório"
-                      HelperTextOnFocus="true"
-                      InputType="InputType.Text"
-                      Variant="Variant.Outlined"/>
+                <MudTextField Label="Logradouro"
+                              @bind-Value="InputModel.Street"
+                              For="@(() => InputModel.Street)"
+                              ShrinkLabel
+                              Immediate="true"
+                              MaxLength="160"
+                              T="string"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Text"
+                              Variant="Variant.Outlined"/>
 
-        <MudTextField Label="Número"
-                      @bind-Value="InputModel.Number"
-                      For="@(() => InputModel.Number)"
-                      ShrinkLabel
-                      Immediate="true"
-                      MaxLength="8"
-                      T="string"
-                      HelperText="Campo obrigatório"
-                      HelperTextOnFocus="true"
-                      InputType="InputType.Text"
-                      Variant="Variant.Outlined"/>
+                <MudTextField Label="Número"
+                              @bind-Value="InputModel.Number"
+                              For="@(() => InputModel.Number)"
+                              ShrinkLabel
+                              Immediate="true"
+                              MaxLength="8"
+                              T="string"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Text"
+                              Variant="Variant.Outlined"/>
 
-        <MudTextField Label="Complemento"
-                      @bind-Value="InputModel.Complement"
-                      For="@(() => InputModel.Complement)"
-                      ShrinkLabel
-                      Immediate="true"
-                      MaxLength="100"
-                      T="string"
-                      HelperText="&nbsp;"
-                      HelperTextOnFocus="true"
-                      InputType="InputType.Text"
-                      Variant="Variant.Outlined"/>
+                <MudTextField Label="Complemento"
+                              @bind-Value="InputModel.Complement"
+                              For="@(() => InputModel.Complement)"
+                              ShrinkLabel
+                              Immediate="true"
+                              MaxLength="100"
+                              T="string"
+                              HelperText="&nbsp;"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Text"
+                              Variant="Variant.Outlined"/>
 
-        <MudTextField Label="Bairro"
-                      @bind-Value="InputModel.Neighborhood"
-                      For="@(() => InputModel.Neighborhood)"
-                      ShrinkLabel
-                      Immediate="true"
-                      MaxLength="100"
-                      T="string"
-                      HelperText="Campo obrigatório"
-                      HelperTextOnFocus="true"
-                      InputType="InputType.Text"
-                      Variant="Variant.Outlined"/>
+                <MudTextField Label="Bairro"
+                              @bind-Value="InputModel.Neighborhood"
+                              For="@(() => InputModel.Neighborhood)"
+                              ShrinkLabel
+                              Immediate="true"
+                              MaxLength="100"
+                              T="string"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Text"
+                              Variant="Variant.Outlined"/>
 
-        <MudTextField Label="Cidade"
-                      @bind-Value="InputModel.City"
-                      For="@(() => InputModel.City)"
-                      ShrinkLabel
-                      Immediate="true"
-                      MaxLength="100"
-                      T="string"
-                      HelperText="Campo obrigatório"
-                      HelperTextOnFocus="true"
-                      InputType="InputType.Text"
-                      Variant="Variant.Outlined"/>
+                <MudTextField Label="Cidade"
+                              @bind-Value="InputModel.City"
+                              For="@(() => InputModel.City)"
+                              ShrinkLabel
+                              Immediate="true"
+                              MaxLength="100"
+                              T="string"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Text"
+                              Variant="Variant.Outlined"/>
 
-        <MudSelect Label="Estado"
-                   @bind-Value="InputModel.State"
-                   For="@(() => InputModel.State)"
-                   HelperText="Campo obrigatório"
-                   HelperTextOnFocus="true"
-                   Variant="Variant.Outlined"
-                   T="string">
-            @foreach (var estado in Estados)
-            {
-            <MudSelectItem Value="@estado">@estado</MudSelectItem>
-            }
-        </MudSelect>
+                <MudSelect Label="Estado"
+                           @bind-Value="InputModel.State"
+                           For="@(() => InputModel.State)"
+                           HelperText="Campo obrigatório"
+                           HelperTextOnFocus="true"
+                           Variant="Variant.Outlined"
+                           T="string">
+                    @foreach (var estado in Estados)
+                    {
+                        <MudSelectItem Value="@estado">@estado</MudSelectItem>
+                    }
+                </MudSelect>
 
-        <MudTextField Label="País"
-                      @bind-Value="InputModel.Country"
-                      For="@(() => InputModel.Country)"
-                      ShrinkLabel
-                      Immediate="true"
-                      MaxLength="100"
-                      T="string"
-                      HelperText="Campo obrigatório"
-                      HelperTextOnFocus="true"
-                      InputType="InputType.Text"
-                      Variant="Variant.Outlined"/>
+                <MudTextField Label="País"
+                              @bind-Value="InputModel.Country"
+                              For="@(() => InputModel.Country)"
+                              ShrinkLabel
+                              Immediate="true"
+                              MaxLength="100"
+                              T="string"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Text"
+                              Variant="Variant.Outlined"/>
 
-        <MudSelect Label="Tipo de Endereço"
-                   @bind-Value="InputModel.TypeOfAddress"
-                   AnchorOrigin="Origin.BottomCenter"
-                   T="ETypeOfAddress"
-                   ShrinkLabel
-                   HelperText="&nbsp;"
-                   Variant="Variant.Outlined">
-            <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Main">Principal</MudSelectItem>
-            <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Delivery">Entrega</MudSelectItem>
-            <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Secundary">Secundário</MudSelectItem>
-        </MudSelect>
+                <MudSelect Label="Tipo de Endereço"
+                           @bind-Value="InputModel.TypeOfAddress"
+                           AnchorOrigin="Origin.BottomCenter"
+                           T="ETypeOfAddress"
+                           ShrinkLabel
+                           HelperText="&nbsp;"
+                           Variant="Variant.Outlined">
+                    <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Main">Principal</MudSelectItem>
+                    <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Delivery">Entrega</MudSelectItem>
+                    <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Secundary">Secundário</MudSelectItem>
+                </MudSelect>
 
-        <SaveAndCancelButtons Page="/usuarios/enderecos"/>
-    </EditForm>
-</MudPaper>
+                <SaveAndCancelButtons Page="/usuarios/enderecos"/>
+            </EditForm>
+        </MudPaper>
+    </Authorized>
+    <NotAuthorized>
+        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
+    </NotAuthorized>
+</AuthorizeView>

@@ -46,7 +46,7 @@ namespace RDS.Web.Pages.ApplicationUsers
                 var result = await UserHandler.GetAllAsync(request);
                 if (result.IsSuccess)
                 {
-                    ApplicationUsers = result.Data ?? new List<ApplicationUser>();
+                    ApplicationUsers = result.Data ?? [];
                     PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);
                 }
             }

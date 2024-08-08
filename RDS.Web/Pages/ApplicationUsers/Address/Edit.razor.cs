@@ -37,6 +37,7 @@ public class EditApplicationUserAddressPage : ComponentBase
         IsBusy = true;
         try
         {
+            await StartService.ValidateAccesByToken();
             var userId = StartService.GetSelectedUserId();
             var id = StartService.GetSelectedAddressId();
  
@@ -66,7 +67,6 @@ public class EditApplicationUserAddressPage : ComponentBase
             else
             {
                 Snackbar.Add("Endereço não encontrado", Severity.Warning);
-                Thread.Sleep(2000);
                 NavigationService.NavigateTo("/usuarios/enderecos");
             }
         }

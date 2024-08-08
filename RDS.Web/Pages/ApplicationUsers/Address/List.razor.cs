@@ -31,6 +31,7 @@ public class ListApplicationUserAdressesPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        await StartService.ValidateAccesByToken();
         var userId = StartService.GetSelectedUserId();
         IsBusy = true; 
 
