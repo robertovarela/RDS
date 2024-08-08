@@ -10,6 +10,7 @@ public class UserController(
     AppDbContext context)
     : ControllerBase
 {
+    
     [HttpPost("userlogin")]
     public async Task<Response<UserLogin>> LoginAsync([FromBody] LoginRequest? request)
     {
@@ -21,6 +22,7 @@ public class UserController(
         try
         {
             var user = await userManager.FindByEmailAsync(request.Email);
+
             if (user == null)
             {
                 return new Response<UserLogin>(null, 401, "Usuário não encontrado");
@@ -34,7 +36,11 @@ public class UserController(
                 return new Response<UserLogin>(null, 401, "Credenciais inválidas");
             }
 
-            var token = jwtTokenService.GenerateToken(user);
+            // Recuperar as roles do usuário
+            var roles = await userManager.GetRolesAsync(user);
+
+            // Gerar o token incluindo as roles
+            var token = jwtTokenService.GenerateToken(user, roles);
             var response = new UserLogin(request.Email, token);
 
             return new Response<UserLogin>(response, 200, "Login realizado com sucesso");
@@ -46,6 +52,7 @@ public class UserController(
         }
     }
 
+    
     [HttpPost("createuser")]
     public async Task<Response<ApplicationUser?>> CreateAsync([FromBody] CreateApplicationUserRequest request)
     {
@@ -154,8 +161,8 @@ public class UserController(
                 .Users
                 .AsNoTracking()
                 .Where(u =>
-                (string.IsNullOrEmpty(request.Filter) || u.Name.Contains(request.Filter)) ||
-                (string.IsNullOrEmpty(request.Filter) || u.Cpf.Contains(request.Filter)))
+                u.Cpf != null && u.Name != null && ((string.IsNullOrEmpty(request.Filter) || u.Name.Contains(request.Filter)) ||
+                                                    (string.IsNullOrEmpty(request.Filter) || u.Cpf.Contains(request.Filter))))
                 .AsNoTracking()
                 .OrderBy(u => u.Name)
                 .ThenBy(u => u.Id);
