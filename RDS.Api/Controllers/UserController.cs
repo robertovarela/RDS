@@ -37,10 +37,7 @@ public class UserController(
                 return new Response<UserLogin>(null, 401, "Credenciais inválidas");
             }
 
-            // Recuperar as roles do usuário
             var roles = await userManager.GetRolesAsync(user);
-
-            // Gerar o token incluindo as roles
             var token = jwtTokenService.GenerateToken(user, roles);
             var response = new UserLogin(request.Email, token);
 
@@ -154,6 +151,15 @@ public class UserController(
     public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(
         [FromBody] GetAllApplicationUserRequest request)
     {
+        try
+        {
+            await jwtTokenService.RenewTokenIfNecessary(request.Token);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
         try
         {
             var query = context

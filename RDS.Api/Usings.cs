@@ -1,13 +1,14 @@
 ﻿/* add global usage directives for System namespaces here */
 
+
 global using System.IdentityModel.Tokens.Jwt;
 global using System.IO.Compression;
 global using System.Net;
 global using System.Net.Mail;
+global using System.Security.Claims;
+global using System.Security.Cryptography;
 global using System.Text;
 global using System.Text.Json.Serialization;
-global using System.Security.Claims;
-
 
 /* add global usage directives for Microsoft namespaces here */
 

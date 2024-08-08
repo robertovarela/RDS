@@ -9,9 +9,9 @@ public abstract class StartService()
         _manipulateUserStateValuesService = manipulateUserStateValuesService;
     }
     
-    public static async Task ValidateAccesByToken()
+    public static async Task<string> ValidateAccesByToken()
     {
-        await _manipulateUserStateValuesService.ValidateAccessByToken();
+        return await _manipulateUserStateValuesService.ValidateAccessByToken();
     }
     
     public static long GetLoggedUserId()

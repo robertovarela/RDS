@@ -29,20 +29,20 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected override async Task OnInitializedAsync()
         {
-            await StartService.ValidateAccesByToken();
-            await LoadUsers();
+            var token = await StartService.ValidateAccesByToken();
+            await LoadUsers(token);
         }
 
         #endregion
 
         #region Methods
 
-        private async Task LoadUsers()
+        private async Task LoadUsers(string token = "InvalidToken")
         {
             IsBusy = true;
             try
             {
-                var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize };
+                var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize, Token = token};
                 var result = await UserHandler.GetAllAsync(request);
                 if (result.IsSuccess)
                 {

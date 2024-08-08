@@ -12,11 +12,11 @@
             userState.SetSelectedAddressId(0);
             userState.SetSelectedCategoryId(0);
         }
-
-        private async Task<long> GetUserLoggedIdFromToken()
+        
+        public async Task<string> ValidateAccessByToken()
         {
+            string token = await localStorage.GetItemAsync<string>("authToken")??string.Empty;
             long userId = 0;
-            var token = await localStorage.GetItemAsync<string>("authToken");
             if (!string.IsNullOrEmpty(token))
             {
                 if (long.TryParse(tokenService.GetUserIdFromToken(token), out var id))
@@ -24,19 +24,15 @@
                     userId = id;
                 }
             }
-
-            return userId;
-        }
-                
-        public async Task ValidateAccessByToken()
-        {
-            var userId = await GetUserLoggedIdFromToken();
+            
             userState.SetLoggedUserId(userId);
             if (userId == 0)
             {
                 snackbar.Add("Token expirado ou inválido!", Severity.Warning);
                 NavigationService.NavigateToLogin();
             }
+
+            return token;
         }
         
         public long GetLoggedUserId()

@@ -20,7 +20,7 @@ public class TokenService(string jwtKey, string issuer, string audience)
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
-
+            
             return tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
         }
         catch (Exception)
