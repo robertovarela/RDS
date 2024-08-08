@@ -1,12 +1,3 @@
-using RDS.Core.Handlers;
-using RDS.Core.Requests.Account;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using RDS.Core.Services;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Components.Authorization;
-using RDS.Web.Services;
-
 namespace RDS.Web.Pages.Identity;
 
 public partial class LoginPage : ComponentBase

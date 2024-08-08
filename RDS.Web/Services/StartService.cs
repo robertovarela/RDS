@@ -9,27 +9,47 @@ public abstract class StartService()
         _manipulateUserStateValuesService = manipulateUserStateValuesService;
     }
     
-    public static async Task<long> SetDefaultValues()
+    public static async Task ValidateAccesByToken()
     {
-        return await _manipulateUserStateValuesService?.SetDefaultValues();
-    }
-
-    public static async Task<long> GetLoggedUserId()
-    {
-        return await _manipulateUserStateValuesService.GetLoggedUserId();
-    }
-    public static async Task<long> GetSelectedUserId()
-    {
-        return await _manipulateUserStateValuesService?.GetSelectedUserId();
+        await _manipulateUserStateValuesService.ValidateAccessByToken();
     }
     
-    public static async Task<long> GetSelectedAddressId()
+    public static long GetLoggedUserId()
     {
-        return await _manipulateUserStateValuesService?.GetSelectedAddressId();
+        return _manipulateUserStateValuesService.GetLoggedUserId();
     }
     
-    public static async Task<long> GetSelectedCategoriId()
+    public static long GetSelectedUserId()
     {
-        return await _manipulateUserStateValuesService?.GetSelectedCategoryId();
+        return _manipulateUserStateValuesService.GetSelectedUserId();
+    }
+    
+    public static long GetSelectedAddressId()
+    {
+        return _manipulateUserStateValuesService.GetSelectedAddressId();
+    }
+    
+    public static long GetSelectedCategoriId()
+    {
+        return _manipulateUserStateValuesService.GetSelectedCategoryId();
+    }
+    
+    public static void SetDefaultValues()
+    {
+        _manipulateUserStateValuesService.SetDefaultValues();
+    }
+    public static void SetSelectedUserId(long userId)
+    {
+        _manipulateUserStateValuesService.SetSelectedUserId(userId);
+    }
+    
+    public static void SetSelectedAddressId(long addressId)
+    {
+        _manipulateUserStateValuesService.SetSelectedAddressId(addressId);
+    }
+    
+    public static void SetSelectedCategoryId(long categoryId)
+    {
+        _manipulateUserStateValuesService.SetSelectedCategoryId(categoryId);
     }
 }

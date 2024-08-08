@@ -1,17 +1,12 @@
-using RDS.Core.Handlers;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using RDS.Web.Services;
-
 namespace RDS.Web.Pages.Identity;
 
 public partial class LogoutPage : ComponentBase
 {
     #region Services
     
-    [Inject] AuthenticationService AuthenticationService { get; set; } = null!;
+    [Inject] private AuthenticationService AuthenticationService { get; set; } = null!;
     
-    [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
     
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
 

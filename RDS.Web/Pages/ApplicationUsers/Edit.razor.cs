@@ -1,13 +1,3 @@
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using RDS.Core.Handlers;
-using RDS.Core.Requests.ApplicationUsers;
-using RDS.Core.Services;
-using RDS.Web.Common;
-using RDS.Web.Components.Informations;
-using RDS.Web.Services;
-
 namespace RDS.Web.Pages.ApplicationUsers;
 
 public partial class EditApplicationUsersPage : ComponentBase
@@ -17,9 +7,9 @@ public partial class EditApplicationUsersPage : ComponentBase
     public bool IsBusy { get; set; } = false;
     public UpdateApplicationUserRequest InputModel { get; set; } = new();
 
-    public MudDatePicker _picker = new ();
-    public DateTime minDate = DateTime.Today.AddYears(-110);
-    public DateTime maxDate = DateTime.Today.AddYears(-12);
+    protected MudDatePicker Picker = new ();
+    public DateTime MinDate = DateTime.Today.AddYears(-110);
+    public DateTime MaxDate = DateTime.Today.AddYears(-12);
     public string Url { get; set; } = "/usuarios/enderecos";
 
     #endregion
@@ -36,7 +26,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     [Inject] private TokenService TokenService { get; set; } = null!;
     [Inject] private HttpClientService HttpClientService { get; set; } = null!;
     [Inject] private ILocalStorageService LocalStorage { get; set; } = null!;
-    [Inject] private ManipulateUserStateValuesService ManipulateUserStateValues { get; set; } = null!;
+    //[Inject] private ManipulateUserStateValuesService ManipulateUserStateValues { get; set; } = null!;
     [Inject] public UserStateService UserState { get; set; } = null!;
     [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
     
@@ -53,7 +43,8 @@ public partial class EditApplicationUsersPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = await ManipulateUserStateValues.GetSelectedUserId();
+        await StartService.ValidateAccesByToken();
+        var userId = StartService.GetSelectedUserId();
         IsBusy = true;
         
         try
@@ -84,7 +75,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     {
         if (string.IsNullOrEmpty(InputModel.BirthDate.ToString()))
         {
-            _picker.GoToDate(maxDate, false);
+            Picker.GoToDate(MaxDate, false);
         }
     }
     #endregion

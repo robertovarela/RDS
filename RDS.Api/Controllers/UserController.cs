@@ -153,8 +153,6 @@ public class UserController(
     [HttpPost("allusers")]
     public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(
         [FromBody] GetAllApplicationUserRequest request)
-        // [FromQuery] int pageNumber = Configuration.DefaultPageNumber,
-        // [FromQuery] int pageSize = Configuration.DefaultPageSize)
     {
         try
         {

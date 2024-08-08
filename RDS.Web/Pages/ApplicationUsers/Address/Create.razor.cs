@@ -34,7 +34,7 @@ public partial class CreateApplicationUserAddresPage : ComponentBase
     {
         try
         {
-            var userId = await StartService.GetSelectedUserId();
+            var userId = StartService.GetSelectedUserId();
             InputModel.UserId = userId;
             var result = await AddressHandler.CreateAsync(InputModel);
             if (result.IsSuccess)

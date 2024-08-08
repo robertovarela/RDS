@@ -46,12 +46,12 @@ else
                           Variant="Variant.Outlined" />
 
             <MudDatePicker Label="Data de Nascimento"
-                           @ref="_picker"
+                           @ref="Picker"
                            @bind-Date="@InputModel.BirthDateAsDateTime"
                            HelperText="Selecione a data de nascimento"
                            Orientation="Orientation.Portrait"
-                           MinDate="minDate"
-                           MaxDate="maxDate"
+                           MinDate="MinDate"
+                           MaxDate="MaxDate"
                            Variant="Variant.Outlined"
                            ShowToolbar="false"
                            Color="Color.Success"

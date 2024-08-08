@@ -1,24 +1,16 @@
-﻿using Blazored.LocalStorage;
-using RDS.Core.Services;
-
-namespace RDS.Web.Services
+﻿namespace RDS.Web.Services
 {
     public class ManipulateUserStateValuesService(
         UserStateService userState,
         ILocalStorageService localStorage,
-        TokenService tokenService)
+        TokenService tokenService,
+        ISnackbar snackbar)
     {
-        public async Task<long> SetDefaultValues(bool disableNavigation = false)
+        public void SetDefaultValues()
         {
-            if(disableNavigation) return 0;
-            
-            long userId = await GetUserLoggedIdFromToken();
-            userState.SetLoggedUserId(userId);
-            userState.SetSelectedUserId(userId);
+            userState.SetSelectedUserId(userState.GetLoggedUserId());
             userState.SetSelectedAddressId(0);
             userState.SetSelectedCategoryId(0);
-
-            return userId;
         }
 
         private async Task<long> GetUserLoggedIdFromToken()
@@ -33,51 +25,62 @@ namespace RDS.Web.Services
                 }
             }
 
-            if (userId == 0)
-            {
-                NavigationService.NavigateToLogin();
-            }
-
             return userId;
         }
+                
+        public async Task ValidateAccessByToken()
+        {
+            var userId = await GetUserLoggedIdFromToken();
+            userState.SetLoggedUserId(userId);
+            if (userId == 0)
+            {
+                snackbar.Add("Token expirado ou inválido!", Severity.Warning);
+                NavigationService.NavigateToLogin();
+            }
+        }
         
-        public async Task<long> GetLoggedUserId()
+        public long GetLoggedUserId()
         {
             long loggedUserId = userState.GetLoggedUserId();
-            if (loggedUserId != 0) return loggedUserId;
-            loggedUserId = await SetDefaultValues();
-            NavigationService.NavigateTo("/");
-
             return loggedUserId;
         }
-        public async Task<long> GetSelectedUserId()
+        
+        public long GetSelectedUserId()
         {
             long selectedUserId = userState.GetSelectedUserId();
             if (selectedUserId != 0) return selectedUserId;
-            selectedUserId = await SetDefaultValues();
-            NavigationService.NavigateTo("/");
-
+            userState.SetSelectedUserId(userState.GetLoggedUserId());
+            selectedUserId = userState.GetSelectedUserId();
             return selectedUserId;
         }
         
-        public async Task<long> GetSelectedAddressId()
+        public long GetSelectedAddressId()
         {
             long selectedAddressId = userState.GetSelectedAddressId();
-            if (selectedAddressId != 0) return selectedAddressId;
-            selectedAddressId = await SetDefaultValues();
-            NavigationService.NavigateTo("/");
 
             return selectedAddressId;
         }
         
-        public async Task<long> GetSelectedCategoryId()
+        public long GetSelectedCategoryId()
         {
             long selectedCategoryId = userState.GetSelectedCategoryId();
-            if (selectedCategoryId != 0) return selectedCategoryId;
-            selectedCategoryId = await SetDefaultValues(true);
-            NavigationService.NavigateTo("/");
 
             return selectedCategoryId;
+        }
+        
+        public void SetSelectedUserId(long userId)
+        {
+            userState.SetSelectedUserId(userId);
+        }
+        
+        public void SetSelectedAddressId(long addressId)
+        {
+            userState.SetSelectedAddressId(addressId);
+        }
+        
+        public void SetSelectedCategoryId(long categoryId)
+        {
+            userState.SetSelectedCategoryId(categoryId);
         }
     }
 }

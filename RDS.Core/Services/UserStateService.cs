@@ -13,7 +13,7 @@
 
         public long GetSelectedAddressId() => SelectedUserAddressId;
 
-        public  long GetSelectedCategoryId() => SelectedCategoryId;
+        public long GetSelectedCategoryId() => SelectedCategoryId;
 
         public void SetLoggedUserId(long loggedUserId) => LoggedUserId = loggedUserId;
 

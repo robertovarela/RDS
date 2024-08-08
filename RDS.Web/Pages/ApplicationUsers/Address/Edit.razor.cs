@@ -37,8 +37,8 @@ public class EditApplicationUserAddressPage : ComponentBase
         IsBusy = true;
         try
         {
-            var userId = await StartService.GetSelectedUserId();
-            var id = await StartService.GetSelectedAddressId();
+            var userId = StartService.GetSelectedUserId();
+            var id = StartService.GetSelectedAddressId();
  
             var requestAddress = new GetApplicationUserAddressByIdRequest
             {
