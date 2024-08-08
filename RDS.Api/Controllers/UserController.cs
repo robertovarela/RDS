@@ -1,3 +1,4 @@
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 namespace RDS.Api.Controllers;
 
 [ApiController]
@@ -161,9 +162,8 @@ public class UserController(
                 .Users
                 .AsNoTracking()
                 .Where(u =>
-                u.Cpf != null && u.Name != null && ((string.IsNullOrEmpty(request.Filter) || u.Name.Contains(request.Filter)) ||
-                                                    (string.IsNullOrEmpty(request.Filter) || u.Cpf.Contains(request.Filter))))
-                .AsNoTracking()
+                (string.IsNullOrEmpty(request.Filter) || u.Name.Contains(request.Filter)) ||
+                (string.IsNullOrEmpty(request.Filter) || u.Cpf.Contains(request.Filter)))
                 .OrderBy(u => u.Name)
                 .ThenBy(u => u.Id);
 

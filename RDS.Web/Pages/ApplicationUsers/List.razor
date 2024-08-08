@@ -5,11 +5,17 @@
 <TitleBar Title="Usuários"/>
 <MudPaper Class="pa-2 mb-4 mt-4">
     <div class="d-flex">
-        <MudTextField @bind-Value="SearchFilter" Placeholder="Buscar no banco de dados" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Immediate="true"/>
+        <MudTextField @bind-Value="SearchFilter"
+                      Placeholder="Buscar no banco de dados"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Immediate="true"
+                      Clearable="true"
+                      AutoFocus/>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnSearch">
             Buscar
         </MudButton>
-        <MudSpacer />
+        <MudSpacer/>
         <MudButton
             Variant="Variant.Filled"
             Color="Color.Primary"
@@ -34,14 +40,15 @@ else
     <MudDataGrid T="ApplicationUser" Items="@PagedApplicationUsers" Filterable="true" QuickFilter="Filter" Hideable="true">
         <ToolBarContent>
             <MudSpacer/>
-            <MudTextField
+            <MudTextField ShrinkLabel="true"
                 @bind-Value="SearchTerm"
                 Placeholder="Filtrar..."
                 Adornment="Adornment.Start"
                 AdornmentIcon="@Icons.Material.Filled.Search"
                 Immediate="true"
                 IconSize="Size.Medium"
-                Class="mt-0">
+                Class="mt-0"
+                Clearable="true">
             </MudTextField>
         </ToolBarContent>
 
