@@ -7,6 +7,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected bool IsBusy { get; private set; }
         protected List<ApplicationUser> ApplicationUsers { get; private set; } = new List<ApplicationUser>();
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = new List<ApplicationUser>();
+        protected RefreshTokenRequest RefreshTokenModel { get; set; } = new RefreshTokenRequest();
         public string SearchTerm { get; set; } = string.Empty;
         public string SearchFilter { get; set; } = string.Empty; // Campo de busca inicial
         protected const string Url = "/usuarios/editar";
@@ -18,6 +19,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         #region Services
 
+        [Inject] AuthenticationService AuthenticationService { get; set; } = null!;
         [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
         [Inject] public LinkUserStateService Link { get; set; } = null!;
         [Inject] public ISnackbar Snackbar { get; set; } = null!;
@@ -31,6 +33,14 @@ namespace RDS.Web.Pages.ApplicationUsers
         {
             var token = await StartService.ValidateAccesByToken();
             await LoadUsers(token);
+            
+            RefreshTokenModel.Token = token;
+            var result = await AuthenticationService.RefreshTokenAsync(RefreshTokenModel);
+            if (result)
+            {
+                Snackbar.Add("Token atualizado com sucesso", Severity.Info);
+            }
+            
         }
 
         #endregion
@@ -50,7 +60,7 @@ namespace RDS.Web.Pages.ApplicationUsers
                     PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
             }

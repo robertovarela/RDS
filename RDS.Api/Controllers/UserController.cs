@@ -50,6 +50,26 @@ public class UserController(
         }
     }
 
+    [HttpPost("refreshtoken")]
+    public async Task<Response<UserLogin>> RefreshTokenAsync([FromBody] RefreshTokenRequest? request)
+    {
+        if (request == null)
+        {
+            return new Response<UserLogin>(null, 400, "Dados inválidos");
+        }
+
+        try
+        {
+            var refreshToken = await jwtTokenService.RenewTokenIfNecessary(request.Token);
+            var response = new UserLogin("", refreshToken);
+
+            return new Response<UserLogin>(response, 200, "Refresh Token efetuado com sucesso");
+        }
+        catch (Exception ex)
+        {
+            return new Response<UserLogin>(null, 500, "Erro interno no servidor");
+        }
+    }
     
     [HttpPost("createuser")]
     public async Task<Response<ApplicationUser?>> CreateAsync([FromBody] CreateApplicationUserRequest request)
@@ -153,15 +173,8 @@ public class UserController(
     {
         try
         {
-            await jwtTokenService.RenewTokenIfNecessary(request.Token);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        try
-        {
+            var refreshToken = await jwtTokenService.RenewTokenIfNecessary(request.Token);
+
             var query = context
                 .Users
                 .AsNoTracking()

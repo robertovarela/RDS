@@ -4,20 +4,11 @@ public partial class LoginPage : ComponentBase
 {
     #region Services
     
-    [Inject]
-    ILogger<Login> Logger { get; set; } = null!;
-
-    [Inject]
-    AuthenticationService AuthenticationService { get; set; } = null!;
-    
-    [Inject]
-    AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
-    
-    [Inject]
-    public UserStateService UserState { get; set; } = null!;
-
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] ILogger<Login> Logger { get; set; } = null!;
+    [Inject] AuthenticationService AuthenticationService { get; set; } = null!;
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    [Inject] public UserStateService UserState { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
 
@@ -75,5 +66,4 @@ public partial class LoginPage : ComponentBase
     }
 
     #endregion
-    
 }

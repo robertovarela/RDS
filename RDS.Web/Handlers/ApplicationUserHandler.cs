@@ -47,8 +47,8 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
     public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(GetAllApplicationUserRequest request)
     {
         var requestMessage = new HttpRequestMessage(
-            HttpMethod.Post, //$"v1/users/allusers") 
-            $"v1/users/allusers?pageNumber={request.PageNumber}&pageSize={request.PageSize}")
+            HttpMethod.Post, $"v1/users/allusers") 
+            //$"v1/users/allusers?pageNumber={request.PageNumber}&pageSize={request.PageSize}")
         {
             Content = JsonContent.Create(request)
         };

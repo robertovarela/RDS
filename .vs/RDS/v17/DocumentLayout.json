@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\rober\\RiderProjects\\RDS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C52382F6-B152-4126-8C69-6CF91BAF7BDF}|RDS.Api\\RDS.Api.csproj|c:\\users\\rober\\riderprojects\\rds\\rds.api\\services\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C52382F6-B152-4126-8C69-6CF91BAF7BDF}|RDS.Api\\RDS.Api.csproj|solutionrelative:rds.api\\services\\jwttokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e506b91c-c606-466a-90a9-123d1d1e12b3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "JwtTokenService.cs",
+              "DocumentMoniker": "C:\\Users\\rober\\RiderProjects\\RDS\\RDS.Api\\Services\\JwtTokenService.cs",
+              "RelativeDocumentMoniker": "RDS.Api\\Services\\JwtTokenService.cs",
+              "ToolTip": "C:\\Users\\rober\\RiderProjects\\RDS\\RDS.Api\\Services\\JwtTokenService.cs",
+              "RelativeToolTip": "RDS.Api\\Services\\JwtTokenService.cs",
+              "ViewState": "AgIAAFAAAAAAAAAAAAAAAFsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-09T03:35:22.005Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

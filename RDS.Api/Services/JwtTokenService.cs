@@ -5,7 +5,7 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
     public string GenerateToken(User user, IList<string> roles)
     {
         if (user.Email == null) return "InvalidToken";
-        
+
         var handler = new JwtSecurityTokenHandler();
         var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(ApiConfiguration.JwtKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -13,7 +13,7 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             SigningCredentials = credentials,
-            Expires = DateTime.UtcNow.AddSeconds(260),
+            Expires = DateTime.UtcNow.AddMinutes(6),
             Issuer = configuration["Jwt:Issuer"],
             Audience = configuration["Jwt:Audience"],
             Subject = GenerateClaims(user, roles)
@@ -32,15 +32,19 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         var currentUtcTime = DateTime.UtcNow;
 
         var timeToExpiry = expiryDateTimeUtc - currentUtcTime;
-        if (timeToExpiry > TimeSpan.FromMinutes(5)) return token;
-        {
-            var userId = principal.Claims.First(c => c.Type == "user_id").Value;
-            var email = principal.Claims.First(c => c.Type == "email").Value;
-            var user = new User { Id = int.Parse(userId), Email = email };
-            var roles = await userManager.GetRolesAsync(user);
+        if (timeToExpiry > TimeSpan.FromMinutes(5)) return string.Empty;
 
-            return GenerateToken(user, roles);
+        //var userId = principal.Claims.First(c => c.Type == "user_id").Value;
+        var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        if (string.IsNullOrEmpty(email))
+        {
+            throw new SecurityTokenException("Invalid token: required claims missing");
         }
+
+        var user = await userManager.FindByEmailAsync(email) ??
+                   throw new SecurityTokenException("Invalid token: user not found");
+        var roles = await userManager.GetRolesAsync(user);
+        return GenerateToken(user, roles);
     }
 
     public string GenerateRefreshToken()
@@ -57,11 +61,13 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
-            ValidateAudience = false,
-            ValidateIssuer = false,
+            ValidateAudience = true,
+            ValidateIssuer = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(ApiConfiguration.JwtKey)),
-            ValidateLifetime = false
+            ValidIssuer = configuration["Jwt:Issuer"],
+            ValidAudience = configuration["Jwt:Audience"],
+            ValidateLifetime = true
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -69,23 +75,23 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
 
         var jwtSecurityToken = securityToken as JwtSecurityToken;
         if (jwtSecurityToken == null ||
-            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                StringComparison.InvariantCultureIgnoreCase))
         {
             throw new SecurityTokenException("Invalid token");
         }
 
         return principal;
     }
+
     private static ClaimsIdentity GenerateClaims(User user, IList<string> roles)
     {
         var ci = new ClaimsIdentity();
-
         ci.AddClaim(new Claim("user_id", user.Id.ToString()));
-        if (user.Email != null)
+        if (!string.IsNullOrEmpty(user.Email))
         {
-            ci.AddClaim(new Claim("email", user.Email));
-            //ci.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-            ci.AddClaim(new Claim(ClaimTypes.GivenName, user.Name));
+            ci.AddClaim(new Claim(ClaimTypes.Email, user.Email));
+            ci.AddClaim(new Claim(ClaimTypes.GivenName, user.Name ?? string.Empty));
             ci.AddClaim(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
             ci.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, user.Email));
         }
