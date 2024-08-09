@@ -4,6 +4,7 @@
         UserStateService userState,
         ILocalStorageService localStorage,
         TokenService tokenService,
+        AuthenticationService AuthenticationService,
         ISnackbar snackbar)
     {
         public void SetDefaultValues()
@@ -12,10 +13,10 @@
             userState.SetSelectedAddressId(0);
             userState.SetSelectedCategoryId(0);
         }
-        
+
         public async Task<string> ValidateAccessByToken()
         {
-            string token = await localStorage.GetItemAsync<string>("authToken")??string.Empty;
+            string token = await localStorage.GetItemAsync<string>("authToken") ?? string.Empty;
             long userId = 0;
             if (!string.IsNullOrEmpty(token))
             {
@@ -24,7 +25,7 @@
                     userId = id;
                 }
             }
-            
+
             userState.SetLoggedUserId(userId);
             if (userId == 0)
             {
@@ -34,13 +35,21 @@
 
             return token;
         }
-        
+
+        public async Task RefreshToken(string token, bool showMessage = true)
+        {
+            var refreshTokenModel = new RefreshTokenRequest { Token = token };
+            var result = await AuthenticationService.RefreshTokenAsync(refreshTokenModel);
+            if (result && showMessage)
+                snackbar.Add("Token atualizado com sucesso", Severity.Info);
+        }
+
         public long GetLoggedUserId()
         {
             long loggedUserId = userState.GetLoggedUserId();
             return loggedUserId;
         }
-        
+
         public long GetSelectedUserId()
         {
             long selectedUserId = userState.GetSelectedUserId();
@@ -49,31 +58,31 @@
             selectedUserId = userState.GetSelectedUserId();
             return selectedUserId;
         }
-        
+
         public long GetSelectedAddressId()
         {
             long selectedAddressId = userState.GetSelectedAddressId();
 
             return selectedAddressId;
         }
-        
+
         public long GetSelectedCategoryId()
         {
             long selectedCategoryId = userState.GetSelectedCategoryId();
 
             return selectedCategoryId;
         }
-        
+
         public void SetSelectedUserId(long userId)
         {
             userState.SetSelectedUserId(userId);
         }
-        
+
         public void SetSelectedAddressId(long addressId)
         {
             userState.SetSelectedAddressId(addressId);
         }
-        
+
         public void SetSelectedCategoryId(long categoryId)
         {
             userState.SetSelectedCategoryId(categoryId);

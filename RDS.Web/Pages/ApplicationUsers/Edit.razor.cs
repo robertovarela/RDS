@@ -4,38 +4,20 @@ public partial class EditApplicationUsersPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
+    protected bool IsBusy { get; set; }
     public UpdateApplicationUserRequest InputModel { get; set; } = new();
-
     protected MudDatePicker Picker = new ();
     public DateTime MinDate = DateTime.Today.AddYears(-110);
     public DateTime MaxDate = DateTime.Today.AddYears(-12);
-    public string Url { get; set; } = "/usuarios/enderecos";
-
-    #endregion
-
-    #region Parameters
-
-    [Parameter]
-    public IMask BrazilPostalCode { get; set; } = new PatternMask("00000-000");
-
+    protected const string UrlAddress = "/usuarios/enderecos";
+    protected const string UrlPhone = "/usuarios/telefones";
+    
     #endregion
 
     #region Services
-
-    [Inject] private TokenService TokenService { get; set; } = null!;
-    [Inject] private HttpClientService HttpClientService { get; set; } = null!;
-    [Inject] private ILocalStorageService LocalStorage { get; set; } = null!;
-    //[Inject] private ManipulateUserStateValuesService ManipulateUserStateValues { get; set; } = null!;
-    [Inject] public UserStateService UserState { get; set; } = null!;
     [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
-    
-    [Inject] public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
     [Inject] public LinkUserStateService Link { get; set; } = null!;
-    
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
-
-    [Inject] public IDialogService DialogService { get; set; } = null!;
 
     #endregion
 
@@ -43,32 +25,10 @@ public partial class EditApplicationUsersPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        await StartService.ValidateAccesByToken();
+        var token = await StartService.ValidateAccesByToken();
         var userId = StartService.GetSelectedUserId();
-        IsBusy = true;
-        
-        try
-        {
-            var request = new GetApplicationUserByIdRequest{UserId = userId};
-            var response = await UserHandler.GetByIdAsync(request);
-            if (response is { IsSuccess: true, Data: not null })
-                InputModel = new UpdateApplicationUserRequest
-                {
-                    UserId = response.Data.Id,
-                    Name = response.Data.Name ?? string.Empty,
-                    Email = response.Data.Email ?? string.Empty,
-                    Cpf = response.Data.Cpf ?? string.Empty,
-                    BirthDate = response.Data.BirthDate
-                };
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add(ex.Message, Severity.Error);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        await LoadUser(userId);
+        await StartService.RefreshToken(token, false);
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -81,7 +41,34 @@ public partial class EditApplicationUsersPage : ComponentBase
     #endregion
 
     #region Methods
-
+    
+    private async Task LoadUser(long userId)
+    {
+        try
+        {
+            IsBusy = true;
+            var request = new GetApplicationUserByIdRequest { UserId = userId };
+            var response = await UserHandler.GetByIdAsync(request);
+            if (response is { IsSuccess: true, Data: not null })
+                InputModel = new UpdateApplicationUserRequest
+                {
+                    UserId = response.Data.Id,
+                    Name = response.Data.Name ?? string.Empty,
+                    Email = response.Data.Email ?? string.Empty,
+                    Cpf = response.Data.Cpf ?? string.Empty,
+                    BirthDate = response.Data.BirthDate
+                };
+        }
+        catch
+        {
+            Snackbar.Add("Não foi possível obter os dados do usuário", Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+    
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;
@@ -101,10 +88,9 @@ public partial class EditApplicationUsersPage : ComponentBase
             else
             {
                 Snackbar.Add($"O usuário {InputModel.UserId}-{InputModel.Name} não foi encontrado", Severity.Warning);
-
             }
-
-            NavigationService.NavigateTo("/");
+            
+            StateHasChanged();
         }
         catch (Exception ex)
         {

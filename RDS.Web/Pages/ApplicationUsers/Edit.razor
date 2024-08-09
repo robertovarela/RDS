@@ -1,7 +1,7 @@
 @page "/usuarios/editar"
 @inherits EditApplicationUsersPage
-<UserState/>
 
+<!--<UserState/>-->
 <AuthorizeView>
     <Authorized>
         <TitleBar Title="Editar Usuário"/>
@@ -69,7 +69,7 @@
                                 <MudButton Class="pa-8" ButtonType="ButtonType.Button"
                                            Variant="Variant.Outlined"
                                            Color="Color.Primary"
-                                           OnClick="@(() => Link.LinkToUrlUser(Url, UserState.GetSelectedUserId()))">
+                                           OnClick="@(() => Link.LinkToUrlUser(UrlAddress, StartService.GetSelectedUserId()))">
                                     Endereço
                                 </MudButton>
                             </MudPaper>
@@ -78,14 +78,14 @@
                                 <MudButton Class="pa-8" ButtonType="ButtonType.Button"
                                            Variant="Variant.Outlined"
                                            Color="Color.Primary"
-                                           OnClick="@(() => NavigationService.NavigateTo("/usuarios/telefones"))">
+                                           OnClick="@(() => NavigationService.NavigateTo(UrlPhone))">
                                     Telefone
                                 </MudButton>
                             </MudPaper>
                             <MudSpacer/>
                         </div>
                     </MudPaper>
-                    <SaveAndCancelButtons Page="/"/>
+                    <SaveAndCancelButtons Page="/" ButtonText1="Cancelar" ButtonText2="Atualizar"/>
                 </EditForm>
             </MudPaper>
         }

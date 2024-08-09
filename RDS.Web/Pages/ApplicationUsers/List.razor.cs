@@ -32,27 +32,21 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected override async Task OnInitializedAsync()
         {
             var token = await StartService.ValidateAccesByToken();
-            await LoadUsers(token);
+            await LoadUsers();
             
-            RefreshTokenModel.Token = token;
-            var result = await AuthenticationService.RefreshTokenAsync(RefreshTokenModel);
-            if (result)
-            {
-                Snackbar.Add("Token atualizado com sucesso", Severity.Info);
-            }
-            
+            await StartService.RefreshToken(token, false);
         }
 
         #endregion
 
         #region Methods
 
-        private async Task LoadUsers(string token = "InvalidToken")
+        private async Task LoadUsers()
         {
             IsBusy = true;
             try
             {
-                var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize, Token = token};
+                var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize};
                 var result = await UserHandler.GetAllAsync(request);
                 if (result.IsSuccess)
                 {
@@ -60,7 +54,7 @@ namespace RDS.Web.Pages.ApplicationUsers
                     PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
             }

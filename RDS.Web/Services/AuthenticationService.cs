@@ -61,9 +61,8 @@ public class AuthenticationService(
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                logger.LogInformation($"Response Content: {responseContent}");
    
-                var result = await response.Content.ReadFromJsonAsync<Response<UserLogin>>();
+                var result = await response.Content.ReadFromJsonAsync<Response<UserRefreshToken>>();
                 var token = result?.Data?.Token;
 
                 if (string.IsNullOrEmpty(token))
@@ -79,7 +78,7 @@ public class AuthenticationService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception occurred during login");
+            logger.LogError(ex, "Exception occurred during token refresh");
         }
 
         return false;

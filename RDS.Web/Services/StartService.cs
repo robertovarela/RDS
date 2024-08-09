@@ -1,7 +1,7 @@
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 namespace RDS.Web.Services;
 
-public abstract class StartService()
+public abstract class StartService
 {
     private static ManipulateUserStateValuesService? _manipulateUserStateValuesService;
     public static void Initialize(ManipulateUserStateValuesService manipulateUserStateValuesService)
@@ -14,6 +14,10 @@ public abstract class StartService()
         return await _manipulateUserStateValuesService.ValidateAccessByToken();
     }
     
+    public static async Task RefreshToken(string refreshToken, bool showMessage = true)
+    {
+        await _manipulateUserStateValuesService.RefreshToken(refreshToken, showMessage);
+    }
     public static long GetLoggedUserId()
     {
         return _manipulateUserStateValuesService.GetLoggedUserId();
