@@ -13,7 +13,7 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             SigningCredentials = credentials,
-            Expires = DateTime.UtcNow.AddMinutes(6),
+            Expires = DateTime.UtcNow.AddMinutes(ApiConfiguration.JwtMinutesToExpire),
             Issuer = configuration["Jwt:Issuer"],
             Audience = configuration["Jwt:Audience"],
             Subject = GenerateClaims(user, roles)
@@ -32,9 +32,8 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         var currentUtcTime = DateTime.UtcNow;
 
         var timeToExpiry = expiryDateTimeUtc - currentUtcTime;
-        if (timeToExpiry > TimeSpan.FromMinutes(5)) return string.Empty;
+        if (timeToExpiry > TimeSpan.FromMinutes(ApiConfiguration.JwtMinutesToRefresh)) return string.Empty;
 
-        //var userId = principal.Claims.First(c => c.Type == "user_id").Value;
         var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
         if (string.IsNullOrEmpty(email))
         {
