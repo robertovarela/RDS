@@ -2,7 +2,7 @@ namespace RDS.Api.Services;
 
 public class JwtTokenService(IConfiguration configuration, UserManager<User> userManager)
 {
-    public string GenerateToken(User user, IList<string> roles)
+    public string GenerateToken(User user, IList<string> roles, string fingerPrint)
     {
         if (user.Email == null) return "InvalidToken";
 
@@ -16,18 +16,22 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
             Expires = DateTime.UtcNow.AddMinutes(ApiConfiguration.JwtMinutesToExpire),
             Issuer = configuration["Jwt:Issuer"],
             Audience = configuration["Jwt:Audience"],
-            Subject = GenerateClaims(user, roles)
+            Subject = GenerateClaims(user, roles, fingerPrint)
         };
 
         var token = handler.CreateToken(tokenDescriptor);
         return handler.WriteToken(token);
     }
 
-    public async Task<string> RenewTokenIfNecessary(string token)
+    public async Task<string> RenewTokenIfNecessary(RefreshTokenRequest refreshTokenRequest)
     {
-        var principal = GetPrincipalFromExpiredToken(token);
+        var principal = GetPrincipalFromExpiredToken(refreshTokenRequest.Token);
+        
+        var fingerPrintClient = refreshTokenRequest.FingerPrint;
+        var fingerPrint = principal.Claims.FirstOrDefault(c => c.Type == "FingerPrint")?.Value ?? string.Empty;
+        if (fingerPrint != fingerPrintClient) return string.Empty;
+        
         var expiryDateUnix = long.Parse(principal.Claims.First(c => c.Type == JwtRegisteredClaimNames.Exp).Value);
-
         var expiryDateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(expiryDateUnix).UtcDateTime;
         var currentUtcTime = DateTime.UtcNow;
 
@@ -35,6 +39,8 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         if (timeToExpiry > TimeSpan.FromMinutes(ApiConfiguration.JwtMinutesToRefresh)) return string.Empty;
 
         var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        
+
         if (string.IsNullOrEmpty(email))
         {
             throw new SecurityTokenException("Invalid token: required claims missing");
@@ -43,7 +49,7 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         var user = await userManager.FindByEmailAsync(email) ??
                    throw new SecurityTokenException("Invalid token: user not found");
         var roles = await userManager.GetRolesAsync(user);
-        return GenerateToken(user, roles);
+        return GenerateToken(user, roles, fingerPrint);
     }
 
     public string GenerateRefreshToken()
@@ -83,7 +89,7 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         return principal;
     }
 
-    private static ClaimsIdentity GenerateClaims(User user, IList<string> roles)
+    private static ClaimsIdentity GenerateClaims(User user, IList<string> roles, string fingerPrint)
     {
         var ci = new ClaimsIdentity();
         ci.AddClaim(new Claim("user_id", user.Id.ToString()));
@@ -93,6 +99,7 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
             ci.AddClaim(new Claim(ClaimTypes.GivenName, user.Name ?? string.Empty));
             ci.AddClaim(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
             ci.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, user.Email));
+            ci.AddClaim(new Claim("FingerPrint", fingerPrint));
         }
 
         foreach (var role in roles)
@@ -100,4 +107,78 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
 
         return ci;
     }
+
+    // private static string GetMacAddress()
+    // {
+    //     return NetworkInterface
+    //         .GetAllNetworkInterfaces()
+    //         .Where(nic =>
+    //             nic.OperationalStatus == OperationalStatus.Up &&
+    //             nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+    //         .Select(nic => nic.GetPhysicalAddress().ToString())
+    //         .FirstOrDefault() ?? string.Empty;
+    // }
+
+/*
+ * 3. Identificador de Android e iOS
+Para dispositivos móveis, o Android ID ou Device ID pode ser utilizado, mas cada sistema operacional (Android/iOS) tem sua própria maneira de fornecer identificadores únicos:
+
+Android: Use o Build.SERIAL ou o Settings.Secure.ANDROID_ID.
+iOS: Use o IdentifierForVendor.
+ */
+    // private static string GetDiskSerialNumber()
+    // {
+    //     string serialNumber = string.Empty;
+    //     try
+    //     {
+    //         ManagementObjectSearcher searcher =
+    //             new ManagementObjectSearcher("SELECT SerialNumber FROM Win32_DiskDrive");
+    //         foreach (ManagementObject disk in searcher.Get())
+    //         {
+    //             serialNumber = disk["SerialNumber"].ToString();
+    //             break;
+    //         }
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Console.WriteLine(e);
+    //         throw;
+    //     }
+    //     return serialNumber;
+    // }
+    //
+    //
+    // private static string GetCpuId()
+    // {
+    //     string cpuId = string.Empty;
+    //     try
+    //     {
+    //         ManagementObjectSearcher searcher =
+    //             new ManagementObjectSearcher("SELECT ProcessorId FROM Win32_Processor");
+    //         foreach (ManagementObject disk in searcher.Get())
+    //         {
+    //             cpuId = disk["ProcessorId"].ToString();
+    //             break;
+    //         }
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Console.WriteLine(e);
+    //         throw;
+    //     }
+    //     return cpuId;
+    // }
+    //
+    // private static string GenerateDeviceIdentifier()
+    // {
+    //     var diskSerial = GetDiskSerialNumber();
+    //     var cpuId = GetCpuId();
+    //     var combinedIdentifier = $"{cpuId}-{diskSerial}";
+    //
+    //     using (var sha256 = SHA256.Create())
+    //     {
+    //         var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(combinedIdentifier));
+    //         return BitConverter.ToString(hash).Replace("-", "").ToLower();
+    //     }
+    // }
 }

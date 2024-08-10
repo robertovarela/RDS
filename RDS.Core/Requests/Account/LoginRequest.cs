@@ -9,6 +9,7 @@ public class LoginRequest : Request
     [Required(ErrorMessage = "Senha Inválida")]
     [PasswordPropertyText]
     public string Password { get; set; } = string.Empty;
+    public string FingerPrint { get; set; } = string.Empty; 
     
     public IList<ApplicationRole> Roles { get; set; } = [];
 }

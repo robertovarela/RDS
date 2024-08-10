@@ -1,5 +1,6 @@
 namespace RDS.Web.Pages.ApplicationUsers
 {
+    // ReSharper disable once PartialTypeWithSinglePart
     public partial class ListApplicationUsersPage : ComponentBase
     {
         #region Properties
@@ -7,19 +8,17 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected bool IsBusy { get; private set; }
         protected List<ApplicationUser> ApplicationUsers { get; private set; } = new List<ApplicationUser>();
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = new List<ApplicationUser>();
-        protected RefreshTokenRequest RefreshTokenModel { get; set; } = new RefreshTokenRequest();
         public string SearchTerm { get; set; } = string.Empty;
         public string SearchFilter { get; set; } = string.Empty; // Campo de busca inicial
         protected const string Url = "/usuarios/editar";
 
-        private int _currentPage = 1;
-        private int _pageSize = Configuration.DefaultPageSize;
+        private readonly int _currentPage = 1;
+        private readonly int _pageSize = Configuration.DefaultPageSize;
 
         #endregion
 
         #region Services
 
-        [Inject] AuthenticationService AuthenticationService { get; set; } = null!;
         [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
         [Inject] public LinkUserStateService Link { get; set; } = null!;
         [Inject] public ISnackbar Snackbar { get; set; } = null!;
@@ -40,7 +39,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         #endregion
 
         #region Methods
-
+        
         private async Task LoadUsers()
         {
             IsBusy = true;

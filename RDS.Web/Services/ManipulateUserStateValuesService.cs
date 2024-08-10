@@ -1,91 +1,92 @@
-﻿namespace RDS.Web.Services
+﻿namespace RDS.Web.Services;
+
+public class ManipulateUserStateValuesService(
+    UserStateService userState,
+    ILocalStorageService localStorage,
+    TokenService tokenService,
+    AuthenticationService authenticationService,
+    DeviceService DeviceService,
+    ISnackbar snackbar)
 {
-    public class ManipulateUserStateValuesService(
-        UserStateService userState,
-        ILocalStorageService localStorage,
-        TokenService tokenService,
-        AuthenticationService AuthenticationService,
-        ISnackbar snackbar)
+    public void SetDefaultValues()
     {
-        public void SetDefaultValues()
-        {
-            userState.SetSelectedUserId(userState.GetLoggedUserId());
-            userState.SetSelectedAddressId(0);
-            userState.SetSelectedCategoryId(0);
-        }
+        userState.SetSelectedUserId(userState.GetLoggedUserId());
+        userState.SetSelectedAddressId(0);
+        userState.SetSelectedCategoryId(0);
+    }
 
-        public async Task<string> ValidateAccessByToken()
+    public async Task<string> ValidateAccessByToken()
+    {
+        string token = await localStorage.GetItemAsync<string>("authToken") ?? string.Empty;
+        long userId = 0;
+        if (!string.IsNullOrEmpty(token))
         {
-            string token = await localStorage.GetItemAsync<string>("authToken") ?? string.Empty;
-            long userId = 0;
-            if (!string.IsNullOrEmpty(token))
+            if (long.TryParse(tokenService.GetUserIdFromToken(token), out var id))
             {
-                if (long.TryParse(tokenService.GetUserIdFromToken(token), out var id))
-                {
-                    userId = id;
-                }
+                userId = id;
             }
-
-            userState.SetLoggedUserId(userId);
-            if (userId == 0)
-            {
-                snackbar.Add("Token expirado ou inválido!", Severity.Warning);
-                NavigationService.NavigateToLogin();
-            }
-
-            return token;
         }
 
-        public async Task RefreshToken(string token, bool showMessage = true)
+        userState.SetLoggedUserId(userId);
+        if (userId == 0)
         {
-            var refreshTokenModel = new RefreshTokenRequest { Token = token };
-            var result = await AuthenticationService.RefreshTokenAsync(refreshTokenModel);
-            if (result && showMessage)
-                snackbar.Add("Token atualizado com sucesso", Severity.Info);
+            snackbar.Add("Token expirado ou inválido!", Severity.Warning);
+            NavigationService.NavigateToLogin();
         }
 
-        public long GetLoggedUserId()
-        {
-            long loggedUserId = userState.GetLoggedUserId();
-            return loggedUserId;
-        }
+        return token;
+    }
 
-        public long GetSelectedUserId()
-        {
-            long selectedUserId = userState.GetSelectedUserId();
-            if (selectedUserId != 0) return selectedUserId;
-            userState.SetSelectedUserId(userState.GetLoggedUserId());
-            selectedUserId = userState.GetSelectedUserId();
-            return selectedUserId;
-        }
+    public async Task RefreshToken(string token, bool showMessage = true)
+    {
+        var fingerprint = await DeviceService.GetDeviceFingerprint();
+        var refreshTokenModel = new RefreshTokenRequest { Token = token, FingerPrint = fingerprint };
+        var result = await authenticationService.RefreshTokenAsync(refreshTokenModel);
+        if (result && showMessage)
+            snackbar.Add("Token atualizado com sucesso", Severity.Info);
+    }
 
-        public long GetSelectedAddressId()
-        {
-            long selectedAddressId = userState.GetSelectedAddressId();
+    public long GetLoggedUserId()
+    {
+        long loggedUserId = userState.GetLoggedUserId();
+        return loggedUserId;
+    }
 
-            return selectedAddressId;
-        }
+    public long GetSelectedUserId()
+    {
+        long selectedUserId = userState.GetSelectedUserId();
+        if (selectedUserId != 0) return selectedUserId;
+        userState.SetSelectedUserId(userState.GetLoggedUserId());
+        selectedUserId = userState.GetSelectedUserId();
+        return selectedUserId;
+    }
 
-        public long GetSelectedCategoryId()
-        {
-            long selectedCategoryId = userState.GetSelectedCategoryId();
+    public long GetSelectedAddressId()
+    {
+        long selectedAddressId = userState.GetSelectedAddressId();
 
-            return selectedCategoryId;
-        }
+        return selectedAddressId;
+    }
 
-        public void SetSelectedUserId(long userId)
-        {
-            userState.SetSelectedUserId(userId);
-        }
+    public long GetSelectedCategoryId()
+    {
+        long selectedCategoryId = userState.GetSelectedCategoryId();
 
-        public void SetSelectedAddressId(long addressId)
-        {
-            userState.SetSelectedAddressId(addressId);
-        }
+        return selectedCategoryId;
+    }
 
-        public void SetSelectedCategoryId(long categoryId)
-        {
-            userState.SetSelectedCategoryId(categoryId);
-        }
+    public void SetSelectedUserId(long userId)
+    {
+        userState.SetSelectedUserId(userId);
+    }
+
+    public void SetSelectedAddressId(long addressId)
+    {
+        userState.SetSelectedAddressId(addressId);
+    }
+
+    public void SetSelectedCategoryId(long categoryId)
+    {
+        userState.SetSelectedCategoryId(categoryId);
     }
 }

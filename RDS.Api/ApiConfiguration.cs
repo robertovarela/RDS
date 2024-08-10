@@ -8,8 +8,8 @@ public static class ApiConfiguration
     public static string JwtKey = "ZmVkYWY3ZDg4NjNiNDhlMTk3YjkyODdkNDkyYjcwOGU=";
     public static string JwtIssuer = "https://localhost:5001";
     public static string JwtAudience = "https://localhost:5001";
-    public static int JwtMinutesToRefresh = 30;
-    public static int JwtMinutesToExpire = 180;
+    public static int JwtMinutesToRefresh = 5;
+    public static int JwtMinutesToExpire = 6;
     public static string ApiKeyName = "api_key";
     public static string ApiKey = "RDS_api_IlTevUM/z0ey3NwCV/unrSWg==";
     public static SmtpConfiguration Smtp = new();

@@ -38,7 +38,7 @@ public class UserController(
             }
 
             var roles = await userManager.GetRolesAsync(user);
-            var token = jwtTokenService.GenerateToken(user, roles);
+            var token = jwtTokenService.GenerateToken(user, roles, request.FingerPrint);
             var response = new UserLogin(request.Email, token);
 
             return new Response<UserLogin>(response, 200, "Login realizado com sucesso");
@@ -60,7 +60,7 @@ public class UserController(
 
         try
         {
-            var refreshToken = await jwtTokenService.RenewTokenIfNecessary(request.Token);
+            var refreshToken = await jwtTokenService.RenewTokenIfNecessary(request);
             var response = new UserRefreshToken(refreshToken);
 
             return new Response<UserRefreshToken>(response, 200, "Refresh Token efetuado com sucesso");

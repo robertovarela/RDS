@@ -4,6 +4,7 @@ public partial class LoginPage : ComponentBase
 {
     #region Services
     
+    [Inject] public DeviceService DeviceService { get; set; } = null!;
     [Inject] ILogger<Login> Logger { get; set; } = null!;
     [Inject] AuthenticationService AuthenticationService { get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
@@ -43,6 +44,8 @@ public partial class LoginPage : ComponentBase
 
         try
         {
+            var fingerprint = await DeviceService.GetDeviceFingerprint();
+            LoginModel.FingerPrint = fingerprint;
             var result = await AuthenticationService.LoginAsync(LoginModel);
             if (result)
             {
