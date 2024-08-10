@@ -1,19 +1,19 @@
 @page "/finger"
 @inject DeviceService DeviceService
 
-<h3>Test Fingerprint</h3>
+<h3>Finger Print From Device</h3>
 
-<p>@Fingerprint</p>
+<p>@_fingerprint</p>
 
 @code {
-    private string? Fingerprint;
+    private string? _fingerprint;
 
     protected override async Task OnInitializedAsync()
     {
-        Fingerprint = await DeviceService.GetDeviceFingerprint();
-        if (string.IsNullOrEmpty(Fingerprint))
+        _fingerprint = await DeviceService.GetDeviceFingerprint();
+        if (string.IsNullOrEmpty(_fingerprint))
         {
-            Fingerprint = "Failed to retrieve fingerprint";
+            _fingerprint = "Failed to retrieve fingerprint";
         }
     }
 }

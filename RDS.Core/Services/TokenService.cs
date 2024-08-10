@@ -2,7 +2,7 @@ namespace RDS.Core.Services;
 
 public class TokenService(string jwtKey, string issuer, string audience)
 {
-    private ClaimsPrincipal? ValidateToken(string token)
+    private ClaimsPrincipal? ValidateToken(string token, bool validateLifeTime = true)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(jwtKey);
@@ -17,7 +17,7 @@ public class TokenService(string jwtKey, string issuer, string audience)
                 ValidIssuer = issuer,
                 ValidateAudience = true,
                 ValidAudience = audience,
-                ValidateLifetime = true,
+                ValidateLifetime = validateLifeTime,
                 ClockSkew = TimeSpan.Zero
             };
             
@@ -29,17 +29,18 @@ public class TokenService(string jwtKey, string issuer, string audience)
         }
     }
 
-    public string? GetUserEmailFromToken(string token)
+    public string? GetUserEmailFromToken(string token, bool validateLifeTime = true)
     {
-        var principal = ValidateToken(token);
+        var principal = ValidateToken(token, validateLifeTime);
         if (principal == null) return null;
 
         var emailClaim = principal.FindFirst("email");
         return emailClaim?.Value;
     }
-    public string? GetUserIdFromToken(string token)
+    
+    public string? GetUserIdFromToken(string token, bool validateLifeTime = true)
     {
-        var principal = ValidateToken(token);
+        var principal = ValidateToken(token, validateLifeTime);
         if (principal == null) return null;
 
         var userIdClaim = principal.FindFirst("user_id");

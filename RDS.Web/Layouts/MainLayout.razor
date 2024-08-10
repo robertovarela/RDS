@@ -79,7 +79,6 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        //await ManipulateUserStateValues.Initialize();
         if (firstRender)
         {
             _isDarkMode = await _mudThemeProvider.GetSystemPreference();

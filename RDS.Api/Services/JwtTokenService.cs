@@ -39,12 +39,9 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         if (timeToExpiry > TimeSpan.FromMinutes(ApiConfiguration.JwtMinutesToRefresh)) return string.Empty;
 
         var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-        
 
         if (string.IsNullOrEmpty(email))
-        {
             throw new SecurityTokenException("Invalid token: required claims missing");
-        }
 
         var user = await userManager.FindByEmailAsync(email) ??
                    throw new SecurityTokenException("Invalid token: user not found");

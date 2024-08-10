@@ -5,7 +5,7 @@ public class ManipulateUserStateValuesService(
     ILocalStorageService localStorage,
     TokenService tokenService,
     AuthenticationService authenticationService,
-    DeviceService DeviceService,
+    DeviceService deviceService,
     ISnackbar snackbar)
 {
     public void SetDefaultValues()
@@ -17,29 +17,73 @@ public class ManipulateUserStateValuesService(
 
     public async Task<string> ValidateAccessByToken()
     {
-        string token = await localStorage.GetItemAsync<string>("authToken") ?? string.Empty;
-        long userId = 0;
-        if (!string.IsNullOrEmpty(token))
+        string token = await GetTokenFromLocalStorage();
+        if (string.IsNullOrEmpty(token)) return token;
+
+        if (TrySetUserIdFromToken(token, out var id) && id != 0)
         {
-            if (long.TryParse(tokenService.GetUserIdFromToken(token), out var id))
-            {
-                userId = id;
-            }
+            return token;
         }
 
-        userState.SetLoggedUserId(userId);
-        if (userId == 0)
+        if (!TrySetUserIdFromToken(token, out var newId, validateToken: false) || newId == 0)
         {
-            snackbar.Add("Token expirado ou inválido!", Severity.Warning);
-            NavigationService.NavigateToLogin();
+            HandleInvalidToken();
+            return token;
         }
+
+        await RefreshToken(token, showMessage: true);
+        return token;
+    }
+
+    private async Task<string> GetTokenFromLocalStorage()
+    {
+        return await localStorage.GetItemAsync<string>("authToken") ?? string.Empty;
+    }
+
+    private bool TrySetUserIdFromToken(string token, out long userId, bool validateToken = true)
+    {
+        userId = 0;
+        if (!long.TryParse(tokenService.GetUserIdFromToken(token, validateToken), out var id)) 
+            return false;
+
+        userState.SetLoggedUserId(id);
+        userId = id;
+        return true;
+    }
+
+    private void HandleInvalidToken()
+    {
+        snackbar.Add("Token inválido!", Severity.Warning);
+        NavigationService.NavigateToLogin();
+    }
+    public async Task<string> ValidateAccessByTokenOld()
+    {
+        string token = await localStorage.GetItemAsync<string>("authToken") ?? string.Empty;
+        if (string.IsNullOrEmpty(token)) return token;
+
+        if (long.TryParse(tokenService.GetUserIdFromToken(token), out var id))
+        {
+            userState.SetLoggedUserId(id);
+            if (id != 0) return token;
+        }
+
+        if (!long.TryParse(tokenService.GetUserIdFromToken(token, false), out var newId)) return token;
+        if (newId == 0)
+        {
+            snackbar.Add("Token inválido!", Severity.Warning);
+            NavigationService.NavigateToLogin();
+            return token;
+        }
+
+        userState.SetLoggedUserId(newId);
+        await RefreshToken(token, true);
 
         return token;
     }
 
     public async Task RefreshToken(string token, bool showMessage = true)
     {
-        var fingerprint = await DeviceService.GetDeviceFingerprint();
+        var fingerprint = await deviceService.GetDeviceFingerprint();
         var refreshTokenModel = new RefreshTokenRequest { Token = token, FingerPrint = fingerprint };
         var result = await authenticationService.RefreshTokenAsync(refreshTokenModel);
         if (result && showMessage)

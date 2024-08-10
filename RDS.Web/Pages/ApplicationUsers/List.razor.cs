@@ -32,8 +32,6 @@ namespace RDS.Web.Pages.ApplicationUsers
         {
             var token = await StartService.ValidateAccesByToken();
             await LoadUsers();
-            
-            await StartService.RefreshToken(token, false);
         }
 
         #endregion
