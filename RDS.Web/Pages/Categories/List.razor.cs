@@ -11,21 +11,16 @@ public partial class ListCategoriesPage : ComponentBase
     #region Properties
 
     public bool IsBusy { get; set; } = false;
-    public List<Category> Categories { get; set; } = [];
+    protected List<Category> Categories { get; set; } = [];
     public string SearchTerm { get; set; } = string.Empty;
 
     #endregion
 
     #region Services
 
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
-
-    [Inject]
-    public IDialogService DialogService { get; set; } = null!;
-
-    [Inject]
-    public ICategoryHandler Handler { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public IDialogService DialogService { get; set; } = null!;
+    [Inject] public ICategoryHandler Handler { get; set; } = null!;
 
     #endregion
 
@@ -33,6 +28,7 @@ public partial class ListCategoriesPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        await StartService.ValidateAccesByToken();
         IsBusy = true;
         try
         {

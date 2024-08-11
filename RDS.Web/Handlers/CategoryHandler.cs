@@ -6,41 +6,73 @@ using System.Net.Http.Json;
 
 namespace RDS.Web.Handlers;
 
-public class CategoryHandler : ICategoryHandler
+public class CategoryHandler(HttpClientService httpClientService) : ICategoryHandler
 {
-    private readonly HttpClient _httpClient;
+    private readonly Lazy<Task<HttpClient>> _httpClient = new(httpClientService.GetHttpClientAsync);
 
-    public CategoryHandler(HttpClient httpClient)
+    private async Task<HttpClient> GetHttpClientAsync()
     {
-        _httpClient = httpClient;
+        return await _httpClient.Value;
     }
 
     public async Task<Response<Category?>> CreateAsync(CreateCategoryRequest request)
     {
-        var result = await _httpClient.PostAsJsonAsync("v1/categories", request);
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/categories/create")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<Response<Category?>>()
                ?? new Response<Category?>(null, 400, "Falha ao criar a categoria");
     }
 
     public async Task<Response<Category?>> UpdateAsync(UpdateCategoryRequest request)
     {
-        var result = await _httpClient.PutAsJsonAsync($"v1/categories/{request.Id}", request);
+        var requestMessage = new HttpRequestMessage(HttpMethod.Put, $"v1/categories/update")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<Response<Category?>>()
                ?? new Response<Category?>(null, 400, "Falha ao atualizar a categoria");
     }
 
     public async Task<Response<Category?>> DeleteAsync(DeleteCategoryRequest request)
     {
-        var result = await _httpClient.DeleteAsync($"v1/categories/{request.Id}");
+        var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"v1/categories/delete")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<Response<Category?>>()
                ?? new Response<Category?>(null, 400, "Falha ao excluir a categoria");
     }
 
-    public async Task<Response<Category?>> GetByIdAsync(GetCategoryByIdRequest request)
-        => await _httpClient.GetFromJsonAsync<Response<Category?>>($"v1/categories/{request.Id}")
-           ?? new Response<Category?>(null, 400, "Não foi possível obter a categoria");
-
     public async Task<PagedResponse<List<Category>>> GetAllAsync(GetAllCategoriesRequest request)
-        => await _httpClient.GetFromJsonAsync<PagedResponse<List<Category>>>("v1/categories")
-           ?? new PagedResponse<List<Category>>(null, 400, "Não foi possível obter as categorias");
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/categories/all")
+            //$"v1/users/allusers?pageNumber={request.PageNumber}&pageSize={request.PageSize}")
+            {
+                Content = JsonContent.Create(request)
+            };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<Category>>>()
+               ?? new PagedResponse<List<Category>>(null, 400, "Não foi possível obter as categorias");
+    }
+
+    public async Task<Response<Category?>> GetByIdAsync(GetCategoryByIdRequest request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/categories/byid")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<Response<Category?>>()
+               ?? new Response<Category?>(null, 400, "Não foi possível obter a categoria");
+    }
 }
