@@ -5,8 +5,8 @@ public static class ConfigurationWeb
     public const string HttpClientName = "RDS";
     
     public static string JwtKey = "ZmVkYWY3ZDg4NjNiNDhlMTk3YjkyODdkNDkyYjcwOGU=";
-    public static string Issuer = "YourIssuer";
-    public static string Audience = "YourAudience";
+    public static string Issuer = "www.rdsweb.mysoftwares.com.br";
+    public static string Audience = "GeneralAudience";
 
     public const bool RenewToken = true;
     public const bool RenewTokenMessage = true;
