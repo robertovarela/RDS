@@ -4,10 +4,9 @@ public class StartPage : ComponentBase
 {
     #region Overrides
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await StartService.ValidateAccesByToken();
-        StartService.SetDefaultValues();
+        NavigationService.NavigateTo("/home");
     }
 
     #endregion

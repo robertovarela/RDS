@@ -33,7 +33,7 @@ public abstract class StartService
         return _manipulateUserStateValuesService.GetSelectedAddressId();
     }
     
-    public static long GetSelectedCategoriId()
+    public static long GetSelectedCategoryId()
     {
         return _manipulateUserStateValuesService.GetSelectedCategoryId();
     }
