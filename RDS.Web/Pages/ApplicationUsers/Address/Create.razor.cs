@@ -28,13 +28,21 @@ public partial class CreateApplicationUserAddresPage : ComponentBase
 
     #endregion
 
+    #region Overrides
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await StartService.ValidateAccesByToken();
+    }
+    
+    #endregion
+    
     #region Methods
 
     public async Task OnValidSubmitAsync()
     {
         try
         {
-            await StartService.ValidateAccesByToken();
             InputModel.UserId = StartService.GetSelectedUserId();
             var result = await AddressHandler.CreateAsync(InputModel);
             if (result.IsSuccess)

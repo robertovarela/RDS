@@ -1,15 +1,16 @@
-using MudBlazor;
-
 namespace RDS.Web;
 
 public static class ConfigurationWeb
 {
     public const string HttpClientName = "RDS";
     
-    public static string jwtKey = "ZmVkYWY3ZDg4NjNiNDhlMTk3YjkyODdkNDkyYjcwOGU=";
-    public static string issuer = "YourIssuer";
-    public static string audience = "YourAudience";
-    
+    public static string JwtKey = "ZmVkYWY3ZDg4NjNiNDhlMTk3YjkyODdkNDkyYjcwOGU=";
+    public static string Issuer = "YourIssuer";
+    public static string Audience = "YourAudience";
+
+    public const bool RenewToken = true;
+    public const bool RenewTokenMessage = true;
+
     public static string StripePublicKey { get; set; } = "pk_test_qp8INYXhpnFxxdFYp2mh8T5r00qmy8cVdv";
     public static string BackendUrl { get; set; } = String.Empty;
 

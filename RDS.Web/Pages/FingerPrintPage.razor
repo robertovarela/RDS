@@ -10,6 +10,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await StartService.ValidateAccesByToken();
         _fingerprint = await DeviceService.GetDeviceFingerprint();
         if (string.IsNullOrEmpty(_fingerprint))
         {

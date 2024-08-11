@@ -8,11 +8,11 @@ using RDS.Web.Handlers;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 ConfigurationWeb.BackendUrl = builder.Configuration.GetValue<string>("BackendUrl") ?? string.Empty;
-ConfigurationWeb.jwtKey = builder.Configuration.GetValue<string>("Jwt:Key") 
+ConfigurationWeb.JwtKey = builder.Configuration.GetValue<string>("Jwt:Key") 
                           ?? throw new InvalidOperationException("JwtKey is not configured.");
-ConfigurationWeb.issuer = builder.Configuration.GetValue<string>("Jwt:Issuer") 
+ConfigurationWeb.Issuer = builder.Configuration.GetValue<string>("Jwt:Issuer") 
                               ?? throw new InvalidOperationException("JwtIssuer is not configured.");
-ConfigurationWeb.audience = builder.Configuration.GetValue<string>("Jwt:Audience") 
+ConfigurationWeb.Audience = builder.Configuration.GetValue<string>("Jwt:Audience") 
                           ?? throw new InvalidOperationException("JwtAudience is not configured.");
 
 builder.RootComponents.Add<App>("#app");
@@ -28,9 +28,9 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<TokenService>(sp =>
 {
-    var jwtKey = ConfigurationWeb.jwtKey;
-    var issuer = ConfigurationWeb.issuer;
-    var audience = ConfigurationWeb.audience;
+    var jwtKey = ConfigurationWeb.JwtKey;
+    var issuer = ConfigurationWeb.Issuer;
+    var audience = ConfigurationWeb.Audience;
 
     return new TokenService(jwtKey, issuer, audience);
 });

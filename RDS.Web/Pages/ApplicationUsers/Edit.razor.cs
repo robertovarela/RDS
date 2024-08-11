@@ -25,10 +25,9 @@ public partial class EditApplicationUsersPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        var token = await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByToken();
         var userId = StartService.GetSelectedUserId();
         await LoadUser(userId);
-        await StartService.RefreshToken(token, false);
     }
 
     protected override void OnAfterRender(bool firstRender)

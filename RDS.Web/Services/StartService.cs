@@ -9,12 +9,12 @@ public abstract class StartService
         _manipulateUserStateValuesService = manipulateUserStateValuesService;
     }
     
-    public static async Task<string> ValidateAccesByToken()
+    public static async Task ValidateAccesByToken()
     {
-        return await _manipulateUserStateValuesService.ValidateAccessByToken();
+        await _manipulateUserStateValuesService.ValidateAccessByToken();
     }
     
-    public static async Task RefreshToken(string refreshToken, bool showMessage = true)
+    public static async Task RefreshToken(string refreshToken, bool showMessage)
     {
         await _manipulateUserStateValuesService.RefreshToken(refreshToken, showMessage);
     }

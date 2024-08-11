@@ -30,7 +30,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected override async Task OnInitializedAsync()
         {
-            var token = await StartService.ValidateAccesByToken();
+            await StartService.ValidateAccesByToken();
             await LoadUsers();
         }
 

@@ -16,6 +16,7 @@ public partial class LogoutPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetDefaultValues();
         await AuthenticationService.LogoutAsync();
         Snackbar.Add("Logout realizado com sucesso!", Severity.Success);
         
