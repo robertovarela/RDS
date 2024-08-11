@@ -44,7 +44,10 @@ public partial class ListTransactionsPage : ComponentBase
     #region Overrides
 
     protected override async Task OnInitializedAsync()
-        => await GetTransactionsAsync();
+    {
+        await StartService.ValidateAccesByToken();
+        await GetTransactionsAsync();
+    }
 
     #endregion
 

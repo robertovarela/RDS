@@ -24,6 +24,15 @@ public partial class CreateCategoryPage : ComponentBase
 
     #endregion
 
+    #region Overrides
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await StartService.ValidateAccesByToken();
+    }
+    
+    #endregion
+    
     #region Methods
 
     public async Task OnValidSubmitAsync()

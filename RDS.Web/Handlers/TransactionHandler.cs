@@ -7,38 +7,61 @@ using RDS.Core.Responses;
 
 namespace RDS.Web.Handlers;
 
-public class TransactionHandler : ITransactionHandler
+public class TransactionHandler(HttpClientService httpClientService) : ITransactionHandler
 {
-    private readonly HttpClient _httpClient;
+    private readonly Lazy<Task<HttpClient>> _httpClient = new(httpClientService.GetHttpClientAsync);
 
-    public TransactionHandler(HttpClient httpClient)
+    private async Task<HttpClient> GetHttpClientAsync()
     {
-        _httpClient = httpClient;
+        return await _httpClient.Value;
     }
     public async Task<Response<Transaction?>> CreateAsync(CreateTransactionRequest request)
     {
-        var result = await _httpClient.PostAsJsonAsync("v1/transactions", request);
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/transactions/create")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<Response<Transaction?>>()
-               ?? new Response<Transaction?>(null, 400, "Não foi possível criar sua transação");
+               ?? new Response<Transaction?>(null, 400, "Falha ao criar a transação");
     }
 
     public async Task<Response<Transaction?>> UpdateAsync(UpdateTransactionRequest request)
     {
-        var result = await _httpClient.PutAsJsonAsync($"v1/transactions/{request.Id}", request);
+        var requestMessage = new HttpRequestMessage(HttpMethod.Put, $"v1/transactions/update")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<Response<Transaction?>>()
-               ?? new Response<Transaction?>(null, 400, "Não foi possível atualizar sua transação");
+               ?? new Response<Transaction?>(null, 400, "Não foi possível atualizar a transação");
     }
 
     public async Task<Response<Transaction?>> DeleteAsync(DeleteTransactionRequest request)
     {
-        var result = await _httpClient.DeleteAsync($"v1/transactions/{request.Id}");
+        var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"v1/transactions/delete")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<Response<Transaction?>>()
-               ?? new Response<Transaction?>(null, 400, "Não foi possível excluir sua transação");
+               ?? new Response<Transaction?>(null, 400, "Não foi possível excluir a transação");
     }
 
     public async Task<Response<Transaction?>> GetByIdAsync(GetTransactionByIdRequest request)
-        => await _httpClient.GetFromJsonAsync<Response<Transaction?>>($"v1/transactions/{request.Id}")
-           ?? new Response<Transaction?>(null, 400, "Não foi possível obter a transação");
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/transactions/byid")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<Response<Transaction?>>()
+               ?? new Response<Transaction?>(null, 400, "Não foi possível obter a transação");
+    }
 
     public async Task<PagedResponse<List<Transaction>?>> GetByPeriodAsync(GetTransactionsByPeriodRequest request)
     {
@@ -53,7 +76,13 @@ public class TransactionHandler : ITransactionHandler
         
         var url = $"v1/transactions?startDate={startDate}&endDate={endDate}";
 
-        return await _httpClient.GetFromJsonAsync<PagedResponse<List<Transaction>?>>(url)
-            ?? new PagedResponse<List<Transaction>?>(null, 400, "Não foi possível obter as transações");
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/transactions/byperiod")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<Transaction>?>>()
+               ?? new PagedResponse<List<Transaction>?>(null, 400, "Não foi possível obter as transações");
     }
 }

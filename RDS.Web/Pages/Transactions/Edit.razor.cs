@@ -37,6 +37,7 @@ public partial class EditTransactionPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        await StartService.ValidateAccesByToken();
         IsBusy = true;
 
         await GetTransactionByIdAsync();

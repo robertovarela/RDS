@@ -35,6 +35,7 @@ public partial class EditCategoryPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        await StartService.ValidateAccesByToken();
         GetCategoryByIdRequest? request = null;
         try
         {
