@@ -1,14 +1,10 @@
 namespace RDS.Web.Pages.Identity;
 
-public partial class LogoutPage : ComponentBase
+public class LogoutPage : ComponentBase
 {
     #region Services
     
     [Inject] private AuthenticationService AuthenticationService { get; set; } = null!;
-    
-    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
     
@@ -18,10 +14,21 @@ public partial class LogoutPage : ComponentBase
     {
         StartService.SetDefaultValues();
         await AuthenticationService.LogoutAsync();
-        Snackbar.Add("Logout realizado com sucesso!", Severity.Success);
-        
         await base.OnInitializedAsync();
+        
+        await NavigateToLoginAsync();
     }
 
     #endregion
+    
+    #region Methods
+    
+    private async Task NavigateToLoginAsync()
+    {
+        await Task.Delay(5000);
+        NavigationService.NavigateTo("/login");
+    }
+    
+    #endregion
+    
 }
