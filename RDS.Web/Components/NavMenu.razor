@@ -1,14 +1,31 @@
 <div class="d-flex justify-center pb-8 pt-2">
-    <img src="/imgs/RDS-01.jpg" alt="RDS - Soluções em software" width="200" />
+    <img src="/imgs/RDS-01.jpg" alt="RDS - Soluções em software" width="200"/>
 </div>
 
-<MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Início</MudNavLink>
+<MudNavLink Href="/">Início</MudNavLink>
+<MudNavMenu Margin="Margin.None" Color="Color.Success">
+    <MudNavLink Href="/">Início</MudNavLink>
     <MudNavLink Href="/usuarios/editar">Meu Cadastro</MudNavLink>
-    <MudNavLink Href="/categorias">Categorias</MudNavLink>
-    <MudNavLink Href="/lancamentos/historico">Histórico</MudNavLink>
-    <MudNavLink Href="/usuarios">Usuários</MudNavLink>
-    <MudNavLink Href="/finger">Finger Print</MudNavLink>
+
+    <MudNavGroup Title="Gerenciamento" Class="px-4" Icon="@Icons.Material.Filled.Class" IconColor="Color.Warning" @bind-Expanded=_expandedManager >
+        <MudNavLink Href="/categorias" Icon="@Icons.Material.Filled.Category" IconColor="Color.Info">Categorias</MudNavLink>
+        <MudNavLink Href="/lancamentos/historico" Icon="@Icons.Material.Filled.History" IconColor="Color.Warning">Histórico</MudNavLink>
+        <MudNavLink Href="/usuarios" Icon="@Icons.Material.Filled.People" IconColor="Color.Success">Usuários</MudNavLink>
+    </MudNavGroup>
+
+    <MudNavGroup Title="Configurações" Class="px-4" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Error" @bind-Expanded=_expandedConfiguration>
+        <MudNavLink Href="/finger">Finger Print</MudNavLink>
+    </MudNavGroup>
+
     <MudNavLink Href="/sair">Sair</MudNavLink>
-    <!--<MudNavLink Href="/dashboard">Dashboard</MudNavLink>-->
 </MudNavMenu>
+
+<link href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" rel="stylesheet">
+
+@code{
+    bool _expandedManager = false;
+    bool _expandedConfiguration = false;
+    
+    string ClassColorManager => _expandedManager ? "mud-theme-primary" : "mud-theme-secondary";
+    string ClassColorConfiguration => _expandedConfiguration ? "mud-theme-primary" : "mud-theme-secondary";
+}
