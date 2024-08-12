@@ -182,6 +182,56 @@ body.responsive-body {
     }
 }
 
+/* ---------------------------------------------------------------------*/
+.responsive-text.drawer-title {
+    font-size: 1.4rem; /* Tamanho padrão */
+    font-weight: 600;
+}
+
+@media (min-width: 600px) {
+    .responsive-text.drawer-title {
+        font-size: 1.6rem; /* Tamanho para telas médias */
+    }
+}
+
+@media (min-width: 960px) {
+    .responsive-text.drawer-title {
+        font-size: 1.6rem; /* Tamanho para telas grandes */
+    }
+}
+
+@media (min-width: 1280px) {
+    .responsive-text.drawer-title {
+        font-size: 1.65rem; /* Tamanho para telas extra grandes */
+    }
+}
+
+/* ---------------------------------------------------------------------*/
+.responsive-text.drawer-subtitle {
+    font-size: 1.3rem; /* Tamanho padrão */
+    font-weight: 600;
+}
+
+@media (min-width: 600px) {
+    .responsive-text.drawer-subtitle {
+        font-size: 1.5rem; /* Tamanho para telas médias */
+    }
+}
+
+@media (min-width: 960px) {
+    .responsive-text.drawer-subtitle {
+        font-size: 1.5rem; /* Tamanho para telas grandes */
+    }
+}
+
+@media (min-width: 1280px) {
+    .responsive-text.drawer-subtitle {
+        font-size: 1.55rem; /* Tamanho para telas extra grandes */
+    }
+}
+
+/* ---------------------------------------------------------------------*/
+
 .datepicker-custom {
     max-width: 100%;
     position: relative;

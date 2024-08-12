@@ -8,14 +8,14 @@
     <MudItem xs="12" sm="12" md="8" lg="6" xl="6" xxl="6">
         <MudPaper Class="mud-width-full pa-4">
             <div class="d-flex justify-center pb-2 pt-2">
-            <img src="imgs/RDS-01.jpg"
-                 alt="RDS - Soluções em softwares"
-                 width="150" />
+                <img src="imgs/RDS-01.jpg"
+                     alt="RDS - Soluções em softwares"
+                     width="150"/>
             </div>
             <div class="d-flex justify-center pb-4 pt-4">
                 <MudText Typo="Typo.caption" Class="responsive-text title-software">
                     <span>
-                        Sistema de Agendamentos
+                        RDS* - Desenvolvimento de Softwares
                     </span>
                 </MudText>
             </div>
@@ -28,33 +28,42 @@
             </div>
 
             <EditForm Model="@LoginModel" OnValidSubmit="OnValidSubmitAsync">
-                <DataAnnotationsValidator />
+                <DataAnnotationsValidator/>
                 <MudTextField T="string"
                               Label="E-mail"
                               HelperText="Campo obrigatório"
                               InputType="InputType.Email"
                               For="@(() => LoginModel.Email)"
                               @bind-Value="LoginModel.Email"
-                              Class="responsive-text title-input" 
-                              Variant="Variant.Outlined" AutoFocus />
+                              Class="responsive-text title-input"
+                              Variant="Variant.Outlined" AutoFocus/>
 
-                <MudTextField T="string"
+                <MudTextField ShrinkLabel
+                              Immediate="true"
+                              MaxLength="25"
+                              T="string"
                               Label="Senha"
                               HelperText="Campo obrigatório"
-                              InputType="InputType.Password"
+                              HelperTextOnFocus="true"
+                              InputType="@PasswordInput"
                               For="@(() => LoginModel.Password)"
-                              @bind-Value="LoginModel.Password" 
-                              Variant="Variant.Outlined" />
+                              @bind-Value="LoginModel.Password"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@PasswordInputIcon"
+                              OnAdornmentClick="ButtonVisibilityPassword"
+                              AdornmentAriaLabel="Show Password"
+                              Clearable="true" />
 
                 <div class="d-flex mt-8">
                     @if (IsBusy)
                     {
-                        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+                        <MudProgressCircular Color="Color.Info" Indeterminate="true"/>
                     }
                     else
                     {
                         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="responsive-text title-software">ENTRAR</MudButton>
-                        <MudSpacer />
+                        <MudSpacer/>
                         <MudButton Href="/registrar" Class="responsive-text title-software">QUERO ME CADASTRAR</MudButton>
                     }
                 </div>

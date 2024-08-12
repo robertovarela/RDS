@@ -33,13 +33,9 @@ public partial class RegisterPage : ComponentBase
 
     #region Parameters
 
-    [Parameter]
-    public InputType PasswordInput { get; set; } = InputType.Password;
+    [Parameter] public InputType PasswordInput { get; set; } = InputType.Password;
     
-    [Parameter]
-    public string PasswordInputIcon { get; set; } = Icons.Material.Filled.VisibilityOff;
-
-    
+    [Parameter] public string PasswordInputIcon { get; set; } = Icons.Material.Filled.VisibilityOff;
 
     #endregion
 

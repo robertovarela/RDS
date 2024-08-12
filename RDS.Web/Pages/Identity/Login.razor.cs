@@ -16,10 +16,19 @@ public partial class LoginPage : ComponentBase
     #region Properties
 
     public bool IsBusy { get; set; } = false;
+    private bool IsShow { get; set; } = false;
     public LoginRequest LoginModel { get; set; } = new();
 
     #endregion
 
+    #region Parameters
+
+    [Parameter] public InputType PasswordInput { get; set; } = InputType.Password;
+    
+    [Parameter] public string PasswordInputIcon { get; set; } = Icons.Material.Filled.VisibilityOff;
+
+    #endregion
+    
     #region Overrides
 
     protected override async Task OnInitializedAsync()
@@ -68,5 +77,21 @@ public partial class LoginPage : ComponentBase
         }
     }
 
+    public void ButtonVisibilityPassword()
+    {
+        if(IsShow)
+        {
+            IsShow = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            IsShow = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+    
     #endregion
 }
