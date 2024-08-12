@@ -208,25 +208,25 @@ body.responsive-body {
 
 /* ---------------------------------------------------------------------*/
 .responsive-text.drawer-subtitle {
-    font-size: 1.3rem; /* Tamanho padrão */
+    font-size: 1.2rem; /* Tamanho padrão */
     font-weight: 600;
 }
 
 @media (min-width: 600px) {
     .responsive-text.drawer-subtitle {
-        font-size: 1.5rem; /* Tamanho para telas médias */
+        font-size: 1.3rem; /* Tamanho para telas médias */
     }
 }
 
 @media (min-width: 960px) {
     .responsive-text.drawer-subtitle {
-        font-size: 1.5rem; /* Tamanho para telas grandes */
+        font-size: 1.4rem; /* Tamanho para telas grandes */
     }
 }
 
 @media (min-width: 1280px) {
     .responsive-text.drawer-subtitle {
-        font-size: 1.55rem; /* Tamanho para telas extra grandes */
+        font-size: 1.4rem; /* Tamanho para telas extra grandes */
     }
 }
 

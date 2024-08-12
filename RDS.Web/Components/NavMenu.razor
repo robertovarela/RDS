@@ -2,20 +2,36 @@
     <img src="/imgs/RDS-01.jpg" alt="RDS - Soluções em software" width="200"/>
 </div>
 
-
-<MudNavLink Href="/">Início</MudNavLink>
 <MudNavMenu Margin="Margin.None" Color="Color.Success" Rounded="true" Dense="true" Class="responsive-text drawer-title">
-    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Start">Início</MudNavLink>
-    <MudNavLink Href="/usuarios/editar">Meu Cadastro</MudNavLink>
+    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Início</MudNavLink>
 
-    <MudNavGroup Title="Gerenciamento" Class="px-4" Icon="@Icons.Material.Filled.Class" IconColor="Color.Warning" @bind-Expanded=_expandedManager>
-        <MudNavLink Href="/categorias" Class="responsive-text drawer-subtitle" Icon="@Icons.Material.Filled.Category" IconColor="Color.Info">Categorias</MudNavLink>
-        <MudNavLink Href="/lancamentos/historico" Class="responsive-text drawer-subtitle" Icon="@Icons.Material.Filled.History" IconColor="Color.Warning">Transações</MudNavLink>
-        <MudNavLink Href="/usuarios" Class="responsive-text drawer-subtitle" Icon="@Icons.Material.Filled.People" IconColor="Color.Success">Usuários</MudNavLink>
+
+    <MudNavGroup Title="Gerenciamento" Class="px-4" Icon="@Icons.Material.Filled.Class" IconColor="Color.Warning"
+                 Expanded="@(_expandedGroup == "Manager")" ExpandedChanged="@(() => ToggleGroup("Manager"))">
+
+        <MudNavGroup Title="Usuários" Class="px-4" Icon="@Icons.Material.Filled.PeopleOutline" IconColor="Color.Success"
+                     Expanded="@(_expandedGroup == "SubUsers")" ExpandedChanged="@(() => ToggleGroup("SubUsers"))">
+
+            <MudNavLink Href="/usuarios" Class="responsive-text drawer-subtitle" 
+                        Icon="@Icons.Material.Filled.People" IconColor="Color.Success">Lista</MudNavLink>
+            <MudNavLink Href="/usuarios/editar" Class="responsive-text drawer-subtitle" 
+                        Icon="@Icons.Material.Filled.Person" IconColor="Color.Success">Meu Cadastro</MudNavLink>
+
+        </MudNavGroup>
+
+        <MudNavLink Href="/categorias" Class="responsive-text drawer-subtitle" 
+                    Icon="@Icons.Material.Filled.Category" IconColor="Color.Info">Categorias</MudNavLink>
+        <MudNavLink Href="/lancamentos/historico" Class="responsive-text drawer-subtitle" 
+                    Icon="@Icons.Material.Filled.History" IconColor="Color.Warning">Transações</MudNavLink>
+
     </MudNavGroup>
 
-    <MudNavGroup Title="Configurações" Class="px-4" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Error" @bind-Expanded=_expandedConfiguration>
-        <MudNavLink Href="/finger" Class="responsive-text drawer-subtitle">Finger Print</MudNavLink>
+    <MudNavGroup Title="Configurações" Class="px-4" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Error"
+                 Expanded="@(_expandedGroup == "Configurations")" ExpandedChanged="@(() => ToggleGroup("Configurations"))">
+
+        <MudNavLink Href="/finger" Class="responsive-text drawer-subtitle"
+                    Icon="@Icons.Material.Filled.Devices" IconColor="Color.Warning">Finger Print</MudNavLink>
+
     </MudNavGroup>
 
     <MudNavLink Href="/sair" Icon="@Icons.Material.Filled.Logout">Sair</MudNavLink>
@@ -24,9 +40,43 @@
 <link href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" rel="stylesheet">
 
 @code{
-    bool _expandedManager = false;
-    bool _expandedConfiguration = false;
-    
-    string ClassColorManager => _expandedManager ? "mud-theme-primary" : "mud-theme-secondary";
-    string ClassColorConfiguration => _expandedConfiguration ? "mud-theme-primary" : "mud-theme-secondary";
+
+    private string? _expandedGroup = null;
+    private string? _expandedSubGroup = null;
+
+    private void ToggleGroup(string groupName)
+    {
+        if (groupName.StartsWith("Sub"))
+        {
+            // Trata submenus separadamente
+            if (_expandedSubGroup == groupName)
+            {
+                _expandedSubGroup = null;
+            }
+            else
+            {
+                _expandedSubGroup = groupName;
+            }
+        }
+        else
+        {
+            if (_expandedGroup == groupName)
+            {
+                _expandedGroup = null;
+            }
+            else
+            {
+                _expandedGroup = groupName;
+                _expandedSubGroup = null;
+            }
+        }
+    }
+
+    //bool _expandedManager = false;
+    //bool _expandedConfiguration = false;
+    //bool _expandedManagerUser = false ;
+
+    //
+    // string ClassColorManager => _expandedManager ? "mud-theme-primary" : "mud-theme-secondary";
+    // string ClassColorConfiguration => _expandedConfiguration ? "mud-theme-primary" : "mud-theme-secondary";
 }
