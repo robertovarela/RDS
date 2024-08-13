@@ -6,7 +6,7 @@
     <Authorized>
         <TitleBar Title="Usuários"/>
         <div class="d-flex mt-2 mb-2">
-            <MudTextField @bind-Value="SearchFilter"
+            <MudTextField @bind-Value="@SearchFilter"
                           Class="mr-4"
                           Placeholder="Buscar no banco de dados"
                           Adornment="Adornment.Start"
@@ -49,7 +49,7 @@
                 <ToolBarContent>
                     <MudSpacer/>
                     <MudTextField ShrinkLabel="true"
-                                  @bind-Value="SearchTerm"
+                                  @bind-Value="@SearchTerm"
                                   Placeholder="Filtrar..."
                                   Adornment="Adornment.Start"
                                   AdornmentIcon="@Icons.Material.Filled.Search"
@@ -83,7 +83,7 @@
                     </TemplateColumn>
                 </Columns>
                 <PagerContent>
-                    <MudDataGridPager T="ApplicationUser" RowsPerPageString="Registros por página" InfoFormat="{first_item} - {last_item} de {all_items}" PageSizeOptions="new int[] { 5, 10, 25, 50, 100 }"/>
+                    <MudDataGridPager T="ApplicationUser" RowsPerPageString="Registros por página" InfoFormat="{first_item} - {last_item} de {all_items}" PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
                 </PagerContent>
             </MudDataGrid>
         }

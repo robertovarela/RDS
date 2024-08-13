@@ -6,10 +6,10 @@ namespace RDS.Web.Pages.ApplicationUsers
         #region Properties
 
         protected bool IsBusy { get; private set; }
-        protected List<ApplicationUser> ApplicationUsers { get; private set; } = new List<ApplicationUser>();
-        protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = new List<ApplicationUser>();
-        public string SearchTerm { get; set; } = string.Empty;
-        public string SearchFilter { get; set; } = string.Empty; // Campo de busca inicial
+        private List<ApplicationUser> ApplicationUsers { get; set; } = [];
+        protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
+        protected string SearchTerm { get; set; } = string.Empty;
+        protected string SearchFilter { get; set; } = string.Empty;
         protected const string Url = "/usuarios/editar";
 
         private readonly int _currentPage = 1;

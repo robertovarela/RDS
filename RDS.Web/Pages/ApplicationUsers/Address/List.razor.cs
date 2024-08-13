@@ -4,22 +4,15 @@ public class ListApplicationUserAdressesPage : ComponentBase
 {
     #region Properties
 
-    protected bool IsBusy { get; set; }
-    public List<ApplicationUserAddress> ApplicationUsersAddress { get; set; } = [];
-    public string SearchTerm { get; set; } = string.Empty;
-
-    public string Url { get; set; } = "/usuarios/enderecos/editar";
+    protected bool IsBusy { get; private set; }
+    protected List<ApplicationUserAddress> ApplicationUsersAddress { get; private set; } = [];
+    protected string SearchTerm { get; set; } = string.Empty;
+    protected const string Url = "/usuarios/enderecos/editar";
 
     #endregion
 
     #region Services
 
-    // [Inject] private TokenService TokenService { get; set; } = null!;
-    // [Inject] private HttpClientService HttpClientService { get; set; } = null!;
-    // [Inject] private ILocalStorageService LocalStorage { get; set; } = null!;
-    // [Inject] private ManipulateUserStateValuesService ManipulateUserStateValues { get; set; } = null!;
-    // [Inject] public UserStateService UserState { get; set; } = null!;
-    // [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
     [Inject] public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
     [Inject] public LinkUserStateService Link { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
