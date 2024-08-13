@@ -1,4 +1,4 @@
-﻿namespace RDS.Web.Pages.ApplicationUsers.Address;
+﻿namespace RDS.Web.Pages.ApplicationUsers.Addresses;
 
 public class EditApplicationUserAddressPage : ComponentBase
 {

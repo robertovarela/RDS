@@ -1,6 +1,6 @@
-﻿namespace RDS.Web.Pages.ApplicationUsers.Address;
+﻿namespace RDS.Web.Pages.ApplicationUsers.Addresses;
 
-public partial class CreateApplicationUserAddresPage : ComponentBase
+public partial class CreateApplicationUserAddressPage : ComponentBase
 {
     #region Properties
 
