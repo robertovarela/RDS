@@ -17,11 +17,7 @@
                                OnClick="ToggleDrawer"/>
                 <span style="font-weight:800; font-size:large;">@Company</span>
                 <MudSpacer/>
-                <MudButton Href="/lancamentos/novo"
-                           Variant="Variant.Text" StartIcon="@Icons.Material.TwoTone.Add">
-                    NOVO LANÇAMENTO
-                </MudButton>
-                <MudSpacer/>
+
                 <MudText Typo="Typo.caption">
                     <span style="font-weight:800">
                         @context.User.Identity?.Name

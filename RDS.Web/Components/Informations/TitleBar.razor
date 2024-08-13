@@ -1,12 +1,11 @@
 ﻿<MudPaper Class="pr-8 pl-8 pt-4 pb-4 mt-4 bg-drawer">
     <div class="d-flex">
-        <MudSpacer />
-        <MudText Typo="Typo.h4">@Title</MudText>
-        <MudSpacer />
+        <MudSpacer/>
+        <mudtext Class="ml-4 responsive-text title-screen">@Title</mudtext>
+        <MudSpacer/>
     </div>
 </MudPaper>
 
 @code {
-    [Parameter]
-    public string Title { get; set; } = "";
+    [Parameter] public string Title { get; set; } = "";
 }

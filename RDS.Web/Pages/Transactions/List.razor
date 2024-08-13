@@ -1,44 +1,59 @@
 @page "/lancamentos/historico"
 @inherits ListTransactionsPage
 
-<MudText Typo="Typo.h3">Lançamentos</MudText>
-
-<div class="d-flex justify-end mt-4 mb-4">
-    <MudSelect T="int"
-               Label="Mês"
-               @bind-Value="CurrentMonth"
-               AnchorOrigin="Origin.BottomCenter"
-               Class="mr-4"
-               Variant="Variant.Outlined">
-        @for (var month = 1; month <= 12; month++)
-        {
-            var date = new DateTime(DateTime.Now.Year, month, 1);
-            <MudSelectItem T="int" Value="@month">
-                @(date.ToString("MMMM"))
-            </MudSelectItem>
-        }
-    </MudSelect>
-    <MudSelect T="int"
-               Label="Ano"
-               @bind-Value="@CurrentYear"
-               AnchorOrigin="Origin.BottomCenter"
-               Variant="Variant.Outlined">
-        @foreach (var year in Years)
-        {
-            <MudSelectItem T="int" Value="@year">
-                @year
-            </MudSelectItem>
-        }
-    </MudSelect>
-    <MudSpacer />
-    <div class="d-flex justify-end mt-2 mb-2">
-        <MudButton Size="Size.Small"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.TwoTone.Search"
-                   OnClick="OnSearchAsync">
-            PESQUISAR
-        </MudButton>
+<TitleBar Title="Transações"/>
+<div class="d-flex  mt-2 mb-2">
+    <div class="d-flex mt-2 mb-2">
+        <MudSelect T="int"
+                   Label="Mês"
+                   @bind-Value="CurrentMonth"
+                   AnchorOrigin="Origin.BottomCenter"
+                   Class="mr-4"
+                   Variant="Variant.Outlined"
+                   Style="width: 120px">
+            @for (var month = 1; month <= 12; month++)
+            {
+                var date = new DateTime(DateTime.Now.Year, month, 1);
+                <MudSelectItem T="int" Value="@month">
+                    @(date.ToString("MMMM"))
+                </MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect T="int"
+                   Label="Ano"
+                   @bind-Value="@CurrentYear"
+                   Class="mr-4"
+                   AnchorOrigin="Origin.BottomCenter"
+                   Variant="Variant.Outlined">
+            @foreach (var year in Years)
+            {
+                <MudSelectItem T="int" Value="@year">
+                    @year
+                </MudSelectItem>
+            }
+        </MudSelect>
+        <MudSpacer/>
+        <div class="d-flex mt-2 mb-2">
+            <MudButton Size="Size.Small"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.TwoTone.Search"
+                       OnClick="OnSearchAsync">
+                PESQUISAR
+            </MudButton>
+        </div>
+    </div>
+    <MudSpacer/>
+    <div class="d-flex mt-2 mb-2">
+        <div class="d-flex mt-2 mb-2">
+            <MudButton Size="Size.Small"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.TwoTone.Add"
+                       OnClick="@(() => NavigationService.NavigateTo("/lancamentos/novo"))">
+                ADICIONAR
+            </MudButton>
+            </div>
     </div>
 </div>
 
@@ -48,19 +63,20 @@
              Hideable="true"
              ColumnResizeMode="ResizeMode.Column">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Lançamentos</MudText>
-        <MudSpacer />
+        <MudSpacer/>
         <MudTextField @bind-Value="SearchTerm"
                       Placeholder="Filtrar..."
                       Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search"
                       Immediate="true"
                       IconSize="Size.Medium"
-                      Class="mt-0" 
-                      Variant="Variant.Outlined" AutoFocus/>
+                      Class="mt-0"
+                      Variant="Variant.Outlined"
+                      Clearable="true"
+                      AutoFocus/>
     </ToolBarContent>
     <Columns>
-        <PropertyColumn Property="x => x.Title" Title="Lançamento" Sortable="true" />
+        <PropertyColumn Property="x => x.Title" Title="Lançamento" Sortable="true"/>
         <TemplateColumn Title="Tipo" Filterable="true" Sortable="true">
             <CellTemplate>
                 @if (context.Item.Type == ETransactionType.Deposit)

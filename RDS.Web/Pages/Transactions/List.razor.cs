@@ -12,19 +12,11 @@ public partial class ListTransactionsPage : ComponentBase
     #region Properties
 
     public bool IsBusy { get; set; } = false;
-    public List<Transaction> Transactions { get; set; } = [];
+    protected List<Transaction> Transactions { get; set; } = [];
     public string SearchTerm { get; set; } = string.Empty;
-    public int CurrentYear { get; set; } = DateTime.Now.Year;
+    protected int CurrentYear { get; set; } = DateTime.Now.Year;
     public int CurrentMonth { get; set; } = DateTime.Now.Month;
-
-    public int[] Years { get; set; } =
-    {
-        DateTime.Now.AddYears(1).Year,
-        DateTime.Now.Year,
-        DateTime.Now.AddYears(-1).Year,
-        DateTime.Now.AddYears(-2).Year,
-        DateTime.Now.AddYears(-3).Year
-    };
+    protected int[] Years { get; set; } = LoadYears();
 
     #endregion
 
@@ -138,6 +130,19 @@ public partial class ListTransactionsPage : ComponentBase
         {
             IsBusy = false;
         }
+    }
+    
+    private static int[] LoadYears()
+    {
+        int period = 10;
+        int yearsToAdd = 3;
+        var years = new int[period];
+        for (int i = 0; i < period; i++)
+        {
+            years[i] = DateTime.Now.AddYears(yearsToAdd - i).Year;
+        }
+        
+        return years;
     }
 
     #endregion

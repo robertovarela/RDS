@@ -1,7 +1,7 @@
 @page "/categorias/adicionar"
 @inherits CreateCategoryPage
 
-<MudText Typo="Typo.h3">Nova Categoria</MudText>
+<TitleBar Title="Nova Categoria"/>
 <MudPaper Class="pa-8 mt-4">
     <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
         <DataAnnotationsValidator/>
@@ -9,13 +9,16 @@
         <MudTextField Label="Título"
                       HelperText="Campo obrigatório"
                       @bind-Value="InputModel.Title"
-                      For="@(() => InputModel.Title)"/>
+                      For="@(() => InputModel.Title)"
+                      Variant="Variant.Outlined"
+                      AutoFocus/>
 
         <MudTextField Label="Descrição"
                       Lines="5"
                       HelperText="Campo obrigatório"
                       @bind-Value="InputModel.Description"
-                      For="@(() => InputModel.Description)"/>
+                      For="@(() => InputModel.Description)"
+                      Variant="Variant.Outlined"/>
 
        <SaveAndCancelButtons Page="/categorias"/>
     </EditForm>

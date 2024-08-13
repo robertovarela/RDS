@@ -64,8 +64,10 @@
 html {
     font-size: 14px; /* Altera a base para 1rem = 14 pixels */
 }
+body {
+    font-family: 'Karla', 'Poppins', 'Roboto', sans-serif;
+}
 
-/* ---------------------------------------------------------------------*/
 body.responsive-body {
     font-size: 1.25rem; /* Tamanho padrão */
 }
