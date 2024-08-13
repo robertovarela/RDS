@@ -70,19 +70,18 @@ public static class BuilderExtension
             .AddDbContext<AppDbContext>(x => { x.UseSqlServer(Configuration.ConnectionString); });
 
         builder.Services
-            .AddIdentityCore<User>(options =>
+            .AddIdentity<User, IdentityRole<long>>(options =>
             {
                 options.User.RequireUniqueEmail = true;
                 options.User.AllowedUserNameCharacters =
                     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+" +
                     "áéíóúâêîôûãõàèìòùäëïöüñçÁÉÍÓÚÂÊÎÔÛÃÕÀÈÌÒÙÄËÏÖÜÑÇ ";
             })
-            .AddRoles<IdentityRole<long>>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddSignInManager()
             .AddUserManager<UserManager<User>>()
-            .AddDefaultTokenProviders()
-            .AddApiEndpoints();
+            .AddRoleManager<RoleManager<IdentityRole<long>>>()
+            .AddDefaultTokenProviders();
 
         using (var scope = builder.Services.BuildServiceProvider().CreateScope())
         {
@@ -112,18 +111,7 @@ public static class BuilderExtension
 
     public static void AddServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
-
-        builder.Services.AddTransient<ITransactionHandler, TransactionHandler>();
-
-        builder.Services.AddTransient<IReportHandler, ReportHandler>();
-
-        builder.Services.AddTransient<IApplicationUserHandler, ApplicationUserHandler>();
-
-        builder.Services.AddTransient<IApplicationUserAddressHandler, ApplicationUserAddressHandler>();
-
         builder.Services.AddTransient<JwtTokenService>();
-
         builder.Services.AddTransient<EmailService>();
     }
 
