@@ -34,6 +34,11 @@ public abstract class StartService
         return _manipulateUserStateValuesService.GetSelectedUserId();
     }
     
+    public static string GetSelectedUserName()
+    {
+        return _manipulateUserStateValuesService.GetSelectedUserName();
+    }
+    
     public static long GetSelectedAddressId()
     {
         return _manipulateUserStateValuesService.GetSelectedAddressId();
@@ -56,6 +61,11 @@ public abstract class StartService
     public static void SetSelectedUserId(long userId)
     {
         _manipulateUserStateValuesService.SetSelectedUserId(userId);
+    }
+    
+    public static void SetSelectedUserName(string userName)
+    {
+        _manipulateUserStateValuesService.SetSelectedUserName(userName);
     }
     
     public static void SetSelectedAddressId(long addressId)

@@ -2,7 +2,7 @@
 
 public class ApplicationUser : IdentityUser<long>
 {
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
     public string? Cpf { get; set; }
     public DateOnly? BirthDate { get; set; }
     public List<ApplicationUserAddress>? Address { get; set; }

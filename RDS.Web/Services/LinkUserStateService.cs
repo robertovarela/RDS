@@ -8,6 +8,13 @@
             NavigationService.NavigateTo(url);
         }
         
+        public void LinkToUrlUserRole(long userId, string userName, string url = "")
+        {
+            StartService.SetSelectedUserId(userId);
+            StartService.SetSelectedUserName(userName);
+            NavigationService.NavigateTo(url);
+        }
+   
         public void LinkToUrlAddress(string url = "", string urlOrigen = "", long userId = 0, long addressId = 0)
         {
             StartService.SetSelectedUserId(userId);

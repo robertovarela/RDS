@@ -125,7 +125,7 @@ public class UserConfigurationController(
         try
         {
             if(roleName is "Admin" or "User")
-                return new Response<ApplicationUserRole>(null, 401, "Não é possível excluir a Role Admin ou User.");
+                return new Response<ApplicationUserRole>(null, 401, $"Não é possível excluir a Role {roleName}.");
             
             var user = await userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
@@ -158,7 +158,7 @@ public class UserConfigurationController(
     }
     
     [HttpPost("list-roles-for-user")]
-    public async Task<Response<List<ApplicationRole>>> ListRolesForUser(GetApplicationUserByIdRequest request)
+    public async Task<Response<List<ApplicationUserRole>>> ListRolesForUser(GetAllApplicationUserRoleRequest request)
     {
         var userId = request.UserId;
         try
@@ -166,20 +166,22 @@ public class UserConfigurationController(
             var user = await userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
-                return new Response<List<ApplicationRole>>(null, 404, "Usuário não encontrado.");
+                return new Response<List<ApplicationUserRole>>(null, 404, "Usuário não encontrado.");
             }
 
             var roles = await userManager.GetRolesAsync(user);
-            var response = roles.Select(roleName => new ApplicationRole
+            var response = roles.Select(roleName => new ApplicationUserRole
             {
-                Name = roleName
+                RoleName = roleName,
+                RoleId = roleManager.Roles.FirstOrDefault(x => x.Name == roleName)?.Id ?? 0,
+                UserId = userId,
             }).ToList();
 
-            return new Response<List<ApplicationRole>>(response, 200, "Roles do usuário listadas com sucesso!");
+            return new Response<List<ApplicationUserRole>>(response, 200, "Roles do usuário listadas com sucesso!");
         }
         catch
         {
-            return new Response<List<ApplicationRole>>(null, 500, "Erro interno no servidor");
+            return new Response<List<ApplicationUserRole>>(null, 500, "Erro interno no servidor");
         }
     }
 }

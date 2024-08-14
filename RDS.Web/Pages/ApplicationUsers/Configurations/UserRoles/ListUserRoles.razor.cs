@@ -7,8 +7,10 @@ public partial class ListUserRolesPage : ComponentBase
     #region Properties
 
     public bool IsBusy { get; set; } = false;
-    protected List<ApplicationUserRole?> Roles { get; set; } = [];
+    protected List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
     protected string SearchTerm { get; set; } = string.Empty;
+    
+    protected long UserId => StartService.GetSelectedUserId();
 
     #endregion
 
@@ -24,14 +26,23 @@ public partial class ListUserRolesPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        var urlOrigen = StartService.GetUrlOrigen();
+        if (!StartService.GetUrlOrigen().Equals("/usuarios-para-roles"))
+        {
+            Snackbar.Add("Acesso não permitido!", Severity.Error);
+            Snackbar.Add("URL de origem não reconhecida", Severity.Error);
+            NavigationService.NavigateToLogin();
+            return;
+        }
+            
         await StartService.ValidateAccesByToken();
         IsBusy = true;
         try
         {
-            var request = new GetAllApplicationUserRoleRequest();
+            var request = new GetAllApplicationUserRoleRequest { UserId = UserId };
             var result = await Handler.ListUserRoleAsync(request);
             if (result.IsSuccess)
-                Roles = result.Data ?? [];
+                RolesFromUser = result.Data ?? []; //aqui o retorno é uma lista de ApplicationUserRole que tem os campos que necessito
         }
         catch (Exception ex)
         {
@@ -47,7 +58,7 @@ public partial class ListUserRolesPage : ComponentBase
 
     #region Methods
 
-    public async void OnDeleteButtonClickedAsync(long userId, long roleId, string roleName)
+    public async void OnDeleteButtonClickedAsync(long userId, string roleName)
     {
         var result = await DialogService.ShowMessageBox(
             "ATENÇÃO",
@@ -56,24 +67,23 @@ public partial class ListUserRolesPage : ComponentBase
             cancelText: "Cancelar");
 
         if (result is true)
-            await OnDeleteAsync(userId, roleId, roleName);
+            await OnDeleteAsync(userId, roleName);
 
         StateHasChanged();
     }
 
-    public async Task OnDeleteAsync(long userId, long roleId, string roleName)
+    public async Task OnDeleteAsync(long userId, string roleName)
     {
         try
         {
             var request = new DeleteApplicationUserRoleRequest
             {
                 UserId = userId,
-                RoleId = roleId,
                 RoleName = roleName
             };
             var result = await Handler.DeleteUserRoleAsync(request);
-            if (result.IsSuccess)
-                Roles.RemoveAll(x => x != null && x.RoleId == roleId);
+            if (result.IsSuccess && result.StatusCode == 201)
+                RolesFromUser.RemoveAll(x => x != null && x.RoleName == roleName);
             Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
@@ -81,17 +91,6 @@ public partial class ListUserRolesPage : ComponentBase
             Snackbar.Add(ex.Message, Severity.Error);
         }
     }
-
-    public Func<ApplicationRole, bool> Filter => role =>
-    {
-        if (string.IsNullOrWhiteSpace(SearchTerm))
-            return true;
-
-        if (role.Id.ToString().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        return role.Name != null && role.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
-    };
 
     #endregion
 }

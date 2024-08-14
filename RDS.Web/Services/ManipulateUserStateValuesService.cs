@@ -65,31 +65,6 @@ public class ManipulateUserStateValuesService(
         NavigationService.NavigateToLogin();
     }
 
-    public async Task<string> ValidateAccessByTokenOld()
-    {
-        string token = await localStorage.GetItemAsync<string>("authToken") ?? string.Empty;
-        if (string.IsNullOrEmpty(token)) return token;
-
-        if (long.TryParse(tokenService.GetUserIdFromToken(token), out var id))
-        {
-            userState.SetLoggedUserId(id);
-            if (id != 0) return token;
-        }
-
-        if (!long.TryParse(tokenService.GetUserIdFromToken(token, false), out var newId)) return token;
-        if (newId == 0)
-        {
-            snackbar.Add("Token inválido!", Severity.Warning);
-            NavigationService.NavigateToLogin();
-            return token;
-        }
-
-        userState.SetLoggedUserId(newId);
-        await RefreshToken(token, true);
-
-        return token;
-    }
-
     public async Task<bool> RefreshToken(string token, bool showMessage)
     {
         var fingerprint = await deviceService.GetDeviceFingerprint();
@@ -121,6 +96,12 @@ public class ManipulateUserStateValuesService(
         selectedUserId = userState.GetSelectedUserId();
         return selectedUserId;
     }
+    
+    public string GetSelectedUserName()
+    {
+        string selectedUserName = userState.GetSelectedUserName();
+        return selectedUserName;
+    }
 
     public long GetSelectedAddressId()
     {
@@ -143,6 +124,11 @@ public class ManipulateUserStateValuesService(
     public void SetSelectedUserId(long userId)
     {
         userState.SetSelectedUserId(userId);
+    }
+    
+    public void SetSelectedUserName(string userName)
+    {
+        userState.SetSelectedUserName(userName);
     }
 
     public void SetSelectedAddressId(long addressId)

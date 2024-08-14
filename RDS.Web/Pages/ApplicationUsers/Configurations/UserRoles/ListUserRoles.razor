@@ -13,41 +13,33 @@
     </MudButton>
 </div>
 
-@* <MudDataGrid *@
-@*     Class="mt-4" *@
-@*     Items="@Roles" *@
-@*     Filterable="true" *@
-@*     QuickFilter="Filter" *@
-@*     Hideable="true"> *@
-@*     <ToolBarContent> *@
-@*         <MudSpacer/> *@
-@*         <MudTextField *@
-@*             @bind-Value="@SearchTerm" *@
-@*             Placeholder="Filtrar..." *@
-@*             Adornment="Adornment.Start" *@
-@*             AdornmentIcon="@Icons.Material.Filled.Search" *@
-@*             Immediate="true" *@
-@*             IconSize="Size.Medium" *@
-@*             Class="mt-0" *@
-@*             Variant="Variant.Outlined" *@
-@*             Clearable="true" *@
-@*             AutoFocus> *@
-@*         </MudTextField> *@
-@*     </ToolBarContent> *@
-@*     <Columns> *@
-@*         <PropertyColumn Property="x => x.Id" Title="#"/> *@
-@*         <PropertyColumn Property="x => x.Id" Title="Role"/> *@
-@*         <TemplateColumn Class="d-flex justify-end"> *@
-@*             <CellTemplate> *@
-@*                 <MudStack Row> *@
-@*                     <MudIconButton  *@
-@*                         Icon="@Icons.Material.Filled.Delete" *@
-@*                         Color="Color.Error" *@
-@*                         aria-label="Excluir" *@
-@*                         OnClick="() => { if (context.Item.Name != null) OnDeleteButtonClickedAsync(1, 1, 123.ToString()); }"> *@
-@*                     </MudIconButton> *@
-@*                 </MudStack> *@
-@*             </CellTemplate> *@
-@*         </TemplateColumn> *@
-@*     </Columns> *@
-@* </MudDataGrid> *@
+<MudDataGrid
+    Class="mt-4"
+    Items="@RolesFromUser"
+    Filterable="false"
+    Hideable="true">
+    <ToolBarContent>
+        <MudSpacer/>
+        <MudText Class="responsive-text subtitle-screen" Align="Align.Center">
+            @StartService.GetSelectedUserName()
+        </MudText>
+        <MudSpacer/>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.RoleId" Title="#"/>
+        <PropertyColumn Property="x => x.RoleName" Title="Role"/>
+        <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudIconButton
+                        Disabled="@(context.Item.RoleName == "Admin" || context.Item.RoleName == "User")"
+                        Icon="@Icons.Material.Filled.Delete"
+                        Color="Color.Error"
+                        aria-label="Excluir"
+                        OnClick="() => OnDeleteButtonClickedAsync(UserId, context.Item.RoleName)">
+                    </MudIconButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
