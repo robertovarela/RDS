@@ -13,7 +13,7 @@ global using System.Security.Claims;
 /* add global usage directives for Microsoft namespaces here */
 
 global using Microsoft.AspNetCore.Identity;
-global using Microsoft.AspNetCore.Mvc;
+//global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.IdentityModel.Tokens;
 
 /* add global usage directives for Comanda namespaces here */

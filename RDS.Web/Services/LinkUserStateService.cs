@@ -1,24 +1,24 @@
 ﻿namespace RDS.Web.Services
 {
-    public class LinkUserStateService(UserStateService userState)
+    public class LinkUserStateService
     {
         public void LinkToUrlUser(string url = "", long userId = 0)
         {
-            userState.SetSelectedUserId(userId);
+            StartService.SetSelectedUserId(userId);
             NavigationService.NavigateTo(url);
         }
         
-        public void LinkToUrlAddress(string url = "", long userId = 0, long addressId = 0)
+        public void LinkToUrlAddress(string url = "", string urlOrigen = "", long userId = 0, long addressId = 0)
         {
-            userState.SetSelectedUserId(userId);
-            userState.SetSelectedAddressId(addressId);
+            StartService.SetSelectedUserId(userId);
+            StartService.SetSelectedAddressId(addressId);
             NavigationService.NavigateTo(url);
         }
         
         public void LinkToUrlCategory(string url = "", long userId = 0, long categoryId = 0)
         {
-            userState.SetSelectedUserId(userId);
-            userState.SetSelectedCategoryId(categoryId);
+            StartService.SetSelectedUserId(userId);
+            StartService.SetSelectedCategoryId(categoryId);
             NavigationService.NavigateTo(url);
         }
     }

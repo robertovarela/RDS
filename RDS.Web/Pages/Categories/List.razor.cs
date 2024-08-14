@@ -12,7 +12,7 @@ public partial class ListCategoriesPage : ComponentBase
 
     public bool IsBusy { get; set; } = false;
     protected List<Category> Categories { get; set; } = [];
-    public string SearchTerm { get; set; } = string.Empty;
+    protected string SearchTerm { get; set; } = string.Empty;
 
     #endregion
 
@@ -71,15 +71,9 @@ public partial class ListCategoriesPage : ComponentBase
         {
             var request = new DeleteCategoryRequest { Id = id };
             var result = await Handler.DeleteAsync(request);
-            Categories.RemoveAll(x => x.Id == id);
-            if(result.Data != null)
-            {
-                Snackbar.Add(result.Message, Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add(result.Message, Severity.Warning);
-            }
+            if (result.IsSuccess)
+                Categories.RemoveAll(x => x.Id == id);
+            Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
         {

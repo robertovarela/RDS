@@ -8,6 +8,7 @@ public class ListApplicationUserAdressesPage : ComponentBase
     protected List<ApplicationUserAddress> ApplicationUsersAddress { get; private set; } = [];
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string Url = "/usuarios/enderecos/editar";
+    protected const string UrlOrigen = "/usuarios/enderecos";
 
     #endregion
 

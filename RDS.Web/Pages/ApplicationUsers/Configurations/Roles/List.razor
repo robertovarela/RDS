@@ -1,21 +1,21 @@
-@page "/categorias"
-@inherits RDS.Web.Pages.Categories.ListCategoriesPage
+@page "/roles"
+@inherits ListRolesPage
 
-<TitleBar Title="Categorias"/>
+<TitleBar Title="Roles"/>
 <div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
     <MudButton
         Class="pt-2 pb-2"
         Variant="Variant.Filled"
         Color="Color.Primary"
         StartIcon="@Icons.Material.TwoTone.Add"
-        Href="/categorias/adicionar">
+        Href="/user-roles/adicionar">
         ADICIONAR
     </MudButton>
 </div>
 
 <MudDataGrid
     Class="mt-4"
-    Items="@Categories"
+    Items="@Roles"
     Filterable="true"
     QuickFilter="Filter"
     Hideable="true">
@@ -36,7 +36,7 @@
     </ToolBarContent>
     <Columns>
         <PropertyColumn Property="x => x.Id" Title="#"/>
-        <PropertyColumn Property="x => x.Title" Title="Categoria"/>
+        <PropertyColumn Property="x => x.Name" Title="Role"/>
         <TemplateColumn Class="d-flex justify-end">
             <CellTemplate>
                 <MudStack Row>
@@ -49,7 +49,7 @@
                         Icon="@Icons.Material.Filled.Delete"
                         Color="Color.Error"
                         aria-label="Excluir"
-                        OnClick="() => OnDeleteButtonClickedAsync(context.Item.Id, context.Item.Title)">
+                        OnClick="() => { if (context.Item.Name != null) OnDeleteButtonClickedAsync(context.Item.Name); }">
                     </MudIconButton>
                 </MudStack>
             </CellTemplate>

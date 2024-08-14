@@ -12,11 +12,17 @@ public abstract class StartService
     public static async Task ValidateAccesByToken()
     {
         await _manipulateUserStateValuesService.ValidateAccessByToken();
+        SetUrlOrigen("");
     }
     
     public static async Task RefreshToken(string refreshToken, bool showMessage)
     {
         await _manipulateUserStateValuesService.RefreshToken(refreshToken, showMessage);
+    }
+    
+    public static string GetUrlOrigen()
+    {
+        return _manipulateUserStateValuesService.GetUrlOrigen();
     }
     public static long GetLoggedUserId()
     {
@@ -41,6 +47,11 @@ public abstract class StartService
     public static void SetDefaultValues()
     {
         _manipulateUserStateValuesService.SetDefaultValues();
+    }
+    
+    public static void SetUrlOrigen(string url)
+    {
+        _manipulateUserStateValuesService.SetUrlOrigen(url);
     }
     public static void SetSelectedUserId(long userId)
     {

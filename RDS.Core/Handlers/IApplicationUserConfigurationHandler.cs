@@ -4,8 +4,8 @@ public interface IApplicationUserConfigurationHandler
 {
     Task<Response<ApplicationRole?>> CreateRoleAsync(CreateApplicationRoleRequest request);
     Task<Response<ApplicationRole?>> DeleteRoleAsync(DeleteApplicationRoleRequest request);
-    Task<Response<ApplicationRole?>> ListRoleAsync();
+    Task<PagedResponse<List<ApplicationRole?>>> ListRoleAsync();
     Task<Response<ApplicationUserRole?>> CreateUserRoleAsync(CreateApplicationUserRoleRequest request);
     Task<Response<ApplicationUserRole?>> DeleteUserRoleAsync(DeleteApplicationUserRoleRequest request);
-    Task<Response<ApplicationUserRole?>> ListUserRoleAsync(GetApplicationUserByIdRequest request);
+    Task<PagedResponse<List<ApplicationUserRole?>>> ListUserRoleAsync(GetAllApplicationUserRoleRequest request);
 }

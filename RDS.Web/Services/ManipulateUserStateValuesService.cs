@@ -102,6 +102,11 @@ public class ManipulateUserStateValuesService(
         return true;
     }
 
+    public string GetUrlOrigen()
+    {
+        string urlOrigen = userState.GetUrlOrigen();
+        return urlOrigen;
+    }
     public long GetLoggedUserId()
     {
         long loggedUserId = userState.GetLoggedUserId();
@@ -131,6 +136,10 @@ public class ManipulateUserStateValuesService(
         return selectedCategoryId;
     }
 
+    public void SetUrlOrigen(string url)
+    {
+        userState.SetUrlOrigen(url);
+    }
     public void SetSelectedUserId(long userId)
     {
         userState.SetSelectedUserId(userId);

@@ -1,7 +1,7 @@
-namespace RDS.Web.Pages.ApplicationUsers
+namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
 {
     // ReSharper disable once PartialTypeWithSinglePart
-    public partial class ListApplicationUsersPage : ComponentBase
+    public partial class ListApplicationUsersRolesPage : ComponentBase
     {
         #region Properties
 
@@ -10,8 +10,8 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
         protected string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
-        protected const string Url = "/usuarios/editar";
-        protected const string UrlOrigen = "/usuarios";
+        protected const string Url = "/delete-user-roles";
+        private const string UrlOrigen = "/usuarios-para-roles";
 
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
@@ -32,19 +32,20 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected override async Task OnInitializedAsync()
         {
             await StartService.ValidateAccesByToken();
+            StartService.SetUrlOrigen(UrlOrigen);
             await LoadUsers();
         }
 
         #endregion
 
         #region Methods
-        
+
         private async Task LoadUsers()
         {
             IsBusy = true;
             try
             {
-                var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize};
+                var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize };
                 var result = await UserHandler.GetAllAsync(request);
                 if (result.IsSuccess)
                 {
@@ -66,35 +67,6 @@ namespace RDS.Web.Pages.ApplicationUsers
         {
             await LoadUsers();
             StateHasChanged();
-        }
-        public async void OnDeleteButtonClickedAsync(long id, string name)
-        {
-            var result = await DialogService.ShowMessageBox(
-                "ATENÇÃO",
-                $"Ao prosseguir o usuário ( {id} - {name} ) será excluído. Esta é uma ação irreversível! Deseja continuar?",
-                yesText: "EXCLUIR",
-                cancelText: "Cancelar");
-
-            if (result is true)
-                await OnDeleteAsync(id);
-
-            StateHasChanged();
-        }
-
-        private async Task OnDeleteAsync(long id)
-        {
-            try
-            {
-                var request = new DeleteApplicationUserRequest { UserId = id };
-                var result = await UserHandler.DeleteAsync(request);
-                ApplicationUsers.RemoveAll(x => x.Id == id);
-                PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);
-                Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
-            }
-            catch (Exception)
-            {
-                Snackbar.Add("Não foi possível excluir o usuário", Severity.Error);
-            }
         }
 
         public Func<ApplicationUser, bool> Filter => applicationUser =>

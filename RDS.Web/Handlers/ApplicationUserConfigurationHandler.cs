@@ -1,4 +1,6 @@
-﻿namespace RDS.Web.Handlers;
+﻿using RDS.Web.Pages.Categories;
+
+namespace RDS.Web.Handlers;
 
 public class ApplicationUserConfigurationHandler(HttpClientService httpClientService)
     : IApplicationUserConfigurationHandler
@@ -34,7 +36,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
                ?? new Response<ApplicationRole?>(null, 400, "Falha ao excluir a role");
     }
 
-    public async Task<Response<ApplicationRole?>> ListRoleAsync()
+    public async Task<PagedResponse<List<ApplicationRole?>>> ListRoleAsync()
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfiguration/list-roles")
         {
@@ -42,8 +44,8 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
         };
         var httpClient = await GetHttpClientAsync();
         var result = await httpClient.SendAsync(requestMessage);
-        return await result.Content.ReadFromJsonAsync<Response<ApplicationRole?>>()
-               ?? new Response<ApplicationRole?>(null, 400, "Falha ao listar as roles");
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<ApplicationRole?>>>()
+               ?? new PagedResponse<List<ApplicationRole?>>(null, 400, "Falha ao listar as roles");
     }
     
     public async Task<Response<ApplicationUserRole?>> CreateUserRoleAsync(CreateApplicationUserRoleRequest request)
@@ -69,8 +71,8 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
         return await result.Content.ReadFromJsonAsync<Response<ApplicationUserRole?>>()
                ?? new Response<ApplicationUserRole?>(null, 400, "Falha ao excluir a role do usuário");
     }
-    
-    public async Task<Response<ApplicationUserRole?>> ListUserRoleAsync(GetApplicationUserByIdRequest request)
+
+    public async Task<PagedResponse<List<ApplicationUserRole?>>> ListUserRoleAsync(GetAllApplicationUserRoleRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfiguration/list-roles-for-user")
         {
@@ -78,7 +80,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
         };
         var httpClient = await GetHttpClientAsync();
         var result = await httpClient.SendAsync(requestMessage);
-        return await result.Content.ReadFromJsonAsync<Response<ApplicationUserRole?>>()
-               ?? new Response<ApplicationUserRole?>(null, 400, "Falha ao listar as roles do usuário");
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<ApplicationUserRole?>>>()
+               ?? new PagedResponse<List<ApplicationUserRole?>>(null, 400, "Falha ao listar as roles do usuário");
     }
 }

@@ -29,7 +29,7 @@ public class UserConfigurationController(
         }
     }
     
-    [HttpPost("delete-role")]
+    [HttpDelete("delete-role")]
     public async Task<Response<ApplicationRole>> DeleteRole([FromBody] DeleteApplicationRoleRequest request)
     {
         var roleName = request.Name.Capitalize();
@@ -118,7 +118,7 @@ public class UserConfigurationController(
         }
     }
     
-    [HttpPost("delete-role-to-user")]
+    [HttpDelete("delete-role-to-user")]
     public async Task<Response<ApplicationUserRole>> DeleteRoleToUser(DeleteApplicationUserRoleRequest request)
     {
         var roleName = request.RoleName.Capitalize();

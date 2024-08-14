@@ -11,6 +11,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     public DateTime MaxDate = DateTime.Today.AddYears(-12);
     protected const string UrlAddress = "/usuarios/enderecos";
     protected const string UrlPhone = "/usuarios/telefones";
+    protected const string UrlOrigen = "/usuarios";
     
     #endregion
 

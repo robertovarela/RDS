@@ -1,0 +1,88 @@
+@page "/usuarios-para-roles"
+@inherits ListApplicationUsersRolesPage
+
+<!--<UserState/>-->
+<AuthorizeView>
+    <Authorized>
+        <TitleBar Title="Usuários - Roles"/>
+        <div class="d-flex mt-2 mb-2">
+            <MudTextField @bind-Value="@SearchFilter"
+                          Class="mr-4"
+                          Placeholder="Buscar no banco de dados"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Immediate="true"
+                          Variant="Variant.Outlined"
+                          Clearable="true"
+                          AutoFocus/>
+            <div class="d-flex mt-2 mb-2">
+                <MudButton Class="mr-4"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="OnSearch">
+                    Buscar
+                </MudButton>
+            </div>
+            <MudSpacer/>
+            <div class="d-flex mt-2 mb-2">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.TwoTone.Add"
+                           OnClick="OnNewUserButton">
+                    ADICIONAR
+                </MudButton>
+            </div>
+        </div>
+        @if (IsBusy)
+        {
+            <MudPaper Class="pa-8 mt-4">
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
+            </MudPaper>
+        }
+        else
+        {
+            <MudDataGrid T="ApplicationUser" Items="@PagedApplicationUsers" Filterable="true" QuickFilter="Filter" Hideable="true">
+                <ToolBarContent>
+                    <MudSpacer/>
+                    <MudTextField ShrinkLabel="true"
+                                  @bind-Value="@SearchTerm"
+                                  Placeholder="Filtrar..."
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Immediate="true"
+                                  IconSize="Size.Medium"
+                                  Class="mt-0"
+                                  Variant="Variant.Outlined"
+                                  Clearable="true">
+                    </MudTextField>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x.Id" Title="#"/>
+                    <PropertyColumn Property="x => x.Name" Title="Nome"/>
+                    <PropertyColumn Property="x => x.Email" Title="Email"/>
+                    <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
+                        <CellTemplate Context="cellContext">
+                            <MudStack Row>
+                                <MudIconButton
+                                    Icon="@Icons.Material.Filled.Edit"
+                                    Color="Color.Primary"
+                                    OnClick="@(() => Link.LinkToUrlUser(Url, cellContext.Item.Id))">
+                                </MudIconButton>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="ApplicationUser" RowsPerPageString="Registros por página" InfoFormat="{first_item} - {last_item} de {all_items}" PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
+    </NotAuthorized>
+</AuthorizeView>

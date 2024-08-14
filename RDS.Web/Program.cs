@@ -49,6 +49,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(Configur
 
 builder.Services.AddTransient<IApplicationUserHandler, ApplicationUserHandler>();
 builder.Services.AddTransient<IApplicationUserAddressHandler, ApplicationUserAdressHandler>();
+builder.Services.AddTransient<IApplicationUserConfigurationHandler, ApplicationUserConfigurationHandler>();
 builder.Services.AddTransient<ITransactionHandler, TransactionHandler>();
 builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
 builder.Services.AddTransient<IReportHandler, ReportHandler>();
