@@ -1,4 +1,4 @@
-@page "/roles"
+@page "/usuariosconfiguracao/roles"
 @inherits ListRolesPage
 
 <TitleBar Title="Roles"/>
@@ -8,7 +8,7 @@
         Variant="Variant.Filled"
         Color="Color.Primary"
         StartIcon="@Icons.Material.TwoTone.Add"
-        Href="/user-roles/adicionar">
+        Href="/usuariosconfiguracao/adicionar-role">
         ADICIONAR
     </MudButton>
 </div>
@@ -37,15 +37,11 @@
     <Columns>
         <PropertyColumn Property="x => x.Id" Title="#"/>
         <PropertyColumn Property="x => x.Name" Title="Role"/>
-        <TemplateColumn Class="d-flex justify-end">
+        <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
             <CellTemplate>
                 <MudStack Row>
-                    <MudIconButton 
-                        Icon="@Icons.Material.Filled.Edit"
-                        Href="@($"/categorias/editar/{context.Item.Id}")"
-                        Color="Color.Primary">
-                    </MudIconButton>
-                    <MudIconButton 
+                    <MudIconButton
+                        Disabled="@(context.Item.Name == "Admin" || context.Item.Name == "User")"
                         Icon="@Icons.Material.Filled.Delete"
                         Color="Color.Error"
                         aria-label="Excluir"

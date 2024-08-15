@@ -10,8 +10,8 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
         protected string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
-        protected const string Url = "/delete-user-roles";
-        private const string UrlOrigen = "/usuarios-para-roles";
+        protected const string Url = "/usuariosconfiguracao/lista-roles-do-susuario";
+        private const string UrlOrigen = "/usuariosconfiguracao/lista-usuarios-roles";
 
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;

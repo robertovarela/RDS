@@ -1,5 +1,3 @@
-using RDS.Core.Requests.ApplicationUsers.Telephone;
-
 namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles;
 
 public partial class ListUserRolesPage : ComponentBase
@@ -27,7 +25,7 @@ public partial class ListUserRolesPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         var urlOrigen = StartService.GetUrlOrigen();
-        if (!StartService.GetUrlOrigen().Equals("/usuarios-para-roles"))
+        if (!StartService.GetUrlOrigen().Equals("/usuariosconfiguracao/lista-usuarios-roles"))
         {
             Snackbar.Add("Acesso não permitido!", Severity.Error);
             Snackbar.Add("URL de origem não reconhecida", Severity.Error);
@@ -82,7 +80,7 @@ public partial class ListUserRolesPage : ComponentBase
                 RoleName = roleName
             };
             var result = await Handler.DeleteUserRoleAsync(request);
-            if (result.IsSuccess && result.StatusCode == 201)
+            if (result is { IsSuccess: true, StatusCode: 200 })
                 RolesFromUser.RemoveAll(x => x != null && x.RoleName == roleName);
             Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }

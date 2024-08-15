@@ -1,18 +1,17 @@
-namespace RDS.Web.Pages.Categories;
+namespace RDS.Web.Pages.ApplicationUsers.Configurations.Roles;
 
-public class CreateCategoryPage : ComponentBase
+public partial class CreateRolePage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; }
-    public CreateCategoryRequest InputModel { get; set; } = new();
+    public bool IsBusy { get; set; } = false;
+    public CreateApplicationRoleRequest InputModel { get; set; } = new();
 
     #endregion
 
     #region Services
 
-    [Inject] public ICategoryHandler Handler { get; set; } = null!;
-
+    [Inject] public IApplicationUserConfigurationHandler RoleHandler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
@@ -34,11 +33,11 @@ public class CreateCategoryPage : ComponentBase
 
         try
         {
-            var result = await Handler.CreateAsync(InputModel);
+            var result = await RoleHandler.CreateRoleAsync(InputModel);
             if (result.IsSuccess)
             {
                 Snackbar.Add(result.Message, Severity.Success);
-                NavigationService.NavigateTo("/categorias");
+                NavigationService.NavigateTo("usuariosconfiguracao/roles");
             }
             else
                 Snackbar.Add(result.Message, Severity.Error);

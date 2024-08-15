@@ -59,13 +59,14 @@ public partial class ListRolesPage : ComponentBase
         StateHasChanged();
     }
 
-    public async Task OnDeleteAsync(string roleName)
+    private async Task OnDeleteAsync(string roleName)
     {
         try
         {
-            var request = new DeleteApplicationRoleRequest { Name = roleName};
+            var request = new DeleteApplicationRoleRequest { Name = roleName };
             var result = await Handler.DeleteRoleAsync(request);
-            Roles.RemoveAll(x => x != null && x.Name == roleName);
+            if (result is { IsSuccess: true, StatusCode: 200 })
+                Roles.RemoveAll(x => x != null && x.Name == roleName);
             Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
@@ -77,9 +78,6 @@ public partial class ListRolesPage : ComponentBase
     public Func<ApplicationRole, bool> Filter => role =>
     {
         if (string.IsNullOrWhiteSpace(SearchTerm))
-            return true;
-
-        if (role.Id.ToString().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
             return true;
 
         return role.Name != null && role.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);

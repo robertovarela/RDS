@@ -1,4 +1,4 @@
-@page "/delete-user-roles"
+@page "/usuariosconfiguracao/lista-roles-do-susuario"
 @inherits ListUserRolesPage
 
 <TitleBar Title="Roles"/>
@@ -8,7 +8,7 @@
         Variant="Variant.Filled"
         Color="Color.Primary"
         StartIcon="@Icons.Material.TwoTone.Add"
-        Href="/user-roles/adicionar">
+        Href="/usuariosconfiguracao/roles-do-susuario/adicionar">
         ADICIONAR
     </MudButton>
 </div>
@@ -16,7 +16,7 @@
 <MudDataGrid
     Class="mt-4"
     Items="@RolesFromUser"
-    Filterable="false"
+    Filterable="false" 
     Hideable="true">
     <ToolBarContent>
         <MudSpacer/>

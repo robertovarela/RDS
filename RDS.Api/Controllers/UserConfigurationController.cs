@@ -28,14 +28,14 @@ public class UserConfigurationController(
             return new Response<ApplicationRole>(null, 500, "Erro interno no servidor");
         }
     }
-    
+
     [HttpDelete("delete-role")]
     public async Task<Response<ApplicationRole>> DeleteRole([FromBody] DeleteApplicationRoleRequest request)
     {
         var roleName = request.Name.Capitalize();
         try
         {
-            if(roleName is "Admin" or "User")
+            if (roleName is "Admin" or "User")
                 return new Response<ApplicationRole>(null, 401, "Não é possível excluir a Role Admin ou User.");
 
             var role = await roleManager.FindByNameAsync(roleName);
@@ -45,7 +45,7 @@ public class UserConfigurationController(
             }
 
             var result = await roleManager.DeleteAsync(role);
-            if(!result.Succeeded)
+            if (!result.Succeeded)
                 return new Response<ApplicationRole>(null, 401, "Erro ao excluir a Role.");
 
             var response = new ApplicationRole
@@ -69,11 +69,14 @@ public class UserConfigurationController(
             var roles = await roleManager.Roles.ToListAsync();
 
             var response = roles.Select(role => new ApplicationRole
-            {
-                Id = role.Id,
-                Name = role.Name
-            }).ToList();
-
+                {
+                    Id = role.Id,
+                    Name = role.Name
+                })
+                .OrderBy(role => role.Name != "Admin")
+                .ThenBy(role => role.Name != "User")
+                .ThenBy(role => role.Name)
+                .ToList();
             return new Response<List<ApplicationRole>>(response, 200, "Roles listadas com sucesso!");
         }
         catch
@@ -102,8 +105,8 @@ public class UserConfigurationController(
 
             var result = await userManager.AddToRoleAsync(user, roleName);
             if (!result.Succeeded)
-                return new Response<ApplicationUserRole>(null, 401, "Erro ao atribuir a Role ao usuário."); 
-            
+                return new Response<ApplicationUserRole>(null, 401, "Erro ao atribuir a Role ao usuário.");
+
             var response = new ApplicationUserRole
             {
                 UserId = request.UserId,
@@ -117,16 +120,16 @@ public class UserConfigurationController(
             return new Response<ApplicationUserRole>(null, 500, "Erro interno no servidor");
         }
     }
-    
+
     [HttpDelete("delete-role-to-user")]
     public async Task<Response<ApplicationUserRole>> DeleteRoleToUser(DeleteApplicationUserRoleRequest request)
     {
         var roleName = request.RoleName.Capitalize();
         try
         {
-            if(roleName is "Admin" or "User")
+            if (roleName is "Admin" or "User")
                 return new Response<ApplicationUserRole>(null, 401, $"Não é possível excluir a Role {roleName}.");
-            
+
             var user = await userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
             {
@@ -141,22 +144,22 @@ public class UserConfigurationController(
 
             var result = await userManager.RemoveFromRoleAsync(user, roleName);
             if (!result.Succeeded)
-                return new Response<ApplicationUserRole>(null, 401, "Erro ao excluir a Role ao usuário."); 
-            
+                return new Response<ApplicationUserRole>(null, 401, "Erro ao excluir a Role ao usuário.");
+
             var response = new ApplicationUserRole
             {
                 UserId = request.UserId,
                 RoleId = request.RoleId,
             };
 
-            return new Response<ApplicationUserRole>(response, 201, "Role do usuário excluída com sucesso!");
+            return new Response<ApplicationUserRole>(response, 200, "Code201 - Role do usuário excluída com sucesso!");
         }
         catch
         {
             return new Response<ApplicationUserRole>(null, 500, "Erro interno no servidor");
         }
     }
-    
+
     [HttpPost("list-roles-for-user")]
     public async Task<Response<List<ApplicationUserRole>>> ListRolesForUser(GetAllApplicationUserRoleRequest request)
     {

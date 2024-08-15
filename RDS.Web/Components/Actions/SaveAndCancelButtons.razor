@@ -3,7 +3,7 @@
         <MudButton ButtonType="ButtonType.Button"
                    Variant="Variant.Filled"
                    Color="Color.Secondary"
-                   OnClick="@(() => NavigationService.NavigateTo(Page))">
+                   OnClick="@(() => NavigationService.NavigateTo(CancelPage))">
             @ButtonText1
         </MudButton>
         <MudSpacer />
@@ -15,7 +15,7 @@
     </div>
 </MudPaper>
 @code {
-    [Parameter] public string Page { get; set; } = "/";
+    [Parameter] public string CancelPage { get; set; } = "/";
     [Parameter] public string ButtonText1 { get; set; } = "Cancelar";
     [Parameter] public string ButtonText2 { get; set; } = "Salvar";
 }

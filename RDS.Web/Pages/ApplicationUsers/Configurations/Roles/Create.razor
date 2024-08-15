@@ -1,0 +1,18 @@
+@page "/usuariosconfiguracao/adicionar-role"
+@inherits CreateRolePage
+
+<TitleBar Title="Nova Role"/>
+<MudPaper Class="pa-8 mt-4">
+    <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
+        <DataAnnotationsValidator/>
+
+        <MudTextField Label="Título"
+                      HelperText="Campo obrigatório"
+                      @bind-Value="InputModel.Name"
+                      For="@(() => InputModel.Name)"
+                      Variant="Variant.Outlined"
+                      AutoFocus/>
+
+       <SaveAndCancelButtons CancelPage="/usuariosconfiguracao/roles"/>
+    </EditForm>
+</MudPaper>

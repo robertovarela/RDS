@@ -1,5 +1,5 @@
 @page "/categorias/adicionar"
-@inherits CreateCategoryPage
+@inherits RDS.Web.Pages.Categories.CreateCategoryPage
 
 <TitleBar Title="Nova Categoria"/>
 <MudPaper Class="pa-8 mt-4">
@@ -20,6 +20,6 @@
                       For="@(() => InputModel.Description)"
                       Variant="Variant.Outlined"/>
 
-       <SaveAndCancelButtons Page="/categorias"/>
+       <SaveAndCancelButtons CancelPage="/categorias"/>
     </EditForm>
 </MudPaper>
