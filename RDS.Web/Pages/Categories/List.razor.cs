@@ -1,18 +1,15 @@
-using RDS.Core.Handlers;
-using RDS.Core.Models;
-using RDS.Core.Requests.Categories;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-
 namespace RDS.Web.Pages.Categories;
 
 public partial class ListCategoriesPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
+    public bool IsBusy { get; set; }
     protected List<Category> Categories { get; set; } = [];
+    private long UserId { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
+    protected const string Url = "/categorias/editar";
+    protected const string UrlOrigen = "/categorias";
 
     #endregion
 
@@ -21,6 +18,7 @@ public partial class ListCategoriesPage : ComponentBase
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IDialogService DialogService { get; set; } = null!;
     [Inject] public ICategoryHandler Handler { get; set; } = null!;
+    [Inject] public LinkUserStateService Link { get; set; } = null!;
 
     #endregion
 
@@ -29,10 +27,14 @@ public partial class ListCategoriesPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         await StartService.ValidateAccesByToken();
+        UserId = StartService.GetSelectedUserId();
         IsBusy = true;
         try
         {
-            var request = new GetAllCategoriesRequest();
+            var request = new GetAllCategoriesRequest
+            {
+                UserId = UserId
+            };
             var result = await Handler.GetAllAsync(request);
             if (result.IsSuccess)
                 Categories = result.Data ?? [];
@@ -65,11 +67,15 @@ public partial class ListCategoriesPage : ComponentBase
         StateHasChanged();
     }
 
-    public async Task OnDeleteAsync(long id, string title)
+    private async Task OnDeleteAsync(long id, string title)
     {
         try
         {
-            var request = new DeleteCategoryRequest { Id = id };
+            var request = new DeleteCategoryRequest
+            {
+                Id = id,
+                UserId = UserId
+            };
             var result = await Handler.DeleteAsync(request);
             if (result.IsSuccess)
                 Categories.RemoveAll(x => x.Id == id);

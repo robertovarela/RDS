@@ -4,8 +4,9 @@ public class CreateCategoryPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; }
+    protected bool IsBusy { get; private set; }
     public CreateCategoryRequest InputModel { get; set; } = new();
+    private long UserId { get; set; }
 
     #endregion
 
@@ -18,20 +19,21 @@ public class CreateCategoryPage : ComponentBase
     #endregion
 
     #region Overrides
-    
+
     protected override async Task OnInitializedAsync()
     {
         await StartService.ValidateAccesByToken();
+        UserId = StartService.GetSelectedUserId();
     }
-    
+
     #endregion
-    
+
     #region Methods
 
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;
-
+        InputModel.UserId = UserId;
         try
         {
             var result = await Handler.CreateAsync(InputModel);

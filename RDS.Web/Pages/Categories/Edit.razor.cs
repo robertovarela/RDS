@@ -1,27 +1,21 @@
 namespace RDS.Web.Pages.Categories;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class EditCategoryPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; }
+    protected bool IsBusy { get; set; }
     public UpdateCategoryRequest InputModel { get; set; } = new();
-
-    #endregion
-
-    #region Parameters
-
-    [Parameter] public string Id { get; set; } = string.Empty;
+    private long UserId { get; set; }
+    private long Id { get; set; }
 
     #endregion
 
     #region Services
 
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
-
-    [Inject]
-    public ICategoryHandler Handler { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public ICategoryHandler Handler { get; set; } = null!;
 
     #endregion
 
@@ -30,25 +24,19 @@ public partial class EditCategoryPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         await StartService.ValidateAccesByToken();
-        GetCategoryByIdRequest? request = null;
+        UserId = StartService.GetSelectedUserId();
+        Id = StartService.GetSelectedCategoryId();
+ 
         try
         {
-            request = new GetCategoryByIdRequest
+            var request = new GetCategoryByIdRequest
             {
-                Id = long.Parse(Id)
+                Id = Id,
+                UserId = UserId
             };
-        }
-        catch
-        {
-            Snackbar.Add("Parâmetro inválido", Severity.Error);
-        }
 
-        if (request is null)
-            return;
+            IsBusy = true;
 
-        IsBusy = true;
-        try
-        {
             var response = await Handler.GetByIdAsync(request);
             if (response is { IsSuccess: true, Data: not null })
                 InputModel = new UpdateCategoryRequest
@@ -75,19 +63,20 @@ public partial class EditCategoryPage : ComponentBase
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;
-
+        InputModel.Id = Id;
+        InputModel.UserId = UserId;
+        
         try
         {
             var result = await Handler.UpdateAsync(InputModel);
 
-            if (result.IsSuccess && result.Data is not null)
+            if (result is { IsSuccess: true, Data: not null })
             {
                 Snackbar.Add("Categoria atualizada", Severity.Success);
             }
             else
             {
                 Snackbar.Add($"A categoria {InputModel.Id}-{InputModel.Title} não foi encontrada", Severity.Warning);
-
             }
 
             NavigationService.NavigateTo("/categorias");

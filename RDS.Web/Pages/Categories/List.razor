@@ -1,58 +1,83 @@
 @page "/categorias"
 @inherits RDS.Web.Pages.Categories.ListCategoriesPage
 
-<TitleBar Title="Categorias"/>
-<div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
-    <MudButton
-        Class="pt-2 pb-2"
-        Variant="Variant.Filled"
-        Color="Color.Primary"
-        StartIcon="@Icons.Material.TwoTone.Add"
-        OnClick="@(() => NavigationService.NavigateTo("/categorias/adicionar"))">
-        ADICIONAR
-    </MudButton>
-</div>
-
-<MudDataGrid
-    Class="mt-4"
-    Items="@Categories"
-    Filterable="true"
-    QuickFilter="Filter"
-    Hideable="true">
-    <ToolBarContent>
-        <MudSpacer/>
-        <MudTextField
-            @bind-Value="@SearchTerm"
-            Placeholder="Filtrar..."
-            Adornment="Adornment.Start"
-            AdornmentIcon="@Icons.Material.Filled.Search"
-            Immediate="true"
-            IconSize="Size.Medium"
-            Class="mt-0"
-            Variant="Variant.Outlined"
-            Clearable="true"
-            AutoFocus>
-        </MudTextField>
-    </ToolBarContent>
-    <Columns>
-        <PropertyColumn Property="x => x.Id" Title="#"/>
-        <PropertyColumn Property="x => x.Title" Title="Categoria"/>
-        <TemplateColumn Class="d-flex justify-end">
-            <CellTemplate>
-                <MudStack Row>
-                    <MudIconButton 
-                        Icon="@Icons.Material.Filled.Edit"
-                        OnClick="@(() => NavigationService.NavigateTo("/categorias/editar/{context.Item.Id}"))"
-                        Color="Color.Primary">
-                    </MudIconButton>
-                    <MudIconButton 
-                        Icon="@Icons.Material.Filled.Delete"
-                        Color="Color.Error"
-                        aria-label="Excluir"
-                        OnClick="() => OnDeleteButtonClickedAsync(context.Item.Id, context.Item.Title)">
-                    </MudIconButton>
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
+<AuthorizeView>
+    <Authorized>
+        <TitleBar Title="Categorias"/>
+        <div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
+            <MudButton
+                Class="pt-2 pb-2"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.TwoTone.Add"
+                OnClick="@(() => NavigationService.NavigateTo("/categorias/adicionar"))">
+                ADICIONAR
+            </MudButton>
+        </div>
+        @if (IsBusy)
+        {
+            <MudPaper Class="pa-8 mt-4">
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
+            </MudPaper>
+        }
+        else
+        {
+            <MudDataGrid
+                Class="mt-4"
+                Items="@Categories"
+                Filterable="true"
+                QuickFilter="Filter"
+                Hideable="true">
+                <ToolBarContent>
+                    <MudSpacer/>
+                    <MudTextField
+                        @bind-Value="@SearchTerm"
+                        Placeholder="Filtrar..."
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Search"
+                        Immediate="true"
+                        IconSize="Size.Medium"
+                        Class="mt-0"
+                        Variant="Variant.Outlined"
+                        Clearable="true"
+                        AutoFocus>
+                    </MudTextField>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x.Id" Title="#"/>
+                    <PropertyColumn Property="x => x.Title" Title="Categoria"/>
+                    <TemplateColumn Class="d-flex justify-end">
+                        <CellTemplate Context="cellContext">
+                            <MudStack Row>
+                                <MudIconButton
+                                    Icon="@Icons.Material.Filled.Edit"
+                                    Color="Color.Success"
+                                    OnClick="@(() => Link.LinkToUrlCategory(Url, StartService.GetSelectedUserId(), cellContext.Item.Id))">
+                                    Color="Color.Primary">
+                                </MudIconButton>
+                                <MudIconButton
+                                    Icon="@Icons.Material.Filled.Delete"
+                                    Color="Color.Error"
+                                    aria-label="Excluir"
+                                    OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.Id, cellContext.Item.Title)">
+                                </MudIconButton>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="Category"
+                                      RowsPerPageString="Registros por página"
+                                      InfoFormat="{first_item} - {last_item} de {all_items}"
+                                      PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
+    </NotAuthorized>
+</AuthorizeView>
