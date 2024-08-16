@@ -1,35 +1,27 @@
-using RDS.Core.Common.Extensions;
-using RDS.Core.Handlers;
-using RDS.Core.Models;
-using RDS.Core.Requests.Transactions;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-
 namespace RDS.Web.Pages.Transactions;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class ListTransactionsPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
+    public bool IsBusy { get; set; }
     protected List<Transaction> Transactions { get; set; } = [];
     public string SearchTerm { get; set; } = string.Empty;
     protected int CurrentYear { get; set; } = DateTime.Now.Year;
     public int CurrentMonth { get; set; } = DateTime.Now.Month;
     protected int[] Years { get; set; } = LoadYears();
+    private long UserId { get; set; }
 
     #endregion
 
     #region Services
 
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
-    [Inject]
-    public IDialogService DialogService { get; set; } = null!;
+    [Inject] public IDialogService DialogService { get; set; } = null!;
 
-    [Inject]
-    public ITransactionHandler Handler { get; set; } = null!;
+    [Inject] public ITransactionHandler Handler { get; set; } = null!;
 
     #endregion
 
@@ -39,6 +31,7 @@ public partial class ListTransactionsPage : ComponentBase
     {
         StartService.SetPageTitle("Lançamentos");
         await StartService.ValidateAccesByToken();
+        UserId = StartService.GetSelectedUserId();
         await GetTransactionsAsync();
     }
 
@@ -87,6 +80,7 @@ public partial class ListTransactionsPage : ComponentBase
         {
             var request = new GetTransactionsByPeriodRequest
             {
+                UserId = UserId,
                 StartDate = DateTime.Now.GetFirstDay(CurrentYear, CurrentMonth),
                 EndDate = DateTime.Now.GetLastDay(CurrentYear, CurrentMonth),
                 PageNumber = 1,
