@@ -23,7 +23,7 @@
             AutoFocus>
             @foreach (var role in Roles)
             {
-                <MudSelectItem T="string" Value="@role.RoleName">
+                <MudSelectItem T="string" Value="@role!.RoleName">
                     @role.RoleName
                 </MudSelectItem>
             }

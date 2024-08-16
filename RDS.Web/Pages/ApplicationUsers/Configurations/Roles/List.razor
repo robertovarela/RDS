@@ -1,54 +1,77 @@
 @page "/usuariosconfiguracao/roles"
 @inherits ListRolesPage
 
-<TitleBar Title="Roles"/>
-<div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
-    <MudButton
-        Class="pt-2 pb-2"
-        Variant="Variant.Filled"
-        Color="Color.Primary"
-        StartIcon="@Icons.Material.TwoTone.Add"
-        OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/adicionar-role"))">
-        +'ADICIONAR
-    </MudButton>
-</div>
-
-<MudDataGrid
-    Class="mt-4"
-    Items="@Roles"
-    Filterable="true"
-    QuickFilter="Filter"
-    Hideable="true">
-    <ToolBarContent>
-        <MudSpacer/>
-        <MudTextField
-            @bind-Value="@SearchTerm"
-            Placeholder="Filtrar..."
-            Adornment="Adornment.Start"
-            AdornmentIcon="@Icons.Material.Filled.Search"
-            Immediate="true"
-            IconSize="Size.Medium"
-            Class="mt-0"
-            Variant="Variant.Outlined"
-            Clearable="true"
-            AutoFocus>
-        </MudTextField>
-    </ToolBarContent>
-    <Columns>
-        <PropertyColumn Property="x => x.Id" Title="#"/>
-        <PropertyColumn Property="x => x.Name" Title="Role"/>
-        <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
-            <CellTemplate>
-                <MudStack Row>
-                    <MudIconButton
-                        Disabled="@(context.Item.Name == "Admin" || context.Item.Name == "User")"
-                        Icon="@Icons.Material.Filled.Delete"
-                        Color="Color.Error"
-                        aria-label="Excluir"
-                        OnClick="() => { if (context.Item.Name != null) OnDeleteButtonClickedAsync(context.Item.Name); }">
-                    </MudIconButton>
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
+<AuthorizeView>
+    <Authorized>
+        <TitleBar Title="Roles"/>
+        <div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
+            <MudButton
+                Class="pt-2 pb-2"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.TwoTone.Add"
+                OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/adicionar-role"))">
+                +'ADICIONAR
+            </MudButton>
+        </div>
+        @if (IsBusy)
+        {
+        <MudPaper Class="pa-8 mt-4">
+            <MudSkeleton Height="55px"/>
+            <MudSkeleton Height="110px"/>
+            <MudSkeleton Height="55px"/>
+        </MudPaper>
+        }
+        else
+        {
+            <MudDataGrid
+                Class="mt-4"
+                Items="@Roles"
+                Filterable="true"
+                QuickFilter="Filter"
+                Hideable="true">
+                <ToolBarContent>
+                    <MudSpacer/>
+                    <MudTextField
+                        @bind-Value="@SearchTerm"
+                        Placeholder="Filtrar..."
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Search"
+                        Immediate="true"
+                        IconSize="Size.Medium"
+                        Class="mt-0"
+                        Variant="Variant.Outlined"
+                        Clearable="true"
+                        AutoFocus>
+                    </MudTextField>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x!.Id" Title="#"/>
+                    <PropertyColumn Property="x => x!.Name" Title="Role"/>
+                    <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
+                        <CellTemplate Context="cellContext">
+                            <MudStack Row>
+                                <MudIconButton
+                                    Disabled="@(cellContext.Item!.Name == "Admin" || cellContext.Item!.Name == "User")"
+                                    Icon="@Icons.Material.Filled.Delete"
+                                    Color="Color.Error"
+                                    aria-label="Excluir"
+                                    OnClick="() => { if (cellContext.Item.Name != null) OnDeleteButtonClickedAsync(cellContext.Item.Name); }">
+                                </MudIconButton>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="ApplicationRole"
+                                      RowsPerPageString="Registros por página"
+                                      InfoFormat="{first_item} - {last_item} de {all_items}"
+                                      PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
+    </NotAuthorized>
+</AuthorizeView>

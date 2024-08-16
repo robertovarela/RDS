@@ -1,10 +1,11 @@
 namespace RDS.Web.Pages.ApplicationUsers.Configurations.Roles;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class ListRolesPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
+    public bool IsBusy { get; set; }
     protected List<ApplicationRole?> Roles { get; set; } = [];
     protected string SearchTerm { get; set; } = string.Empty;
 
@@ -26,7 +27,6 @@ public partial class ListRolesPage : ComponentBase
         IsBusy = true;
         try
         {
-            var request = new GetAllApplicationRoleRequest();
             var result = await Handler.ListRoleAsync();
             if (result.IsSuccess)
                 Roles = result.Data ?? [];
