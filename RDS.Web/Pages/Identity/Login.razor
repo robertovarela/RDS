@@ -65,7 +65,7 @@
                     {
                         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="responsive-text title-software">ENTRAR</MudButton>
                         <MudSpacer/>
-                        <MudButton Href="/registrar" Class="responsive-text title-software">QUERO ME CADASTRAR</MudButton>
+                        <MudButton OnClick="@(() => NavigationService.NavigateTo("/registrar"))" Class="responsive-text title-software">QUERO ME CADASTRAR</MudButton>
                     }
                 </div>
             </EditForm>

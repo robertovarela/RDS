@@ -103,7 +103,7 @@
                 <MudStack Row>
                     <MudIconButton Icon="@Icons.Material.Filled.Edit"
                                    Color="Color.Primary"
-                                   Href="@($"/lancamentos/editar/{context.Item.Id}")">
+                                   OnClick="@(() => NavigationService.NavigateTo($"/lancamentos/editar/{context.Item.Id}"))">
                     </MudIconButton>
                     <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                    Color="Color.Error"

@@ -8,7 +8,7 @@
         Variant="Variant.Filled"
         Color="Color.Primary"
         StartIcon="@Icons.Material.TwoTone.Add"
-        Href="/categorias/adicionar">
+        OnClick="@(() => NavigationService.NavigateTo("/categorias/adicionar"))">
         ADICIONAR
     </MudButton>
 </div>
@@ -42,7 +42,7 @@
                 <MudStack Row>
                     <MudIconButton 
                         Icon="@Icons.Material.Filled.Edit"
-                        Href="@($"/categorias/editar/{context.Item.Id}")"
+                        OnClick="@(() => NavigationService.NavigateTo("/categorias/editar/{context.Item.Id}"))"
                         Color="Color.Primary">
                     </MudIconButton>
                     <MudIconButton 

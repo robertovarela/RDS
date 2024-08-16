@@ -1,23 +1,17 @@
-using RDS.Core.Handlers;
-using RDS.Core.Requests.Categories;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-
 namespace RDS.Web.Pages.Categories;
 
 public partial class EditCategoryPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
+    public bool IsBusy { get; set; }
     public UpdateCategoryRequest InputModel { get; set; } = new();
 
     #endregion
 
     #region Parameters
 
-    [Parameter]
-    public string Id { get; set; } = string.Empty;
+    [Parameter] public string Id { get; set; } = string.Empty;
 
     #endregion
 

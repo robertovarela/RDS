@@ -28,7 +28,7 @@
             </MudAlert>
             <div class="d-flex">
                 <MudSpacer />
-                <MudButton Variant="Variant.Text" Href="/login">IR PARA TELA DE LOGIN</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="@(() => NavigationService.NavigateTo("/login"))">IR PARA TELA DE LOGIN</MudButton>
             </div>
         </MudPaper>
     </MudItem>
