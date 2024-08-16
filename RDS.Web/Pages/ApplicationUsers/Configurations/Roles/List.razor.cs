@@ -76,12 +76,12 @@ public partial class ListRolesPage : ComponentBase
         }
     }
 
-    public Func<ApplicationRole, bool> Filter => role =>
+    public Func<ApplicationRole?, bool> Filter => role =>
     {
         if (string.IsNullOrWhiteSpace(SearchTerm))
             return true;
 
-        return role.Name != null && role.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
+        return role!.Name != null && role.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
     };
 
     #endregion
