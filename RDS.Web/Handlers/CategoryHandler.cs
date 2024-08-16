@@ -1,9 +1,3 @@
-using RDS.Core.Handlers;
-using RDS.Core.Models;
-using RDS.Core.Requests.Categories;
-using RDS.Core.Responses;
-using System.Net.Http.Json;
-
 namespace RDS.Web.Handlers;
 
 public class CategoryHandler(HttpClientService httpClientService) : ICategoryHandler

@@ -9,6 +9,7 @@ public class HomePage : ComponentBase
         StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
         await StartService.ValidateAccesByToken();
         StartService.SetDefaultValues();
+        StateHasChanged();
     }
 
     #endregion

@@ -79,8 +79,6 @@
         {
             _isDarkMode = await _mudThemeProvider.GetSystemPreference();
             await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
-            StartService.SetPageTitle("");
-
             StateHasChanged();
         }
     }

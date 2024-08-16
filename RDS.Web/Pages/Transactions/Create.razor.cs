@@ -1,19 +1,15 @@
-using RDS.Core.Handlers;
-using RDS.Core.Models;
-using RDS.Core.Requests.Categories;
-using RDS.Core.Requests.Transactions;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-
 namespace RDS.Web.Pages.Transactions;
 
+
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class CreateTransactionPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
+    public bool IsBusy { get; set; }
     public CreateTransactionRequest InputModel { get; set; } = new();
     public List<Category> Categories { get; set; } = [];
+    private long UserId { get; set; }
 
     #endregion
 
@@ -33,11 +29,15 @@ public partial class CreateTransactionPage : ComponentBase
     {
         StartService.SetPageTitle("Novo Lançamento");
         await StartService.ValidateAccesByToken();
+        UserId = StartService.GetSelectedUserId();
         IsBusy = true;
 
         try
         {
-            var request = new GetAllCategoriesRequest();
+            var request = new GetAllCategoriesRequest
+            {
+                UserId = UserId
+            };
             var result = await CategoryHandler.GetAllAsync(request);
             if (result.IsSuccess)
             {

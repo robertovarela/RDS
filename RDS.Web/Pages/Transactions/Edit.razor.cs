@@ -11,12 +11,11 @@ public partial class EditTransactionPage : ComponentBase
 {
     #region Properties
 
-    [Parameter]
-    public string Id { get; set; } = string.Empty;
-
+    [Parameter] public string Id { get; set; } = string.Empty;
     public bool IsBusy { get; set; } = false;
     public UpdateTransactionRequest InputModel { get; set; } = new();
-    public List<Category> Categories { get; set; } = [];
+    protected List<Category> Categories { get; set; } = [];
+    private long UserId { get; set; }
 
     #endregion
 
@@ -39,6 +38,7 @@ public partial class EditTransactionPage : ComponentBase
     {
         StartService.SetPageTitle("Editar Lançamento");
         await StartService.ValidateAccesByToken();
+        UserId = StartService.GetSelectedUserId();
         IsBusy = true;
 
         await GetTransactionByIdAsync();
@@ -121,7 +121,10 @@ public partial class EditTransactionPage : ComponentBase
         IsBusy = true;
         try
         {
-            var request = new GetAllCategoriesRequest();
+            var request = new GetAllCategoriesRequest
+            {
+                UserId = UserId
+            };
             var result = await CategoryHandler.GetAllAsync(request);
             if (result.IsSuccess)
             {
