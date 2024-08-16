@@ -6,8 +6,6 @@ public partial class ListUserRolesPage : ComponentBase
 
     public bool IsBusy { get; set; } = false;
     protected List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
-    protected string SearchTerm { get; set; } = string.Empty;
-    
     protected long UserId => StartService.GetSelectedUserId();
 
     #endregion
@@ -25,14 +23,15 @@ public partial class ListUserRolesPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         var urlOrigen = StartService.GetUrlOrigen();
-        if (!StartService.GetUrlOrigen().Equals("/usuariosconfiguracao/lista-usuarios-roles"))
+        if (!StartService.GetUrlOrigen().Equals("/usuariosconfiguracao/lista-usuarios-roles")
+            && !StartService.GetUrlOrigen().Equals("/usuariosconfiguracao/roles-do-susuario/adicionar-role"))
         {
             Snackbar.Add("Acesso não permitido!", Severity.Error);
             Snackbar.Add("URL de origem não reconhecida", Severity.Error);
             NavigationService.NavigateToLogin();
             return;
         }
-            
+
         await StartService.ValidateAccesByToken();
         IsBusy = true;
         try
@@ -40,7 +39,7 @@ public partial class ListUserRolesPage : ComponentBase
             var request = new GetAllApplicationUserRoleRequest { UserId = UserId };
             var result = await Handler.ListUserRoleAsync(request);
             if (result.IsSuccess)
-                RolesFromUser = result.Data ?? []; //aqui o retorno é uma lista de ApplicationUserRole que tem os campos que necessito
+                RolesFromUser = result.Data ?? [];
         }
         catch (Exception ex)
         {
@@ -70,7 +69,7 @@ public partial class ListUserRolesPage : ComponentBase
         StateHasChanged();
     }
 
-    public async Task OnDeleteAsync(long userId, string roleName)
+    private async Task OnDeleteAsync(long userId, string roleName)
     {
         try
         {

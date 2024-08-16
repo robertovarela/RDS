@@ -4,7 +4,7 @@ public partial class CreateRolePage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
+    public bool IsBusy { get; set; }
     public CreateApplicationRoleRequest InputModel { get; set; } = new();
 
     #endregion

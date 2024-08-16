@@ -19,14 +19,11 @@ public partial class CreateTransactionPage : ComponentBase
 
     #region Services
 
-    [Inject]
-    public ITransactionHandler TransactionHandler { get; set; } = null!;
+    [Inject] public ITransactionHandler TransactionHandler { get; set; } = null!;
 
-    [Inject]
-    public ICategoryHandler CategoryHandler { get; set; } = null!;
+    [Inject] public ICategoryHandler CategoryHandler { get; set; } = null!;
 
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
 

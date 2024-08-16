@@ -68,10 +68,9 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
         };
         var httpClient = await GetHttpClientAsync();
         var result = await httpClient.SendAsync(requestMessage);
-        var response = await result.Content.ReadFromJsonAsync<Response<ApplicationUserRole?>>();
-        return response ?? new Response<ApplicationUserRole?>(null, 400, "Falha ao excluir a role do usuário");
-        //return await result.Content.ReadFromJsonAsync<Response<ApplicationUserRole?>>()
-        //       ?? new Response<ApplicationUserRole?>(null, 400, "Falha ao excluir a role do usuário");
+        
+        return await result.Content.ReadFromJsonAsync<Response<ApplicationUserRole?>>()
+               ?? new Response<ApplicationUserRole?>(null, 400, "Falha ao excluir a role do usuário");
     }
 
     public async Task<PagedResponse<List<ApplicationUserRole?>>> ListUserRoleAsync(GetAllApplicationUserRoleRequest request)
@@ -84,5 +83,17 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
         var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<PagedResponse<List<ApplicationUserRole?>>>()
                ?? new PagedResponse<List<ApplicationUserRole?>>(null, 400, "Falha ao listar as roles do usuário");
+    }
+
+    public async Task<PagedResponse<List<ApplicationUserRole?>>> ListRoleToAddUserAsync(GetAllApplicationUserRoleRequest request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfiguration/list-roles-not-for-user")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<ApplicationUserRole?>>>()
+               ?? new PagedResponse<List<ApplicationUserRole?>>(null, 400, "Falha ao listar as roles para adicionar ao usuário");
     }
 }

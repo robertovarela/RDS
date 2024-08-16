@@ -85,7 +85,7 @@ public class UserConfigurationController(
         }
     }
 
-    [HttpPost("assign-role-to-user")]
+    [HttpPost("create-role-to-user")]
     public async Task<Response<ApplicationUserRole>> AssignRoleToUser(CreateApplicationUserRoleRequest request)
     {
         var roleName = request.RoleName.Capitalize();
@@ -181,6 +181,44 @@ public class UserConfigurationController(
             }).ToList();
 
             return new Response<List<ApplicationUserRole>>(response, 200, "Roles do usuário listadas com sucesso!");
+        }
+        catch
+        {
+            return new Response<List<ApplicationUserRole>>(null, 500, "Erro interno no servidor");
+        }
+    }
+
+    [HttpPost("list-roles-not-for-user")]
+    public async Task<Response<List<ApplicationUserRole>>> ListRolesNotForUser(GetAllApplicationUserRoleRequest request)
+    {
+        var userId = request.UserId;
+        try
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return new Response<List<ApplicationUserRole>>(null, 404, "Usuário não encontrado.");
+            }
+
+            var allRoles = roleManager.Roles.ToList();
+
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            var rolesNotForUser = allRoles
+                .Where(role => !userRoles.Contains(role.Name!))
+                .Select(role => new ApplicationUserRole
+                {
+                    RoleName = role.Name!,
+                    RoleId = role.Id,
+                    UserId = userId,
+                })
+                .OrderBy(role => role.RoleName != "Admin")
+                .ThenBy(role => role.RoleName != "User")
+                .ThenBy(role => role.RoleName)
+                .ToList();
+
+            return new Response<List<ApplicationUserRole>>(rolesNotForUser, 200,
+                "Roles disponíveis para adicionar ao usuário listadas com sucesso!");
         }
         catch
         {

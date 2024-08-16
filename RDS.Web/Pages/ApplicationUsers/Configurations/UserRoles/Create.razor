@@ -1,0 +1,34 @@
+@page "/usuariosconfiguracao/roles-do-susuario/adicionar-role"
+@inherits CreateUserRolePage
+
+<TitleBar Title="Nova Role"/>
+<MudPaper Class="pa-8 mt-4">
+    <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
+        <DataAnnotationsValidator/>
+            <MudSpacer/>
+            <MudText Class="responsive-text subtitle-screen" Align="Align.Center">
+                @StartService.GetSelectedUserName()
+            </MudText>
+            <MudSpacer/>
+        <MudSelect
+            T="string"
+            Label="Role"
+            @bind-Value="InputModel.RoleName"
+            HelperText="Selecione a Role"
+            Placeholder="Please Select"
+            AdornmentIcon="@Icons.Material.Outlined.Assignment"
+            AdornmentColor="Color.Primary"
+            AnchorOrigin="Origin.BottomCenter"
+            Variant="Variant.Outlined"
+            AutoFocus>
+            @foreach (var role in Roles)
+            {
+                <MudSelectItem T="string" Value="@role.RoleName">
+                    @role.RoleName
+                </MudSelectItem>
+            }
+        </MudSelect>
+
+        <SaveAndCancelButtons CancelPage="/usuariosconfiguracao/lista-roles-do-susuario"/>
+    </EditForm>
+</MudPaper>
