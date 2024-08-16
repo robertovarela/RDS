@@ -1,10 +1,11 @@
 namespace RDS.Web.Pages.Categories;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class ListCategoriesPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; }
+    protected bool IsBusy { get; set; }
     protected List<Category> Categories { get; set; } = [];
     private long UserId { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
@@ -26,6 +27,7 @@ public partial class ListCategoriesPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetPageTitle("Categorias");
         await StartService.ValidateAccesByToken();
         UserId = StartService.GetSelectedUserId();
         IsBusy = true;

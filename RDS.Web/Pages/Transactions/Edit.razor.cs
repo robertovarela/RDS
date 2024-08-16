@@ -37,6 +37,7 @@ public partial class EditTransactionPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetPageTitle("Editar Lançamento");
         await StartService.ValidateAccesByToken();
         IsBusy = true;
 

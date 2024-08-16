@@ -37,6 +37,7 @@ public class EditApplicationUserAddressPage : ComponentBase
         IsBusy = true;
         try
         {
+            StartService.SetPageTitle("Editar Endereço");
             await StartService.ValidateAccesByToken();
             var userId = StartService.GetSelectedUserId();
             var id = StartService.GetSelectedAddressId();

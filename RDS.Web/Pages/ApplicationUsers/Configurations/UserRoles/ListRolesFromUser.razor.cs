@@ -22,6 +22,7 @@ public partial class ListUserRolesPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetPageTitle("Roles");
         var urlOrigen = StartService.GetUrlOrigen();
         if (!StartService.GetUrlOrigen().Equals("/usuariosconfiguracao/lista-usuarios-roles")
             && !StartService.GetUrlOrigen().Equals("/usuariosconfiguracao/roles-do-susuario/adicionar-role"))

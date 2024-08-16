@@ -23,6 +23,7 @@ public partial class ListRolesPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetPageTitle("Roles");
         await StartService.ValidateAccesByToken();
         IsBusy = true;
         try

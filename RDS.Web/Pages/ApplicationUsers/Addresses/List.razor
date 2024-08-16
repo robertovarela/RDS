@@ -1,10 +1,9 @@
 @page "/usuarios/enderecos"
 @inherits ListApplicationUserAdressesPage
-<UserState/>
 
 <AuthorizeView>
     <Authorized>
-        <TitleBarWithButtons Title="Endereços" LeftButton="/usuarios/editar" RightButton="/usuarios/enderecos/adicionar"/>
+        <TitleBarWithButtons Title="" LeftButton="/usuarios/editar" RightButton="/usuarios/enderecos/adicionar"/>
 
         @if (IsBusy)
         {

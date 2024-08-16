@@ -2,7 +2,8 @@
 {
     public class UserStateService
     {
-        private string? UrlOrigen { get; set; }
+        public string? PageTitle { get; set; } = string.Empty;
+        private string? UrlOrigen { get; set; } = string.Empty;
         private long LoggedUserId { get; set; }
         private long SelectedUserId { get; set; }
         
@@ -10,6 +11,7 @@
         private long SelectedUserAddressId { get; set; }
         private long SelectedCategoryId { get; set; }
         
+        public string GetPageTitle() => PageTitle ?? string.Empty;
         public string GetUrlOrigen() => UrlOrigen ?? string.Empty;
         public long GetLoggedUserId() => LoggedUserId;
         public long GetSelectedUserId() => SelectedUserId;
@@ -17,6 +19,7 @@
         public long GetSelectedAddressId() => SelectedUserAddressId;
         public long GetSelectedCategoryId() => SelectedCategoryId;
 
+        public void SetPageTitle(string title) => PageTitle = title;
         public void SetUrlOrigen(string url) => UrlOrigen = url;
         public void SetLoggedUserId(long loggedUserId) => LoggedUserId = loggedUserId;
         public void SetSelectedUserId(long userId) => SelectedUserId = userId;

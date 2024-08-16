@@ -23,9 +23,11 @@ public partial class EditCategoryPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetPageTitle("Editar Categoria");
         await StartService.ValidateAccesByToken();
         UserId = StartService.GetSelectedUserId();
         Id = StartService.GetSelectedCategoryId();
+        //StateHasChanged();
  
         try
         {

@@ -22,6 +22,7 @@ public class CreateCategoryPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetPageTitle("Nova Categoria");
         await StartService.ValidateAccesByToken();
         UserId = StartService.GetSelectedUserId();
     }

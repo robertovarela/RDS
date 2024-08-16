@@ -40,7 +40,7 @@ public class ManipulateUserStateValuesService(
 
             snackbar.Add("Não foi possível atualizar o token", Severity.Error);
         }
-        
+
         HandleInvalidToken();
     }
 
@@ -77,11 +77,18 @@ public class ManipulateUserStateValuesService(
         return true;
     }
 
+    public string GetPageTitle()
+    {
+        string pageTitle = userState.GetPageTitle();
+        return pageTitle;
+    }
+
     public string GetUrlOrigen()
     {
         string urlOrigen = userState.GetUrlOrigen();
         return urlOrigen;
     }
+
     public long GetLoggedUserId()
     {
         long loggedUserId = userState.GetLoggedUserId();
@@ -96,48 +103,15 @@ public class ManipulateUserStateValuesService(
         selectedUserId = userState.GetSelectedUserId();
         return selectedUserId;
     }
-    
-    public string GetSelectedUserName()
-    {
-        string selectedUserName = userState.GetSelectedUserName();
-        return selectedUserName;
-    }
 
-    public long GetSelectedAddressId()
-    {
-        long selectedAddressId = userState.GetSelectedAddressId();
+    public string GetSelectedUserName() => userState.GetSelectedUserName();
+    public long GetSelectedAddressId() => userState.GetSelectedAddressId();
+    public long GetSelectedCategoryId() => userState.GetSelectedCategoryId();
 
-        return selectedAddressId;
-    }
-
-    public long GetSelectedCategoryId()
-    {
-        long selectedCategoryId = userState.GetSelectedCategoryId();
-
-        return selectedCategoryId;
-    }
-
-    public void SetUrlOrigen(string url)
-    {
-        userState.SetUrlOrigen(url);
-    }
-    public void SetSelectedUserId(long userId)
-    {
-        userState.SetSelectedUserId(userId);
-    }
-    
-    public void SetSelectedUserName(string userName)
-    {
-        userState.SetSelectedUserName(userName);
-    }
-
-    public void SetSelectedAddressId(long addressId)
-    {
-        userState.SetSelectedAddressId(addressId);
-    }
-
-    public void SetSelectedCategoryId(long categoryId)
-    {
-        userState.SetSelectedCategoryId(categoryId);
-    }
+    public void SetPageTitle(string title) => userState.SetPageTitle(title);
+    public void SetUrlOrigen(string url) => userState.SetUrlOrigen(url);
+    public void SetSelectedUserId(long userId) => userState.SetSelectedUserId(userId);
+    public void SetSelectedUserName(string userName) => userState.SetSelectedUserName(userName);
+    public void SetSelectedAddressId(long addressId) => userState.SetSelectedAddressId(addressId);
+    public void SetSelectedCategoryId(long categoryId) => userState.SetSelectedCategoryId(categoryId);
 }

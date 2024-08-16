@@ -6,6 +6,7 @@ public class HomePage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
         await StartService.ValidateAccesByToken();
         StartService.SetDefaultValues();
     }
