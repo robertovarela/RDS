@@ -1,45 +1,69 @@
 @page "/usuariosconfiguracao/lista-roles-do-susuario"
 @inherits ListUserRolesPage
 
-<TitleBar Title="Roles"/>
-<div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
-    <MudButton
-        Class="pt-2 pb-2"
-        Variant="Variant.Filled"
-        Color="Color.Primary"
-        StartIcon="@Icons.Material.TwoTone.Add"
-        OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles-do-susuario/adicionar-role"))">
-        ADICIONAR
-    </MudButton>
-</div>
-
-<MudDataGrid
-    Class="mt-4"
-    Items="@RolesFromUser"
-    Filterable="false" 
-    Hideable="true">
-    <ToolBarContent>
-        <MudSpacer/>
-        <MudText Class="responsive-text subtitle-screen" Align="Align.Center">
-            @StartService.GetSelectedUserName()
-        </MudText>
-        <MudSpacer/>
-    </ToolBarContent>
-    <Columns>
-        <PropertyColumn Property="x => x!.RoleId" Title="#"/>
-        <PropertyColumn Property="x => x!.RoleName" Title="Role"/>
-        <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
-            <CellTemplate>
-                <MudStack Row>
-                    <MudIconButton
-                        Disabled="@(context.Item!.RoleName == "Admin" || context.Item!.RoleName == "User")"
-                        Icon="@Icons.Material.Filled.Delete"
-                        Color="Color.Error"
-                        aria-label="Excluir"
-                        OnClick="() => OnDeleteButtonClickedAsync(UserId, context.Item.RoleName)">
-                    </MudIconButton>
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
+<AuthorizeView>
+    <Authorized>
+        <TitleBar Title="Roles"/>
+        <div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
+            <MudButton
+                Class="pt-2 pb-2"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Material.TwoTone.Add"
+                OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles-do-susuario/adicionar-role"))">
+                ADICIONAR
+            </MudButton>
+        </div>
+        @if (IsBusy)
+        {
+            <MudPaper Class="pa-8 mt-4">
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
+            </MudPaper>
+        }
+        else
+        {
+            <MudDataGrid
+                Class="mt-4"
+                Items="@RolesFromUser"
+                Filterable="false"
+                Hideable="true">
+                <ToolBarContent>
+                    <MudSpacer/>
+                    <MudText Class="responsive-text subtitle-screen" Align="Align.Center">
+                        @StartService.GetSelectedUserName()
+                    </MudText>
+                    <MudSpacer/>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x!.RoleId" Title="#"/>
+                    <PropertyColumn Property="x => x!.RoleName" Title="Role"/>
+                    <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
+                        <CellTemplate Context="cellContext">
+                            <MudStack Row>
+                                <MudIconButton
+                                    Disabled="@(cellContext.Item!.RoleName == "Admin" || cellContext.Item!.RoleName == "User")"
+                                    Icon="@Icons.Material.Filled.Delete"
+                                    Color="Color.Error"
+                                    aria-label="Excluir"
+                                    OnClick="() => OnDeleteButtonClickedAsync(UserId, cellContext.Item.RoleName)">
+                                </MudIconButton>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="ApplicationUserRole"
+                                      RowsPerPageString="Registros por página"
+                                      InfoFormat="{first_item} - {last_item} de {all_items}"
+                                      PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
+    </NotAuthorized>
+</AuthorizeView>rid>
