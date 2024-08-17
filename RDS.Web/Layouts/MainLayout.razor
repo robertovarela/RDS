@@ -7,8 +7,8 @@
 <MudSnackbarProvider/>
 <MudDialogProvider/>
 
-<AuthorizeView>
-    <Authorized>
+@* <AuthorizeView> *@
+@*     <Authorized> *@
         <MudLayout>
             <MudAppBar>
                 <MudIconButton Icon="@Icons.Material.Filled.Menu"
@@ -19,7 +19,7 @@
                 <MudSpacer/>
 
                 <MudText Typo="Typo.caption">
-                    <span style="font-weight:800" class="ml-4 responsive-text title-screen">
+                    <span style="font-weight:800" class="ml-4 responsive-text title-input">
                         @StartService.GetPageTitle()
                     </span>
                 </MudText>
@@ -41,11 +41,11 @@
                 </MudContainer>
             </MudMainContent>
         </MudLayout>
-    </Authorized>
-    <NotAuthorized>
-        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
-    </NotAuthorized>
-</AuthorizeView>
+    @* </Authorized> *@
+@*     <NotAuthorized> *@
+@*         <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/> *@
+@*     </NotAuthorized> *@
+@* </AuthorizeView> *@
 
 @code {
 

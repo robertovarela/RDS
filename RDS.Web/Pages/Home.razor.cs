@@ -4,10 +4,10 @@ public class HomePage : ComponentBase
 {
     #region Overrides
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
-        await StartService.ValidateAccesByToken();
+        //await StartService.ValidateAccesByToken();
         StartService.SetDefaultValues();
         StateHasChanged();
     }

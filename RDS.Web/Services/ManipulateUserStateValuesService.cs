@@ -60,10 +60,7 @@ public class ManipulateUserStateValuesService(
         return true;
     }
 
-    private void HandleInvalidToken()
-    {
-        NavigationService.NavigateToLogin();
-    }
+    private static void HandleInvalidToken() => NavigationService.NavigateToLogin();
 
     public async Task<bool> RefreshToken(string token, bool showMessage)
     {

@@ -2,8 +2,10 @@
     <img src="/imgs/RDS-01.jpg" alt="RDS - Soluções em software" width="200"/>
 </div>
 
+<AuthorizeView>
+    <Authorized>
 <MudNavMenu Margin="Margin.None" Color="Color.Success" Rounded="true" Dense="true" Class="responsive-text drawer-title">
-    <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/"))" Icon="@Icons.Material.Filled.Home">Início</MudNavLink>
+    <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/"))" Icon="@Icons.Material.Filled.Home" IconColor="Color.Success">Início</MudNavLink>
 
 
     <MudNavGroup Title="Gerenciamento" Class="px-4" Icon="@Icons.Material.Filled.Class" IconColor="Color.Warning"
@@ -38,9 +40,14 @@
 
     </MudNavGroup>
 
-    <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/sair"))" Icon="@Icons.Material.Filled.Logout">Sair</MudNavLink>
+    <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/sair"))" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">Sair</MudNavLink>
 </MudNavMenu>
-
+    </Authorized>
+    <NotAuthorized>
+        <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/login"))" Icon="@Icons.Material.Filled.Login" IconColor="Color.Success">Login</MudNavLink>
+        <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/registrar"))" Icon="@Icons.Material.Filled.Add" IconColor="Color.Success">Registrar</MudNavLink>
+    </NotAuthorized>
+</AuthorizeView>
 <link href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" rel="stylesheet">
 
 @code{
@@ -75,7 +82,7 @@
             }
         }
     }
-
+    
     //bool _expandedManager = false;
     //bool _expandedConfiguration = false;
     //bool _expandedManagerUser = false ;
