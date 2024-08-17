@@ -5,7 +5,6 @@ global using System.IdentityModel.Tokens.Jwt;
 global using System.IO.Compression;
 global using System.Net;
 global using System.Net.Mail;
-global using System.Net.NetworkInformation;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;
@@ -26,7 +25,6 @@ global using Microsoft.IdentityModel.Tokens;
 
 global using RDS.Api.Common.Api;
 global using RDS.Api.Data;
-global using RDS.Api.Handlers;
 global using RDS.Api.Models;
 global using RDS.Api.Services;
 

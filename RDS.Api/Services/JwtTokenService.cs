@@ -12,11 +12,11 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Subject = GenerateClaims(user, roles, fingerPrint),
             SigningCredentials = credentials,
             Expires = DateTime.UtcNow.AddMinutes(ApiConfiguration.JwtMinutesToExpire),
             Issuer = configuration["Jwt:Issuer"],
-            Audience = configuration["Jwt:Audience"],
-            Subject = GenerateClaims(user, roles, fingerPrint)
+            Audience = configuration["Jwt:Audience"]
         };
 
         var token = handler.CreateToken(tokenDescriptor);
@@ -26,11 +26,11 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
     public async Task<string> RenewTokenIfNecessary(RefreshTokenRequest refreshTokenRequest)
     {
         var principal = GetPrincipalFromExpiredToken(refreshTokenRequest.Token);
-        
+
         var fingerPrintClient = refreshTokenRequest.FingerPrint;
         var fingerPrint = principal.Claims.FirstOrDefault(c => c.Type == "FingerPrint")?.Value ?? string.Empty;
         if (fingerPrint != fingerPrintClient) return string.Empty;
-        
+
         var expiryDateUnix = long.Parse(principal.Claims.First(c => c.Type == JwtRegisteredClaimNames.Exp).Value);
         var expiryDateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(expiryDateUnix).UtcDateTime;
         var currentUtcTime = DateTime.UtcNow;
@@ -93,17 +93,25 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         if (!string.IsNullOrEmpty(user.Email))
         {
             ci.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-            ci.AddClaim(new Claim(ClaimTypes.GivenName, user.Name ?? string.Empty));
+            ci.AddClaim(new Claim(ClaimTypes.GivenName, user.Name));
             ci.AddClaim(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
             ci.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, user.Email));
             ci.AddClaim(new Claim("FingerPrint", fingerPrint));
         }
-
+        
         foreach (var role in roles)
-            ci.AddClaim(new Claim(ClaimTypes.Role, role));
-
+        {
+            ci.AddClaim(new Claim($"custom_role_{role}", role));
+        }
+        
+        // foreach (var role in roles)
+        // {
+        //     ci.AddClaim(new Claim(ClaimTypes.Role, role));
+        // }
+ 
         return ci;
     }
+
 
     // private static string GetMacAddress()
     // {

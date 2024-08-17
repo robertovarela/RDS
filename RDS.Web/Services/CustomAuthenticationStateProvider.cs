@@ -1,5 +1,3 @@
-namespace RDS.Web.Services;
-
 public class CustomAuthenticationStateProvider(ILocalStorageService localStorageService) : AuthenticationStateProvider
 {
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -31,7 +29,18 @@ public class CustomAuthenticationStateProvider(ILocalStorageService localStorage
         var payload = jwt.Split('.')[1];
         var jsonBytes = ParseBase64WithoutPadding(payload);
         var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-        return keyValuePairs?.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString() ?? string.Empty));
+
+        var claims = keyValuePairs?.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString() ?? string.Empty)).ToList();
+
+        if (claims == null) return claims;
+        var roleClaims = claims
+            .Where(c => c.Type.StartsWith("custom_role_"))
+            .Select(c => new Claim(ClaimTypes.Role, c.Value))
+            .ToList();
+
+        claims.AddRange(roleClaims);
+
+        return claims;
     }
 
     private byte[] ParseBase64WithoutPadding(string base64)

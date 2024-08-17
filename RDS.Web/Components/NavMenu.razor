@@ -2,64 +2,67 @@
     <img src="/imgs/RDS-01.jpg" alt="RDS - Soluções em software" width="200"/>
 </div>
 
-<AuthorizeView>
+<AuthorizeView Roles="Admin">
     <Authorized>
-<MudNavMenu Margin="Margin.None" Color="Color.Success" Rounded="true" Dense="true" Class="responsive-text drawer-title">
-    <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/"))" Icon="@Icons.Material.Filled.Home" IconColor="Color.Success">Início</MudNavLink>
+        <MudNavMenu Margin="Margin.None" Color="Color.Success" Rounded="true" Dense="true" Class="responsive-text drawer-title">
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/"))" Icon="@Icons.Material.Filled.Home" IconColor="Color.Success">Início</MudNavLink>
 
 
-    <MudNavGroup Title="Gerenciamento" Class="px-4" Icon="@Icons.Material.Filled.Class" IconColor="Color.Warning"
-                 Expanded="@(_expandedGroup == "Manager")" ExpandedChanged="@(() => ToggleGroup("Manager"))">
+            <MudNavGroup Title="Gerenciamento" Class="px-4" Icon="@Icons.Material.Filled.Class" IconColor="Color.Warning"
+                         Expanded="@(_expandedGroup == "Manager")" ExpandedChanged="@(() => ToggleGroup("Manager"))">
 
-        <MudNavGroup Title="Usuários" Class="px-4" Icon="@Icons.Material.Filled.PeopleOutline" IconColor="Color.Success"
-                     Expanded="@(_expandedGroup == "SubUsers")" ExpandedChanged="@(() => ToggleGroup("SubUsers"))">
+                <MudNavGroup Title="Usuários" Class="px-4" Icon="@Icons.Material.Filled.PeopleOutline" IconColor="Color.Success"
+                             Expanded="@(_expandedGroup == "SubUsers")" ExpandedChanged="@(() => ToggleGroup("SubUsers"))">
 
-            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuarios"))" Class="responsive-text drawer-subtitle" 
-                        Icon="@Icons.Material.Filled.People" IconColor="Color.Success">Lista</MudNavLink>
-            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuarios/editar"))" Class="responsive-text drawer-subtitle" 
-                        Icon="@Icons.Material.Filled.Person" IconColor="Color.Success">Meu Cadastro</MudNavLink>
+                    <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuarios"))" Class="responsive-text drawer-subtitle" 
+                                Icon="@Icons.Material.Filled.People" IconColor="Color.Success">Lista</MudNavLink>
+                    <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuarios/editar"))" Class="responsive-text drawer-subtitle" 
+                                Icon="@Icons.Material.Filled.Person" IconColor="Color.Success">Meu Cadastro</MudNavLink>
 
-        </MudNavGroup>
+                </MudNavGroup>
 
-        <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/categorias"))" Class="responsive-text drawer-subtitle" 
-                    Icon="@Icons.Material.Filled.Category" IconColor="Color.Info">Categorias</MudNavLink>
-        <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/lancamentos/historico"))" Class="responsive-text drawer-subtitle" 
-                    Icon="@Icons.Material.Filled.History" IconColor="Color.Warning">Transações</MudNavLink>
+                <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/categorias"))" Class="responsive-text drawer-subtitle" 
+                            Icon="@Icons.Material.Filled.Category" IconColor="Color.Info">Categorias</MudNavLink>
+                <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/lancamentos/historico"))" Class="responsive-text drawer-subtitle" 
+                            Icon="@Icons.Material.Filled.History" IconColor="Color.Warning">Transações</MudNavLink>
 
-    </MudNavGroup>
+            </MudNavGroup>
 
-    <MudNavGroup Title="Configurações" Class="px-4" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Error"
-                 Expanded="@(_expandedGroup == "Configurations")" ExpandedChanged="@(() => ToggleGroup("Configurations"))">
+            <MudNavGroup Title="Configurações" Class="px-4" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Error"
+                         Expanded="@(_expandedGroup == "Configurations")" ExpandedChanged="@(() => ToggleGroup("Configurations"))">
 
-        <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/finger"))" Class="responsive-text drawer-subtitle"
-                    Icon="@Icons.Material.Filled.Devices" IconColor="Color.Warning">Finger Print</MudNavLink>
-        <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles"))" Class="responsive-text drawer-subtitle"
-                    Icon="@Icons.Material.Filled.Assignment" IconColor="Color.Error">Roles</MudNavLink>
-        <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/lista-usuarios-roles"))" Class="responsive-text drawer-subtitle"
-                    Icon="@Icons.Material.Filled.AssignmentInd" IconColor="Color.Error">User Roles</MudNavLink>
+                <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/finger"))" Class="responsive-text drawer-subtitle"
+                            Icon="@Icons.Material.Filled.Devices" IconColor="Color.Warning">Finger Print</MudNavLink>
+                <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles"))" Class="responsive-text drawer-subtitle"
+                            Icon="@Icons.Material.Filled.Assignment" IconColor="Color.Error">Roles</MudNavLink>
+                <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/lista-usuarios-roles"))" Class="responsive-text drawer-subtitle"
+                            Icon="@Icons.Material.Filled.AssignmentInd" IconColor="Color.Error">User Roles</MudNavLink>
 
-    </MudNavGroup>
+            </MudNavGroup>
 
-    <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/sair"))" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">Sair</MudNavLink>
-</MudNavMenu>
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/sair"))" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">Sair</MudNavLink>
+        </MudNavMenu>
     </Authorized>
     <NotAuthorized>
         <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/login"))" Icon="@Icons.Material.Filled.Login" IconColor="Color.Success">Login</MudNavLink>
         <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/registrar"))" Icon="@Icons.Material.Filled.Add" IconColor="Color.Success">Registrar</MudNavLink>
     </NotAuthorized>
 </AuthorizeView>
+
 <link href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" rel="stylesheet">
 
 @code{
 
+    //[Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    
     private string? _expandedGroup = null;
     private string? _expandedSubGroup = null;
+    //private string roles = "";
 
     private void ToggleGroup(string groupName)
     {
         if (groupName.StartsWith("Sub"))
         {
-            // Trata submenus separadamente
             if (_expandedSubGroup == groupName)
             {
                 _expandedSubGroup = null;
@@ -83,11 +86,26 @@
         }
     }
     
-    //bool _expandedManager = false;
-    //bool _expandedConfiguration = false;
-    //bool _expandedManagerUser = false ;
-
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    //     var user = authState.User;
     //
-    // string ClassColorManager => _expandedManager ? "mud-theme-primary" : "mud-theme-secondary";
-    // string ClassColorConfiguration => _expandedConfiguration ? "mud-theme-primary" : "mud-theme-secondary";
+    //     if (user.Identity != null && user.Identity.IsAuthenticated)
+    //     {
+    //         var rolesList = user.Claims
+    //             .Where(c => c.Type == ClaimTypes.Role)
+    //             .Select(c => c.Value)
+    //             .ToList();
+    //         roles = string.Join(", ", rolesList);
+    //
+    //         Console.WriteLine($"Roles do usuário autenticado: {roles}");
+    //     }
+    //     else
+    //     {
+    //         roles = "Usuário não autenticado";
+    //         Console.WriteLine(roles);
+    //     }
+    //
+    // }
 }
