@@ -1,3 +1,5 @@
+namespace RDS.Web.Services;
+
 public class CustomAuthenticationStateProvider(ILocalStorageService localStorageService) : AuthenticationStateProvider
 {
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()

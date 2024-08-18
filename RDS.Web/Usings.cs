@@ -30,6 +30,7 @@ global using RDS.Core.Requests.Transactions;
 global using RDS.Core.Responses;
 global using RDS.Core.Services;
 
+global using RDS.Web.Components.NavMenuComponents;
 global using RDS.Web.Services;
 
 /* add global usage directives for Third party namespaces here */

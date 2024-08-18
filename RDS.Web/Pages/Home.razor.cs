@@ -3,7 +3,7 @@ namespace RDS.Web.Pages;
 public class HomePage : ComponentBase
 {
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
-    private string roles = "";
+    //private string roles = "";
     
     #region Overrides
 
