@@ -1,20 +1,25 @@
-﻿@using RDS.Core.Services
-
-<MudPaper Class="pa-2">
+﻿<MudPaper Class="pa-2">
     <div class="d-flex justify-content-between align-items-center ma-4">
         <MudPaper Class="pa-4 bg-appbarbackground" Style="margin-right: 8px;">
-            <MudText Typo="Typo.h6">Usuário Logado: @UserStateService.GetLoggedUserId()</MudText>
-            <MudText Typo="Typo.h6">Usuário Selecionado: @UserStateService.GetSelectedUserId()</MudText>
-            <MudText Typo="Typo.h6">Endereço Selecionado: @UserStateService.GetSelectedAddressId()</MudText>
-            <MudText Typo="Typo.h6">Categoria Selecionada: @UserStateService.GetSelectedCategoryId()</MudText>
+            <MudText Typo="Typo.h6">Usuário Logado: @_userLogged</MudText>
+            <MudText Typo="Typo.h6">Usuário Selecionado: @_userSelected</MudText>
+            <MudText Typo="Typo.h6">Endereço Selecionado: @_addressSelected</MudText>
+            <MudText Typo="Typo.h6">Categoria Selecionada: @_categorySelected</MudText>
         </MudPaper>
     </div>
 </MudPaper>
 
 
 @code {
-    [Inject]
-    UserStateService UserStateService { get; set; } = null!;
 
-    protected override void OnInitialized() => StateHasChanged();
+    private long _userLogged = StartService.GetLoggedUserId();
+    private long _userSelected = StartService.GetSelectedUserId();
+    private long _addressSelected = StartService.GetSelectedAddressId();
+    private long _categorySelected = StartService.GetSelectedCategoryId();
+    
+    protected override void OnInitialized()
+    {
+        StateHasChanged();
+    }
+
 }

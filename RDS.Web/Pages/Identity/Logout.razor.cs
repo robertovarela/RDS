@@ -25,7 +25,8 @@ public class LogoutPage : ComponentBase
     
     private async Task NavigateToLoginAsync()
     {
-        await Task.Delay(2000);
+        StartService.SetDefaultValues();
+        await Task.Delay(1000);
         NavigationService.NavigateTo("/login");
     }
     

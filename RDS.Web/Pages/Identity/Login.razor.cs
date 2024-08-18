@@ -33,6 +33,7 @@ public partial class LoginPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetDefaultValues();
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         

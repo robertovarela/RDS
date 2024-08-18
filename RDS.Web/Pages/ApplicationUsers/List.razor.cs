@@ -33,7 +33,9 @@ namespace RDS.Web.Pages.ApplicationUsers
         {
             StartService.SetPageTitle("Usuários");
             await StartService.ValidateAccesByToken();
+            StartService.SetDefaultValues();
             await LoadUsers();
+            StateHasChanged();
         }
 
         #endregion

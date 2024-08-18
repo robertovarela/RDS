@@ -101,7 +101,7 @@ public class UserController(
             
             return resultRole.Succeeded 
                 ? new Response<ApplicationUser?>(user, 201, "Usuário criado com sucesso!") 
-                : new Response<ApplicationUser?>(null, 400, "Não foi possível criar a role do usuário");
+                : new Response<ApplicationUser?>(null, 400, "Não foi possível criar o usuário");
         }
         catch (Exception ex)
         {

@@ -2,8 +2,9 @@
 {
     public class UserStateService
     {
-        public string? PageTitle { get; set; } = string.Empty;
+        private string? PageTitle { get; set; } = string.Empty;
         private string? UrlOrigen { get; set; } = string.Empty;
+        private string? UrlCurrent { get; set; } = string.Empty;
         private long LoggedUserId { get; set; }
         private long SelectedUserId { get; set; }
         

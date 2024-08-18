@@ -4,7 +4,7 @@ public partial class ListUserRolesPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
+    protected bool IsBusy { get; private set; }
     protected List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
     protected long UserId => StartService.GetSelectedUserId();
 

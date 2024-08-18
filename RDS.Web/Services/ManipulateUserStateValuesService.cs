@@ -80,24 +80,20 @@ public class ManipulateUserStateValuesService(
         return pageTitle;
     }
 
-    public string GetUrlOrigen()
-    {
-        string urlOrigen = userState.GetUrlOrigen();
-        return urlOrigen;
-    }
+    public string GetUrlOrigen() => userState.GetUrlOrigen();
 
-    public long GetLoggedUserId()
-    {
-        long loggedUserId = userState.GetLoggedUserId();
-        return loggedUserId;
-    }
+    public long GetLoggedUserId() =>userState.GetLoggedUserId();
+
 
     public long GetSelectedUserId()
     {
         long selectedUserId = userState.GetSelectedUserId();
-        if (selectedUserId != 0) return selectedUserId;
-        userState.SetSelectedUserId(userState.GetLoggedUserId());
-        selectedUserId = userState.GetSelectedUserId();
+        if (selectedUserId == 0)
+        {
+            userState.SetSelectedUserId(userState.GetLoggedUserId());
+            selectedUserId = userState.GetSelectedUserId();
+        }
+
         return selectedUserId;
     }
 
