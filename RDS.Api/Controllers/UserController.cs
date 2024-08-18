@@ -11,11 +11,10 @@ public class UserController(
     AppDbContext context)
     : ControllerBase
 {
-    
     [HttpPost("userlogin")]
     public async Task<Response<UserLogin>> LoginAsync([FromBody] LoginRequest? request)
     {
-        if (request == null)
+        if (request is null)
         {
             return new Response<UserLogin>(null, 400, "Dados inválidos");
         }
@@ -24,7 +23,7 @@ public class UserController(
         {
             var user = await userManager.FindByEmailAsync(request.Email);
 
-            if (user == null)
+            if (user is null)
             {
                 return new Response<UserLogin>(null, 401, "Usuário não encontrado");
             }
@@ -70,7 +69,7 @@ public class UserController(
             return new Response<UserRefreshToken>(null, 500, "Erro interno no servidor");
         }
     }
-    
+
     [HttpPost("createuser")]
     public async Task<Response<ApplicationUser?>> CreateAsync([FromBody] CreateApplicationUserRequest request)
     {
@@ -177,8 +176,8 @@ public class UserController(
                 .Users
                 .AsNoTracking()
                 .Where(u =>
-                (string.IsNullOrEmpty(request.Filter) || u.Name.Contains(request.Filter)) ||
-                (string.IsNullOrEmpty(request.Filter) || u.Cpf.Contains(request.Filter)))
+                    (string.IsNullOrEmpty(request.Filter) || u.Name.Contains(request.Filter)) ||
+                    (string.IsNullOrEmpty(request.Filter) || u.Cpf.Contains(request.Filter)))
                 .OrderBy(u => u.Name)
                 .ThenBy(u => u.Id);
 

@@ -86,7 +86,7 @@ public class UserConfigurationController(
     }
 
     [HttpPost("create-role-to-user")]
-    public async Task<Response<ApplicationUserRole>> AssignRoleToUser(CreateApplicationUserRoleRequest request)
+    public async Task<Response<ApplicationUserRole>> CreateRoleToUser(CreateApplicationUserRoleRequest request)
     {
         var roleName = request.RoleName.Capitalize();
         try
