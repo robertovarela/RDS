@@ -6,6 +6,7 @@ namespace RDS.Api.Controllers;
 public class UserController(
     SignInManager<User> signInManager,
     UserManager<User> userManager,
+    RoleManager<IdentityRole<long>> roleManager,
     JwtTokenService jwtTokenService,
     ILogger<UserController> logger,
     AppDbContext context)
@@ -94,8 +95,13 @@ public class UserController(
             {
                 return new Response<ApplicationUser?>(null, 400, "Não foi possível criar o usuário");
             }
-
-            return new Response<ApplicationUser?>(user, 201, "Usuário criado com sucesso!");
+            
+            const string roleName = "User";
+            var resultRole = await userManager.AddToRoleAsync(user, roleName);
+            
+            return resultRole.Succeeded 
+                ? new Response<ApplicationUser?>(user, 201, "Usuário criado com sucesso!") 
+                : new Response<ApplicationUser?>(null, 400, "Não foi possível criar a role do usuário");
         }
         catch (Exception ex)
         {
