@@ -27,6 +27,13 @@ namespace RDS.Web
             _navigationManager?.NavigateTo("/sair");
             _navigationManager?.NavigateTo("/registrar");
         }
+        
+        public static void NavigateToAccessNotAllowed()
+        {
+            StartService.SetDefaultValues();
+            StartService.SetSourceUrl([]);
+            _navigationManager?.NavigateTo("/access-not-allowed");
+        }
 
     }
 }

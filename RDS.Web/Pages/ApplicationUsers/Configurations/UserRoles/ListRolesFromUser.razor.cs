@@ -4,10 +4,17 @@ public partial class ListUserRolesPage : ComponentBase
 {
     #region Properties
 
+    private const string CurrentUrl = "/usuariosconfiguracao/lista-roles-do-usuario";
+    private readonly List<string> _sourceUrl =
+    [
+        "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario",
+        "/usuariosconfiguracao/lista-usuarios-roles",
+        "/usuariosconfiguracao/roles-do-usuario/adicionar-role"
+    ];
     protected bool IsBusy { get; private set; }
     protected List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
     protected long UserId => StartService.GetSelectedUserId();
-
+    
     #endregion
 
     #region Services
@@ -23,15 +30,7 @@ public partial class ListUserRolesPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Roles");
-        var urlOrigen = StartService.GetUrlOrigen();
-        if (!StartService.GetUrlOrigen().Equals("/usuariosconfiguracao/lista-usuarios-roles")
-            && !StartService.GetUrlOrigen().Equals("/usuariosconfiguracao/roles-do-susuario/adicionar-role"))
-        {
-            Snackbar.Add("Acesso não permitido!", Severity.Error);
-            Snackbar.Add("URL de origem não reconhecida", Severity.Error);
-            NavigationService.NavigateToLogin();
-            return;
-        }
+        StartService.ValidateSourceUrl(_sourceUrl, CurrentUrl, true, true);
 
         await StartService.ValidateAccesByToken();
         IsBusy = true;

@@ -74,16 +74,38 @@ public class ManipulateUserStateValuesService(
         return true;
     }
 
-    public string GetPageTitle()
+    public bool ValidateSourceUrl(List<string> sourceUrl,
+        string currentUrl, 
+        bool navigateToAccessNotAllowed = true, 
+        bool showMessage = true)
     {
-        string pageTitle = userState.GetPageTitle();
-        return pageTitle;
+        var commonUrls = sourceUrl.Intersect(GetSourceUrl()).ToList();
+
+        if (commonUrls.Any()) return true;
+        
+        if (GetCurrentUrl().Equals(currentUrl)) return true;
+        
+        if(showMessage)
+        {
+            snackbar.Add("Acesso não permitido!", Severity.Error);
+            snackbar.Add("URL de origem não reconhecida", Severity.Error);
+        }
+        
+        if(navigateToAccessNotAllowed)
+        {
+            NavigationService.NavigateToAccessNotAllowed();
+            return false;
+        }
+        
+        NavigationService.NavigateToLogin();
+        
+        return false;
     }
-
-    public string GetUrlOrigen() => userState.GetUrlOrigen();
-
+    
+    public string GetPageTitle() => userState.GetPageTitle();
+    public List<string> GetSourceUrl() => userState.GetSourceUrl();
+    public string GetCurrentUrl() => userState.GetCurrentUrl();
     public long GetLoggedUserId() =>userState.GetLoggedUserId();
-
 
     public long GetSelectedUserId()
     {
@@ -96,13 +118,13 @@ public class ManipulateUserStateValuesService(
 
         return selectedUserId;
     }
-
     public string GetSelectedUserName() => userState.GetSelectedUserName();
     public long GetSelectedAddressId() => userState.GetSelectedAddressId();
     public long GetSelectedCategoryId() => userState.GetSelectedCategoryId();
 
     public void SetPageTitle(string title) => userState.SetPageTitle(title);
-    public void SetUrlOrigen(string url) => userState.SetUrlOrigen(url);
+    public void SetSourceUrl(List<string> urlList) => userState.SetSourceUrl(urlList);
+    public void SetCurrentUrl(string url) => userState.SetCurrentUrl(url);
     public void SetSelectedUserId(long userId) => userState.SetSelectedUserId(userId);
     public void SetSelectedUserName(string userName) => userState.SetSelectedUserName(userName);
     public void SetSelectedAddressId(long addressId) => userState.SetSelectedAddressId(addressId);

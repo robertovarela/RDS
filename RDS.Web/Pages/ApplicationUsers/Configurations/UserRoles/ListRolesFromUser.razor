@@ -1,4 +1,4 @@
-@page "/usuariosconfiguracao/lista-roles-do-susuario"
+@page "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario"
 @inherits ListUserRolesPage
 
 <AuthorizeView>
@@ -9,7 +9,7 @@
                 Variant="Variant.Filled"
                 Color="Color.Primary"
                 StartIcon="@Icons.Material.TwoTone.Add"
-                OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles-do-susuario/adicionar-role"))">
+                OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles-do-usuario/adicionar-role"))">
                 ADICIONAR
             </MudButton>
         </div>

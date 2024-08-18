@@ -6,9 +6,9 @@ public partial class CreateUserRolePage : ComponentBase
 
     public bool IsBusy { get; set; }
     public CreateApplicationUserRoleRequest InputModel { get; set; } = new();
-    public List<ApplicationUserRole?> Roles { get; set; } = [];
-    protected long UserId => StartService.GetSelectedUserId();
-    private const string UrlOrigen = "/usuariosconfiguracao/roles-do-susuario/adicionar-role";
+    protected List<ApplicationUserRole?> Roles { get; set; } = [];
+    private long UserId => StartService.GetSelectedUserId();
+    private readonly List<string> _urlOrigen = ["/usuariosconfiguracao/roles-do-usuario/adicionar-role"];
 
     #endregion
 
@@ -25,7 +25,7 @@ public partial class CreateUserRolePage : ComponentBase
     {
         StartService.SetPageTitle("Nova Role");
         await StartService.ValidateAccesByToken();
-        StartService.SetUrlOrigen(UrlOrigen);
+        StartService.SetSourceUrl(_urlOrigen);
         IsBusy = true;
 
         try
@@ -68,7 +68,7 @@ public partial class CreateUserRolePage : ComponentBase
             if (result.IsSuccess)
             {
                 Snackbar.Add(result.Message, Severity.Success);
-                NavigationService.NavigateTo("/usuariosconfiguracao/lista-roles-do-susuario");
+                NavigationService.NavigateTo("/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario");
             }
             else
                 Snackbar.Add(result.Message, Severity.Error);

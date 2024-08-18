@@ -10,8 +10,8 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
         protected string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
-        protected const string Url = "/usuariosconfiguracao/lista-roles-do-susuario";
-        private const string UrlOrigen = "/usuariosconfiguracao/lista-usuarios-roles";
+        protected const string Url = "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario";
+        private readonly List<string> _sourceUrl = ["/usuariosconfiguracao/lista-usuarios-roles"];
 
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
@@ -33,7 +33,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         {
             StartService.SetPageTitle("Usuários - Roles");
             await StartService.ValidateAccesByToken();
-            StartService.SetUrlOrigen(UrlOrigen);
+            StartService.SetSourceUrl(_sourceUrl);
             await LoadUsers();
         }
 
