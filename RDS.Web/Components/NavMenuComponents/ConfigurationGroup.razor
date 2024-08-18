@@ -1,0 +1,25 @@
+﻿<AuthorizeView Roles="Admin">
+    <Authorized>
+        <MudNavGroup Title="Configurações" Class="px-4" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Error"
+                     Expanded="@(ExpandedGroup == "Configurations")" ExpandedChanged="@(() => ExpandedChanged.InvokeAsync("Configurations"))">
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/finger"))" Class="responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.Devices" IconColor="Color.Warning">
+                Finger Print
+            </MudNavLink>
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles"))" Class="responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.Assignment" IconColor="Color.Error">
+                Roles
+            </MudNavLink>
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/lista-usuarios-roles"))" Class="responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.AssignmentInd" IconColor="Color.Error">
+                User Roles
+            </MudNavLink>
+        </MudNavGroup>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    [Parameter] public string? ExpandedGroup { get; set; }
+
+    [Parameter] public EventCallback<string> ExpandedChanged { get; set; }
+}
