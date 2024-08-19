@@ -8,6 +8,7 @@ public partial class ListRolesPage : ComponentBase
     public bool IsBusy { get; set; }
     protected List<ApplicationRole?> Roles { get; set; } = [];
     protected string SearchTerm { get; set; } = string.Empty;
+    protected const string AddUrl = "/usuariosconfiguracao/adicionar-role";
 
     #endregion
 

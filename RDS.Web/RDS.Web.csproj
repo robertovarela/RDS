@@ -44,4 +44,8 @@
 	  </Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Pages\ApplicationUsers\Configurations\Users\" />
+	</ItemGroup>
+
 </Project>

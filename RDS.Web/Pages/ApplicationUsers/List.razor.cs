@@ -10,8 +10,8 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
         protected string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
-        protected const string Url = "/usuarios/editar";
-        protected const string UrlOrigen = "/usuarios";
+        protected const string EditUrl = "/usuarios/editar";
+        protected const string SourceUrl = "/usuarios";
 
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
@@ -21,7 +21,6 @@ namespace RDS.Web.Pages.ApplicationUsers
         #region Services
 
         [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
-        [Inject] public LinkUserStateService Link { get; set; } = null!;
         [Inject] public ISnackbar Snackbar { get; set; } = null!;
         [Inject] public IDialogService DialogService { get; set; } = null!;
 

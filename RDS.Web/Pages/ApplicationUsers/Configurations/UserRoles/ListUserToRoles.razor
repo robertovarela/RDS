@@ -1,4 +1,4 @@
-@page "/usuariosconfiguracao/lista-usuarios-roles"
+@page "/usuariosconfiguracao/usuarios-roles"
 @inherits ListApplicationUsersRolesPage
 
 <!--<UserState/>-->
@@ -69,7 +69,7 @@
                                 <MudIconButton
                                     Icon="@Icons.Material.Filled.Edit"
                                     Color="Color.Primary"
-                                    OnClick="@(() => { if (cellContext.Item.UserName != null) { Link.LinkToUrlUserRole(cellContext.Item.Id, cellContext.Item.Name + "  -  " + cellContext.Item.UserName, Url); } })">
+                                    OnClick="@(() => { if (cellContext.Item.UserName != null) { StartService.LinkToUrlUserRole(cellContext.Item.Id, cellContext.Item.Name + "  -  " + cellContext.Item.UserName, Url); } })">
                                 </MudIconButton>
                             </MudStack>
                         </CellTemplate>

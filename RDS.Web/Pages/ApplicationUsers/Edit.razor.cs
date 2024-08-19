@@ -17,7 +17,6 @@ public partial class EditApplicationUsersPage : ComponentBase
 
     #region Services
     [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
-    [Inject] public LinkUserStateService Link { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
     #endregion

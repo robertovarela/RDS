@@ -11,7 +11,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         protected string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
         protected const string Url = "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario";
-        private readonly List<string> _sourceUrl = ["/usuariosconfiguracao/lista-usuarios-roles"];
+        private readonly List<string> _sourceUrl = ["/usuariosconfiguracao/usuarios-roles"];
 
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
@@ -21,7 +21,6 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         #region Services
 
         [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
-        [Inject] public LinkUserStateService Link { get; set; } = null!;
         [Inject] public ISnackbar Snackbar { get; set; } = null!;
         [Inject] public IDialogService DialogService { get; set; } = null!;
 

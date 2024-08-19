@@ -82,7 +82,7 @@ public class ManipulateUserStateValuesService(
         var commonUrls = sourceUrl.Intersect(GetSourceUrl()).ToList();
 
         if (commonUrls.Any()) return true;
-        
+        var currentUrlMemory = GetSourceUrl();
         if (GetCurrentUrl().Equals(currentUrl)) return true;
         
         if(showMessage)

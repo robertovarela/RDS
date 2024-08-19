@@ -15,7 +15,6 @@ public class ListApplicationUserAdressesPage : ComponentBase
     #region Services
 
     [Inject] public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
-    [Inject] public LinkUserStateService Link { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IDialogService DialogService { get; set; } = null!;
 

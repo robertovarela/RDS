@@ -4,17 +4,20 @@ public partial class ListUserRolesPage : ComponentBase
 {
     #region Properties
 
-    private const string CurrentUrl = "/usuariosconfiguracao/lista-roles-do-usuario";
+    protected const string AddUrl = "/usuariosconfiguracao/roles-do-usuario/adicionar-role";
+    private const string CurrentUrl = "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario";
+
     private readonly List<string> _sourceUrl =
     [
         "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario",
         "/usuariosconfiguracao/lista-usuarios-roles",
         "/usuariosconfiguracao/roles-do-usuario/adicionar-role"
     ];
+
     protected bool IsBusy { get; private set; }
     protected List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
-    protected long UserId => StartService.GetSelectedUserId();
-    
+    protected long UserId { get; set; }
+
     #endregion
 
     #region Services
@@ -30,7 +33,10 @@ public partial class ListUserRolesPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Roles");
-        StartService.ValidateSourceUrl(_sourceUrl, CurrentUrl, true, true);
+        //StartService.ValidateSourceUrl(_sourceUrl, CurrentUrl, true, true);
+        UserId = StartService.GetSelectedUserId();
+        if (UserId == 0)
+            NavigationService.NavigateToAccessNotAllowed();
 
         await StartService.ValidateAccesByToken();
         IsBusy = true;

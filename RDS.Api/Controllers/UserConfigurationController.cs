@@ -35,7 +35,7 @@ public class UserConfigurationController(
         var roleName = request.Name.Capitalize();
         try
         {
-            if (roleName is "Admin" or "User")
+            if (roleName is "Admin" or "Owner" or "User")
                 return new Response<ApplicationRole>(null, 401, "Não é possível excluir a Role Admin ou User.");
 
             var role = await roleManager.FindByNameAsync(roleName);
@@ -74,6 +74,7 @@ public class UserConfigurationController(
                     Name = role.Name
                 })
                 .OrderBy(role => role.Name != "Admin")
+                .ThenBy(role => role.Name != "Owner")
                 .ThenBy(role => role.Name != "User")
                 .ThenBy(role => role.Name)
                 .ToList();
@@ -127,7 +128,7 @@ public class UserConfigurationController(
         var roleName = request.RoleName.Capitalize();
         try
         {
-            if (roleName is "Admin" or "User")
+            if (roleName is "Admin" or "Owner" or "User")
                 return new Response<ApplicationUserRole>(null, 401, $"Não é possível excluir a Role {roleName}.");
 
             var user = await userManager.FindByIdAsync(request.UserId.ToString());
@@ -152,7 +153,7 @@ public class UserConfigurationController(
                 RoleId = request.RoleId,
             };
 
-            return new Response<ApplicationUserRole>(response, 200, "Code201 - Role do usuário excluída com sucesso!");
+            return new Response<ApplicationUserRole>(response, 200, "Role do usuário excluída com sucesso!");
         }
         catch
         {
@@ -213,6 +214,7 @@ public class UserConfigurationController(
                     UserId = userId,
                 })
                 .OrderBy(role => role.RoleName != "Admin")
+                .ThenBy(role => role.RoleName != "Owner")
                 .ThenBy(role => role.RoleName != "User")
                 .ThenBy(role => role.RoleName)
                 .ToList();

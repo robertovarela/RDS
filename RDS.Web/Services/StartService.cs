@@ -39,4 +39,34 @@ public abstract class StartService
     public static void SetSelectedUserName(string userName) => _manipulateUserStateValuesService.SetSelectedUserName(userName);
     public static void SetSelectedAddressId(long addressId) => _manipulateUserStateValuesService.SetSelectedAddressId(addressId);
     public static void SetSelectedCategoryId(long categoryId) => _manipulateUserStateValuesService.SetSelectedCategoryId(categoryId);
+    
+    // This methods are used to set and get the selected user id and name in the application and are used in the LinkUserStateService
+    public static void LinkToUrlUser(string url = "", long userId = 0)
+    {
+        SetSelectedUserId(userId);
+        NavigationService.NavigateTo(url);
+    }
+        
+    public static void LinkToUrlUserRole(long userId, string userName, string url = "")
+    {
+        SetSelectedUserId(userId);
+        SetSelectedUserName(userName);
+        NavigationService.NavigateTo(url);
+    }
+   
+    public static void LinkToUrlAddress(string url = "", string urlOrigen = "", long userId = 0, long addressId = 0)
+    {
+        SetSelectedUserId(userId);
+        SetSelectedAddressId(addressId);
+        NavigationService.NavigateTo(url);
+    }
+        
+    public static void LinkToUrlCategory(string url = "", long userId = 0, long categoryId = 0)
+    {
+        SetSelectedUserId(userId);
+        SetSelectedCategoryId(categoryId);
+        NavigationService.NavigateTo(url);
+    }
+    
+    // End user state methods
 }

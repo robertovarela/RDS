@@ -19,7 +19,6 @@ public partial class ListCategoriesPage : ComponentBase
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IDialogService DialogService { get; set; } = null!;
     [Inject] public ICategoryHandler Handler { get; set; } = null!;
-    [Inject] public LinkUserStateService Link { get; set; } = null!;
 
     #endregion
 

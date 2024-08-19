@@ -10,9 +10,13 @@
                         Icon="@Icons.Material.Filled.Assignment" IconColor="Color.Error">
                 Roles
             </MudNavLink>
-            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/lista-usuarios-roles"))" Class="responsive-text drawer-subtitle"
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/usuarios-roles"))" Class="responsive-text drawer-subtitle"
                         Icon="@Icons.Material.Filled.AssignmentInd" IconColor="Color.Error">
-                User Roles
+                Users Roles
+            </MudNavLink>
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/usuarios-roles"))" Class="responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.AssignmentInd" IconColor="Color.Error">
+                Users Roles
             </MudNavLink>
         </MudNavGroup>
     </Authorized>

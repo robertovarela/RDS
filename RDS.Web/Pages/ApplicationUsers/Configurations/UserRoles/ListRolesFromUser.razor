@@ -9,7 +9,7 @@
                 Variant="Variant.Filled"
                 Color="Color.Primary"
                 StartIcon="@Icons.Material.TwoTone.Add"
-                OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles-do-usuario/adicionar-role"))">
+                OnClick="@(() => NavigationService.NavigateTo(AddUrl))">
                 ADICIONAR
             </MudButton>
         </div>
@@ -43,7 +43,9 @@
                         <CellTemplate Context="cellContext">
                             <MudStack Row>
                                 <MudIconButton
-                                    Disabled="@(cellContext.Item!.RoleName == "Admin" || cellContext.Item!.RoleName == "User")"
+                                    Disabled="@(cellContext.Item!.RoleName == "Admin" 
+                                                || cellContext.Item!.RoleName == "Owner" 
+                                                || cellContext.Item!.RoleName == "User")"
                                     Icon="@Icons.Material.Filled.Delete"
                                     Color="Color.Error"
                                     aria-label="Excluir"
