@@ -24,7 +24,7 @@ public class TransactionMapping : IEntityTypeConfiguration<Transaction>
             .IsRequired();
         builder.Property(x => x.PaidOrReceivedAt)
             .IsRequired(false);
-        builder.Property(x => x.UserId)
+        builder.Property(x => x.CompanyId)
             .IsRequired()
             .HasColumnType("BIGINT");
 

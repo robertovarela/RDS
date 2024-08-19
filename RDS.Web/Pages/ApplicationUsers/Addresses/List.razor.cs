@@ -31,7 +31,7 @@ public class ListApplicationUserAdressesPage : ComponentBase
 
         try
         {
-            var request = new GetAllApplicationUserAddressRequest{UserId = userId};
+            var request = new GetAllApplicationUserAddressRequest{CompanyId = userId};
             var result = await AddressHandler.GetAllAsync(request);
             if (result.IsSuccess)
                 ApplicationUsersAddress = result.Data ?? [];
@@ -71,7 +71,7 @@ public class ListApplicationUserAdressesPage : ComponentBase
         {
             var request = new DeleteApplicationUserAddressRequest 
             { 
-                UserId = userId,  
+                CompanyId = userId,  
                 Id = id
             };
             var result = await AddressHandler.DeleteAsync(request);

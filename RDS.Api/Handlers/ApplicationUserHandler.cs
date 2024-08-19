@@ -38,7 +38,7 @@
         {
             try
             {
-                var user = await userManager.FindByIdAsync(request.UserId.ToString());
+                var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
 
                 if (user == null)
                 {
@@ -110,7 +110,7 @@
         {
             try
             {
-                var user = await userManager.FindByIdAsync(request.UserId.ToString());
+                var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
 
                 return user == null
                     ? new Response<ApplicationUser?>(null, 404, "Usuário não encontrado")
@@ -126,7 +126,7 @@
         {
             try
             {
-                var user = await userManager.FindByIdAsync(request.UserId.ToString());
+                var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
 
                 return user == null
                     ? new Response<ApplicationUser?>(null, 404, "Usuário não encontrado")
@@ -198,7 +198,7 @@
         {
             try
             {
-                var user = await userManager.FindByIdAsync(request.UserId.ToString());
+                var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
 
                 if (user == null)
                 {

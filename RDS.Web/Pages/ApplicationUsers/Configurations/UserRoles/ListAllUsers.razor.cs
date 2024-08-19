@@ -88,7 +88,7 @@ public partial class ListAllUsersPage : ComponentBase
     {
         try
         {
-            var request = new DeleteApplicationUserRequest { UserId = id };
+            var request = new DeleteApplicationUserRequest { CompanyId = id };
             var result = await UserHandler.DeleteAsync(request);
             ApplicationUsers.RemoveAll(x => x.Id == id);
             PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);

@@ -42,7 +42,7 @@ public partial class ListUserRolesPage : ComponentBase
         IsBusy = true;
         try
         {
-            var request = new GetAllApplicationUserRoleRequest { UserId = UserId };
+            var request = new GetAllApplicationUserRoleRequest { CompanyId = UserId };
             var result = await Handler.ListUserRoleAsync(request);
             if (result.IsSuccess)
                 RolesFromUser = result.Data ?? [];
@@ -81,7 +81,7 @@ public partial class ListUserRolesPage : ComponentBase
         {
             var request = new DeleteApplicationUserRoleRequest
             {
-                UserId = userId,
+                CompanyId = userId,
                 RoleName = roleName
             };
             var result = await Handler.DeleteUserRoleAsync(request);

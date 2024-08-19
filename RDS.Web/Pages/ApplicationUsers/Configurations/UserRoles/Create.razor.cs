@@ -30,10 +30,10 @@ public partial class CreateUserRolePage : ComponentBase
 
         try
         {
-            InputModel.UserId = UserId;
+            InputModel.CompanyId = UserId;
             var request = new GetAllApplicationUserRoleRequest
             {
-                UserId = UserId
+                CompanyId = UserId
             };
 
             var result = await UserRoleHandler.ListRoleToAddUserAsync(request);

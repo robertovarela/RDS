@@ -18,7 +18,7 @@ public class CategoryMapping : IEntityTypeConfiguration<Category>
             .HasColumnType("NVARCHAR")
             .HasMaxLength(255);
         
-        builder.Property(x => x.UserId)
+        builder.Property(x => x.CompanyId)
             .IsRequired()
             .HasColumnType("BIGINT");
 

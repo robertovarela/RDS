@@ -7,7 +7,7 @@ public partial class ListCategoriesPage : ComponentBase
 
     protected bool IsBusy { get; set; }
     protected List<Category> Categories { get; set; } = [];
-    private long UserId { get; set; }
+    private long CompanyId { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string Url = "/categorias/editar";
     protected const string UrlOrigen = "/categorias";
@@ -28,13 +28,22 @@ public partial class ListCategoriesPage : ComponentBase
     {
         StartService.SetPageTitle("Categorias");
         await StartService.ValidateAccesByToken();
-        UserId = StartService.GetSelectedUserId();
+        CompanyId = StartService.GetSelectedUserId();
+        await LoadCategoriesAsync();
+    }
+
+    #endregion
+
+    #region Methods
+
+    private async Task LoadCategoriesAsync()
+    {
         IsBusy = true;
         try
         {
             var request = new GetAllCategoriesRequest
             {
-                UserId = UserId
+                CompanyId = CompanyId
             };
             var result = await Handler.GetAllAsync(request);
             if (result.IsSuccess)
@@ -49,11 +58,7 @@ public partial class ListCategoriesPage : ComponentBase
             IsBusy = false;
         }
     }
-
-    #endregion
-
-    #region Methods
-
+    
     public async void OnDeleteButtonClickedAsync(long id, string title)
     {
         var result = await DialogService.ShowMessageBox(
@@ -75,7 +80,7 @@ public partial class ListCategoriesPage : ComponentBase
             var request = new DeleteCategoryRequest
             {
                 Id = id,
-                UserId = UserId
+                CompanyId = CompanyId
             };
             var result = await Handler.DeleteAsync(request);
             if (result.IsSuccess)

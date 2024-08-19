@@ -11,7 +11,7 @@ public class CategoryController(AppDbContext context) : ControllerBase
         {
             var category = new Category
             {
-                UserId = request.UserId,
+                CompanyId = request.CompanyId,
                 Title = request.Title,
                 Description = request.Description
             };
@@ -34,7 +34,7 @@ public class CategoryController(AppDbContext context) : ControllerBase
         {
             var category = await context
                 .Categories
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id && x.CompanyId == request.CompanyId);
 
             if (category is null)
                 return new Response<Category?>(null, 404, "Categoria não encontrada");
@@ -60,7 +60,7 @@ public class CategoryController(AppDbContext context) : ControllerBase
         {
             var category = await context
                 .Categories
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id && x.CompanyId == request.CompanyId);
 
             if (category is null)
                 return new Response<Category?>(null, 404, "Categoria não encontrada");
@@ -84,7 +84,7 @@ public class CategoryController(AppDbContext context) : ControllerBase
             var query = context
                 .Categories
                 .AsNoTracking()
-                .Where(x => x.UserId == request.UserId)
+                .Where(x => x.CompanyId == request.CompanyId)
                 .OrderBy(x => x.Title);
 
             var categories = await query
@@ -114,7 +114,7 @@ public class CategoryController(AppDbContext context) : ControllerBase
             var category = await context
                 .Categories
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id && x.CompanyId == request.CompanyId);
 
             return category is null
                 ? new Response<Category?>(null, 404, "Categoria não encontrada")

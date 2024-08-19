@@ -40,7 +40,7 @@ public class OrderMapping : IEntityTypeConfiguration<Order>
             .IsRequired()
             .HasColumnType("DECIMAL(18, 2)");
 
-        builder.Property(x => x.UserId)
+        builder.Property(x => x.CompanyId)
             .IsRequired()
             .HasColumnType("BIGINT");
     }

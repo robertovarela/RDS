@@ -48,7 +48,6 @@ public class CategoryHandler(HttpClientService httpClientService) : ICategoryHan
     public async Task<PagedResponse<List<Category>>> GetAllAsync(GetAllCategoriesRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/categories/all")
-            //$"v1/users/allusers?pageNumber={request.PageNumber}&pageSize={request.PageSize}")
             {
                 Content = JsonContent.Create(request)
             };

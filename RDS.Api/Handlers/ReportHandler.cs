@@ -10,7 +10,7 @@ public class ReportHandler(AppDbContext context) : IReportHandler
             var data = await context
                 .IncomesAndExpenses
                 .AsNoTracking()
-                .Where(x => x.UserId == request.UserId)
+                .Where(x => x.UserId == request.CompanyId)
                 .OrderByDescending(x => x.Year)
                 .ThenBy(x => x.Month)
                 .ToListAsync();
@@ -31,7 +31,7 @@ public class ReportHandler(AppDbContext context) : IReportHandler
             var data = await context
                 .IncomesByCategories
                 .AsNoTracking()
-                .Where(x => x.UserId == request.UserId)
+                .Where(x => x.UserId == request.CompanyId)
                 .OrderByDescending(x => x.Year)
                 .ThenBy(x => x.Category)
                 .ToListAsync();
@@ -52,7 +52,7 @@ public class ReportHandler(AppDbContext context) : IReportHandler
             var data = await context
                 .ExpensesByCategories
                 .AsNoTracking()
-                .Where(x => x.UserId == request.UserId)
+                .Where(x => x.UserId == request.CompanyId)
                 .OrderByDescending(x => x.Year)
                 .ThenBy(x => x.Category)
                 .ToListAsync();
@@ -74,13 +74,13 @@ public class ReportHandler(AppDbContext context) : IReportHandler
                 .Transactions
                 .AsNoTracking()
                 .Where(
-                    x => x.UserId == request.UserId
+                    x => x.CompanyId == request.CompanyId
                          && x.PaidOrReceivedAt >= startDate
                          && x.PaidOrReceivedAt <= DateTime.Now
                 )
                 .GroupBy(x => 1) //Group by True
                 .Select(x => new FinancialSummary(
-                    request.UserId,
+                    request.CompanyId,
                     x.Where(ty => ty.Type == ETransactionType.Deposit).Sum(t => t.Amount),
                     x.Where(ty => ty.Type == ETransactionType.Withdraw).Sum(t => t.Amount))
                 )

@@ -92,7 +92,7 @@ public class UserConfigurationController(
         var roleName = request.RoleName.Capitalize();
         try
         {
-            var user = await userManager.FindByIdAsync(request.UserId.ToString());
+            var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
             if (user == null)
             {
                 return new Response<ApplicationUserRole>(null, 404, "Usuário não encontrado.");
@@ -110,7 +110,7 @@ public class UserConfigurationController(
 
             var response = new ApplicationUserRole
             {
-                UserId = request.UserId,
+                UserId = request.CompanyId,
                 RoleId = request.RoleId,
             };
 
@@ -131,7 +131,7 @@ public class UserConfigurationController(
             if (roleName is "Admin" or "Owner" or "User")
                 return new Response<ApplicationUserRole>(null, 401, $"Não é possível excluir a Role {roleName}.");
 
-            var user = await userManager.FindByIdAsync(request.UserId.ToString());
+            var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
             if (user == null)
             {
                 return new Response<ApplicationUserRole>(null, 404, "Usuário não encontrado.");
@@ -149,7 +149,7 @@ public class UserConfigurationController(
 
             var response = new ApplicationUserRole
             {
-                UserId = request.UserId,
+                UserId = request.CompanyId,
                 RoleId = request.RoleId,
             };
 
@@ -164,7 +164,7 @@ public class UserConfigurationController(
     [HttpPost("list-roles-for-user")]
     public async Task<Response<List<ApplicationUserRole>>> ListRolesForUser(GetAllApplicationUserRoleRequest request)
     {
-        var userId = request.UserId;
+        var userId = request.CompanyId;
         try
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
@@ -192,7 +192,7 @@ public class UserConfigurationController(
     [HttpPost("list-roles-not-for-user")]
     public async Task<Response<List<ApplicationUserRole>>> ListRolesNotForUser(GetAllApplicationUserRoleRequest request)
     {
-        var userId = request.UserId;
+        var userId = request.CompanyId;
         try
         {
             var user = await userManager.FindByIdAsync(userId.ToString());

@@ -34,7 +34,7 @@ public class CreateCategoryPage : ComponentBase
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;
-        InputModel.UserId = UserId;
+        InputModel.CompanyId = UserId;
         try
         {
             var result = await Handler.CreateAsync(InputModel);

@@ -21,6 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 {
     public DbSet<ApplicationUserAddress> Addresses { get; set; } = null!;
     public DbSet<ApplicationUserTelephone> Telephones { get; set; } = null!;
+    public DbSet<Company> Companies { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Transaction> Transactions { get; set; } = null!;
     public DbSet<Order> Orders { get; set; } = null!;

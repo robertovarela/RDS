@@ -115,7 +115,7 @@ public class UserController(
     {
         try
         {
-            var user = await userManager.FindByIdAsync(request.UserId.ToString());
+            var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
 
             if (user == null)
             {
@@ -149,7 +149,7 @@ public class UserController(
     {
         try
         {
-            var user = await userManager.FindByIdAsync(request.UserId.ToString());
+            var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
 
             if (user == null)
             {
@@ -209,7 +209,7 @@ public class UserController(
     {
         try
         {
-            var user = await userManager.FindByIdAsync(request.UserId.ToString());
+            var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
 
             if (user == null)
             {

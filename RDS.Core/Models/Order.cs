@@ -10,5 +10,5 @@ public class Order
     public EOrderStatus Status { get; set; } = EOrderStatus.WaitingPayment;
     public EPaymentGateway Gateway { get; set; } = EPaymentGateway.Stripe;
     public decimal Amount { get; set; }
-    public long UserId { get; set; }
+    public long CompanyId { get; set; }
 }

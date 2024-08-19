@@ -44,7 +44,7 @@ public class EditApplicationUserAddressPage : ComponentBase
  
             var requestAddress = new GetApplicationUserAddressByIdRequest
             {
-                UserId = userId ,
+                CompanyId = userId ,
                 Id = id
             };
             var responseAddress = await AddressHandler.GetByIdAsync(requestAddress);
@@ -52,7 +52,7 @@ public class EditApplicationUserAddressPage : ComponentBase
             {
                 InputModel = new UpdateApplicationUserAddressRequest
                 {
-                    UserId = responseAddress.Data.UserId,
+                    CompanyId = responseAddress.Data.UserId,
                     Id = responseAddress.Data.Id,
                     PostalCode = responseAddress.Data.PostalCode,
                     Street = responseAddress.Data.Street,
@@ -99,7 +99,7 @@ public class EditApplicationUserAddressPage : ComponentBase
             }
             else
             {
-                Snackbar.Add($"O endereço {InputModel.UserId} - {InputModel.Id} - {InputModel.PostalCode} não foi encontrado", Severity.Warning);
+                Snackbar.Add($"O endereço {InputModel.CompanyId} - {InputModel.Id} - {InputModel.PostalCode} não foi encontrado", Severity.Warning);
 
             }
 

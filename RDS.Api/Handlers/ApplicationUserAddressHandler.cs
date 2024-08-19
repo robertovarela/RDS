@@ -16,7 +16,7 @@ public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationU
                 City = request.City,
                 Country = request.Country,
                 TypeOfAddress = request.TypeOfAddress,
-                UserId = request.UserId
+                UserId = request.CompanyId
             };
 
             await context.Addresses.AddAsync(address);
@@ -36,7 +36,7 @@ public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationU
         {
             var address = await context
                 .Addresses
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.CompanyId);
 
             if (address is null)
                 return new Response<ApplicationUserAddress?>(null, 404, "Endereço não encontrado");
@@ -60,7 +60,7 @@ public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationU
                 .Addresses
                 .AsNoTracking()
                 //.Where(x => x.UserId == 0)
-                .Where(x => x.UserId == request.UserId)
+                .Where(x => x.UserId == request.CompanyId)
                 .OrderBy(x => x.TypeOfAddress)
                 .ThenBy(x => x.Id);
 
@@ -90,7 +90,7 @@ public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationU
             var address = await context
                 .Addresses
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.CompanyId);
 
             return address is null
                 ? new Response<ApplicationUserAddress?>(null, 404, "Endereço não encontrado")
@@ -108,7 +108,7 @@ public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationU
         {
             var address = await context
                 .Addresses
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.CompanyId);
 
             if (address is null)
                 return new Response<ApplicationUserAddress?>(null, 404, "Endereço não encontrado");

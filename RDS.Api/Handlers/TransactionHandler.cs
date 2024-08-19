@@ -13,7 +13,7 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
         {
             var transaction = new Transaction
             {
-                UserId = request.UserId,
+                CompanyId = request.CompanyId,
                 CategoryId = request.CategoryId,
                 CreatedAt = DateTime.Now,
                 Amount = request.Amount,
@@ -42,7 +42,7 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
         {
             var transaction = await context
                 .Transactions
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id && x.CompanyId == request.CompanyId);
 
             if (transaction is null)
                 return new Response<Transaction?>(null, 404, "Transação não encontrada");
@@ -70,7 +70,7 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
         {
             var transaction = await context
                 .Transactions
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id && x.CompanyId == request.CompanyId);
 
             if (transaction is null)
                 return new Response<Transaction?>(null, 404, "Transação não encontrada");
@@ -92,7 +92,7 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
         {
             var transaction = await context
                 .Transactions
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id && x.CompanyId == request.CompanyId);
 
             return transaction is null
                 ? new Response<Transaction?>(null, 404, "Transação não encontrada")
@@ -125,7 +125,7 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
                 .Where(x =>
                     x.PaidOrReceivedAt >= request.StartDate &&
                     x.PaidOrReceivedAt <= request.EndDate &&
-                    x.UserId == request.UserId)
+                    x.CompanyId == request.CompanyId)
                 .OrderBy(x => x.PaidOrReceivedAt);
 
             var transactions = await query

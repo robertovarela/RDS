@@ -36,7 +36,7 @@ public partial class CreateTransactionPage : ComponentBase
         {
             var request = new GetAllCategoriesRequest
             {
-                UserId = UserId
+                CompanyId = UserId
             };
             var result = await CategoryHandler.GetAllAsync(request);
             if (result.IsSuccess)

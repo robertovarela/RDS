@@ -80,7 +80,7 @@ public partial class ListTransactionsPage : ComponentBase
         {
             var request = new GetTransactionsByPeriodRequest
             {
-                UserId = UserId,
+                CompanyId = UserId,
                 StartDate = DateTime.Now.GetFirstDay(CurrentYear, CurrentMonth),
                 EndDate = DateTime.Now.GetLastDay(CurrentYear, CurrentMonth),
                 PageNumber = 1,

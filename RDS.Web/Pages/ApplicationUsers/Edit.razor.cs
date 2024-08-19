@@ -47,12 +47,12 @@ public partial class EditApplicationUsersPage : ComponentBase
         try
         {
             IsBusy = true;
-            var request = new GetApplicationUserByIdRequest { UserId = userId };
+            var request = new GetApplicationUserByIdRequest { CompanyId = userId };
             var response = await UserHandler.GetByIdAsync(request);
             if (response is { IsSuccess: true, Data: not null })
                 InputModel = new UpdateApplicationUserRequest
                 {
-                    UserId = response.Data.Id,
+                    CompanyId = response.Data.Id,
                     Name = response.Data.Name ?? string.Empty,
                     Email = response.Data.Email ?? string.Empty,
                     Cpf = response.Data.Cpf ?? string.Empty,
@@ -87,7 +87,7 @@ public partial class EditApplicationUsersPage : ComponentBase
             }
             else
             {
-                Snackbar.Add($"O usuário {InputModel.UserId}-{InputModel.Name} não foi encontrado", Severity.Warning);
+                Snackbar.Add($"O usuário {InputModel.CompanyId}-{InputModel.Name} não foi encontrado", Severity.Warning);
             }
             
             StateHasChanged();

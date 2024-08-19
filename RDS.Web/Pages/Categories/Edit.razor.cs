@@ -34,7 +34,7 @@ public partial class EditCategoryPage : ComponentBase
             var request = new GetCategoryByIdRequest
             {
                 Id = Id,
-                UserId = UserId
+                CompanyId = UserId
             };
 
             IsBusy = true;
@@ -66,7 +66,7 @@ public partial class EditCategoryPage : ComponentBase
     {
         IsBusy = true;
         InputModel.Id = Id;
-        InputModel.UserId = UserId;
+        InputModel.CompanyId = UserId;
         
         try
         {

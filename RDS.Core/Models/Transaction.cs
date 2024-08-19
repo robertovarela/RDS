@@ -10,5 +10,5 @@ public class Transaction
     public decimal Amount { get; set; }
     public long CategoryId { get; set; }
     public Category Category { get; set; } = null!;
-    public long UserId { get; set; }
+    public long CompanyId { get; set; }
 }
