@@ -14,9 +14,9 @@
                         Icon="@Icons.Material.Filled.AssignmentInd" IconColor="Color.Error">
                 Users Roles
             </MudNavLink>
-            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/usuarios-roles"))" Class="responsive-text drawer-subtitle"
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/lista-usuarios"))" Class="responsive-text drawer-subtitle"
                         Icon="@Icons.Material.Filled.AssignmentInd" IconColor="Color.Error">
-                Users Roles
+                Users List
             </MudNavLink>
         </MudNavGroup>
     </Authorized>
@@ -24,6 +24,7 @@
 
 @code {
     [Parameter] public string? ExpandedGroup { get; set; }
+    [Parameter] public string? _expandedSubGroup { get; set; }
 
     [Parameter] public EventCallback<string> ExpandedChanged { get; set; }
 }

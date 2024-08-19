@@ -6,9 +6,9 @@
     <Authorized>
         <MudNavMenu Margin="Margin.None" Color="Color.Success" Rounded="true" Dense="true" Class="responsive-text drawer-title">
             <HomeLink/>
-            <UserGroup ExpandedGroup="_expandedGroup" ExpandedChanged="ToggleGroup"/>
-            <ManagementGroup ExpandedGroup="_expandedGroup" ExpandedChanged="ToggleGroup"/>
-            <ConfigurationGroup ExpandedGroup="_expandedGroup" ExpandedChanged="ToggleGroup"/>
+            <UserGroup ExpandedGroup="@(_expandedGroup)" ExpandedChanged="ToggleGroup"/>
+            <ManagementGroup ExpandedGroup="@(_expandedGroup)" ExpandedChanged="ToggleGroup"/>
+            <ConfigurationGroup ExpandedGroup="@(_expandedGroup)" ExpandedChanged="ToggleGroup"/>
             <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/sair"))" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">Sair</MudNavLink>
         </MudNavMenu>
     </Authorized>
@@ -19,18 +19,34 @@
 </AuthorizeView>
 
 @code {
+
     private string? _expandedGroup = null;
+    private string? _expandedSubGroup = null;
 
     private void ToggleGroup(string groupName)
     {
-        if (_expandedGroup == groupName)
+        if (groupName.StartsWith("Sub"))
         {
-            _expandedGroup = null;
+            if (_expandedSubGroup == groupName)
+            {
+                _expandedSubGroup = null;
+            }
+            else
+            {
+                _expandedSubGroup = groupName;
+            }
         }
         else
         {
-            _expandedGroup = groupName;
+            if (_expandedGroup == groupName)
+            {
+                _expandedGroup = null;
+            }
+            else
+            {
+                _expandedGroup = groupName;
+                _expandedSubGroup = null;
+            }
         }
     }
-
 }

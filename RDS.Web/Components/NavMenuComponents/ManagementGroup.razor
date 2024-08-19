@@ -2,7 +2,6 @@
     <Authorized>
         <MudNavGroup Title="Gerenciamento" Class="px-4" Icon="@Icons.Material.Filled.Class" IconColor="Color.Warning"
                      Expanded="@(ExpandedGroup == "Manager")" ExpandedChanged="@(() => ExpandedChanged.InvokeAsync("Manager"))">
-            <UsuariosGroup ExpandedGroup="ExpandedGroup" ExpandedChanged="ExpandedChanged"/>
             <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/categorias"))" Class="responsive-text drawer-subtitle"
                         Icon="@Icons.Material.Filled.Category" IconColor="Color.Info">
                 Categorias
