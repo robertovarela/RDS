@@ -153,5 +153,4 @@ public class Transactioncontroller(AppDbContext context) : ControllerBase
             return new Response<Transaction?>(null, 500, "Não foi possível recuperar sua transação");
         }
     }
-    
 }

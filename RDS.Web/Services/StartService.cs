@@ -29,16 +29,20 @@ public abstract class StartService
     public static long GetSelectedUserId() => _manipulateUserStateValuesService.GetSelectedUserId();
     public static string GetSelectedUserName() => _manipulateUserStateValuesService.GetSelectedUserName();
     public static long GetSelectedAddressId() => _manipulateUserStateValuesService.GetSelectedAddressId();
+    public static long GetSelectedCompanyId() => _manipulateUserStateValuesService.GetSelectedCompanyID();
     public static long GetSelectedCategoryId() => _manipulateUserStateValuesService.GetSelectedCategoryId();
-    public static void SetDefaultValues() => _manipulateUserStateValuesService.SetDefaultValues();
+    public static long GetSelectedTransactionId() => _manipulateUserStateValuesService.GetSelectedTransactionId();
     
+    public static void SetDefaultValues() => _manipulateUserStateValuesService.SetDefaultValues();
     public static void SetPageTitle(string title) => _manipulateUserStateValuesService.SetPageTitle(title);
     public static void SetSourceUrl(List<string> urlList) => _manipulateUserStateValuesService.SetSourceUrl(urlList);
     public static void SetCurrentUrl(string url) => _manipulateUserStateValuesService.SetCurrentUrl(url);
     public static void SetSelectedUserId(long userId) => _manipulateUserStateValuesService.SetSelectedUserId(userId);
     public static void SetSelectedUserName(string userName) => _manipulateUserStateValuesService.SetSelectedUserName(userName);
     public static void SetSelectedAddressId(long addressId) => _manipulateUserStateValuesService.SetSelectedAddressId(addressId);
+    public static void SetSelectedCompanyId(long companyId) => _manipulateUserStateValuesService.SetSelectedCompanyId(companyId);
     public static void SetSelectedCategoryId(long categoryId) => _manipulateUserStateValuesService.SetSelectedCategoryId(categoryId);
+    public static void SetSelectedTransactionId(long transactionId) => _manipulateUserStateValuesService.SetSelectedTransactionId(transactionId);
     
     // This methods are used to set and get the selected user id and name in the application and are used in the LinkUserStateService
     public static void LinkToUrlUser(string url = "", long userId = 0)
@@ -61,12 +65,18 @@ public abstract class StartService
         NavigationService.NavigateTo(url);
     }
         
-    public static void LinkToUrlCategory(string url = "", long userId = 0, long categoryId = 0)
+    public static void LinkToUrlCategory(string url = "", long companyId = 0, long categoryId = 0)
     {
-        SetSelectedUserId(userId);
+        SetSelectedUserId(companyId);
         SetSelectedCategoryId(categoryId);
         NavigationService.NavigateTo(url);
     }
-    
+
+    public static void LinkToUrlTransaction(string url = "", long companyId = 0, long transactionId = 0)
+    {
+        SetSelectedUserId(companyId);
+        SetSelectedTransactionId(transactionId);
+        NavigationService.NavigateTo(url);
+    }
     // End user state methods
 }

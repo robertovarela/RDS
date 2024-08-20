@@ -120,7 +120,9 @@ public class ManipulateUserStateValuesService(
     }
     public string GetSelectedUserName() => userState.GetSelectedUserName();
     public long GetSelectedAddressId() => userState.GetSelectedAddressId();
+    public long GetSelectedCompanyID() => userState.GetSelectedCompanyId();
     public long GetSelectedCategoryId() => userState.GetSelectedCategoryId();
+    public long GetSelectedTransactionId() => userState.GetSelectedTransactionId();
 
     public void SetPageTitle(string title) => userState.SetPageTitle(title);
     public void SetSourceUrl(List<string> urlList) => userState.SetSourceUrl(urlList);
@@ -128,5 +130,7 @@ public class ManipulateUserStateValuesService(
     public void SetSelectedUserId(long userId) => userState.SetSelectedUserId(userId);
     public void SetSelectedUserName(string userName) => userState.SetSelectedUserName(userName);
     public void SetSelectedAddressId(long addressId) => userState.SetSelectedAddressId(addressId);
+    public void SetSelectedCompanyId(long companyId) => userState.SetSelectedCompanyId(companyId);
     public void SetSelectedCategoryId(long categoryId) => userState.SetSelectedCategoryId(categoryId);
+    public void SetSelectedTransactionId(long transactionId) => userState.SetSelectedTransactionId(transactionId);
 }

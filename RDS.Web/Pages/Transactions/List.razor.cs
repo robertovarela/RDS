@@ -11,7 +11,9 @@ public partial class ListTransactionsPage : ComponentBase
     protected int CurrentYear { get; set; } = DateTime.Now.Year;
     public int CurrentMonth { get; set; } = DateTime.Now.Month;
     protected int[] Years { get; set; } = LoadYears();
-    private long UserId { get; set; }
+    protected long UserId { get; set; }
+    protected const string EditUrl = "/lancamentos/editar";
+
 
     #endregion
 
@@ -44,29 +46,6 @@ public partial class ListTransactionsPage : ComponentBase
         await GetTransactionsAsync();
         StateHasChanged();
     }
-
-    public async void OnDeleteButtonClickedAsync(long id, string title)
-    {
-        var result = await DialogService.ShowMessageBox(
-            "ATENÇÃO",
-            $"Ao prosseguir o lançamento {title} será excluído. Esta ação é irreversível! Deseja continuar?",
-            yesText: "EXCLUIR",
-            cancelText: "Cancelar");
-
-        if (result is true)
-            await OnDeleteAsync(id, title);
-
-        StateHasChanged();
-    }
-
-    public Func<Transaction, bool> Filter => transaction =>
-    {
-        if (string.IsNullOrEmpty(SearchTerm))
-            return true;
-
-        return transaction.Id.ToString().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)
-               || transaction.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
-    };
 
     #endregion
 
@@ -126,6 +105,29 @@ public partial class ListTransactionsPage : ComponentBase
             IsBusy = false;
         }
     }
+    
+    public async void OnDeleteButtonClickedAsync(long id, string title)
+    {
+        var result = await DialogService.ShowMessageBox(
+            "ATENÇÃO",
+            $"Ao prosseguir o lançamento {title} será excluído. Esta ação é irreversível! Deseja continuar?",
+            yesText: "EXCLUIR",
+            cancelText: "Cancelar");
+
+        if (result is true)
+            await OnDeleteAsync(id, title);
+
+        StateHasChanged();
+    }
+
+    public Func<Transaction, bool> Filter => transaction =>
+    {
+        if (string.IsNullOrEmpty(SearchTerm))
+            return true;
+
+        return transaction.Id.ToString().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)
+               || transaction.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
+    };
     
     private static int[] LoadYears()
     {

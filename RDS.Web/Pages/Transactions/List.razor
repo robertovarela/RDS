@@ -1,117 +1,135 @@
 @page "/lancamentos/historico"
 @inherits ListTransactionsPage
 
-<div class="d-flex  mt-2 mb-2">
-    <div class="d-flex mt-2 mb-2">
-        <MudSelect T="int"
-                   Label="Mês"
-                   @bind-Value="CurrentMonth"
-                   AnchorOrigin="Origin.BottomCenter"
-                   Class="mr-4"
-                   Variant="Variant.Outlined"
-                   Style="width: 120px">
-            @for (var month = 1; month <= 12; month++)
-            {
-                var date = new DateTime(DateTime.Now.Year, month, 1);
-                <MudSelectItem T="int" Value="@month">
-                    @(date.ToString("MMMM"))
-                </MudSelectItem>
-            }
-        </MudSelect>
-        <MudSelect T="int"
-                   Label="Ano"
-                   @bind-Value="@CurrentYear"
-                   Class="mr-4"
-                   AnchorOrigin="Origin.BottomCenter"
-                   Variant="Variant.Outlined">
-            @foreach (var year in Years)
-            {
-                <MudSelectItem T="int" Value="@year">
-                    @year
-                </MudSelectItem>
-            }
-        </MudSelect>
-        <MudSpacer/>
-        <div class="d-flex mt-2 mb-2">
-            <MudButton Size="Size.Small"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.TwoTone.Search"
-                       OnClick="OnSearchAsync">
-                PESQUISAR
-            </MudButton>
-        </div>
-    </div>
-    <MudSpacer/>
-    <div class="d-flex mt-2 mb-2">
-        <div class="d-flex mt-2 mb-2">
-            <MudButton Size="Size.Small"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.TwoTone.Add"
-                       OnClick="@(() => NavigationService.NavigateTo("/lancamentos/novo"))">
-                ADICIONAR
-            </MudButton>
+<AuthorizeView>
+    <Authorized>
+        <div class="d-flex  mt-2 mb-2">
+            <div class="d-flex mt-2 mb-2">
+                <MudSelect T="int"
+                           Label="Mês"
+                           @bind-Value="CurrentMonth"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Class="mr-4"
+                           Variant="Variant.Outlined"
+                           Style="width: 120px">
+                    @for (var month = 1; month <= 12; month++)
+                    {
+                        var date = new DateTime(DateTime.Now.Year, month, 1);
+                        <MudSelectItem T="int" Value="@month">
+                            @(date.ToString("MMMM"))
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSelect T="int"
+                           Label="Ano"
+                           @bind-Value="@CurrentYear"
+                           Class="mr-4"
+                           AnchorOrigin="Origin.BottomCenter"
+                           Variant="Variant.Outlined">
+                    @foreach (var year in Years)
+                    {
+                        <MudSelectItem T="int" Value="@year">
+                            @year
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+                <MudSpacer/>
+                <div class="d-flex mt-2 mb-2">
+                    <MudButton Size="Size.Small"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.TwoTone.Search"
+                               OnClick="OnSearchAsync">
+                        PESQUISAR
+                    </MudButton>
+                </div>
             </div>
-    </div>
-</div>
-
-<MudDataGrid Items="@Transactions"
-             Filterable="true"
-             QuickFilter="Filter"
-             Hideable="true"
-             ColumnResizeMode="ResizeMode.Column">
-    <ToolBarContent>
-        <MudSpacer/>
-        <MudTextField @bind-Value="@SearchTerm"
-                      Placeholder="Filtrar..."
-                      Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      Immediate="true"
-                      IconSize="Size.Medium"
-                      Class="mt-0"
-                      Variant="Variant.Outlined"
-                      Clearable="true"
-                      AutoFocus/>
-    </ToolBarContent>
-    <Columns>
-        <PropertyColumn Property="x => x.Title" Title="Lançamento" Sortable="true"/>
-        <TemplateColumn Title="Tipo" Filterable="true" Sortable="true">
-            <CellTemplate>
-                @if (context.Item.Type == ETransactionType.Deposit)
-                {
-                    <MudChip Color="Color.Success" Size="Size.Small" Variant="Variant.Outlined">
-                        entrada
-                    </MudChip>
-                }
-                else
-                {
-                    <MudChip Color="Color.Error" Size="Size.Small" Variant="Variant.Outlined">
-                        &nbsp;&nbsp;&nbsp;saída&nbsp;&nbsp;
-                    </MudChip>
-                }
-            </CellTemplate>
-        </TemplateColumn>
-        <PropertyColumn Property="x => x.Amount" Format="C" Title="Valor" Sortable="true">
-            <FooterTemplate>
-                @context.Items.Sum(x => x.Amount).ToString("C")
-            </FooterTemplate>
-        </PropertyColumn>
-        <TemplateColumn Class="d-flex justify-end">
-            <CellTemplate>
-                <MudStack Row>
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                   Color="Color.Primary"
-                                   OnClick="@(() => NavigationService.NavigateTo($"/lancamentos/editar/{context.Item.Id}"))">
-                    </MudIconButton>
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                   Color="Color.Error"
-                                   aria-label="Exluir"
-                                   OnClick="() => OnDeleteButtonClickedAsync(context.Item.Id, context.Item.Title)">
-                    </MudIconButton>
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-
-</MudDataGrid>
+            <MudSpacer/>
+            <div class="d-flex mt-2 mb-2">
+                <div class="d-flex mt-2 mb-2">
+                    <MudButton Size="Size.Small"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.TwoTone.Add"
+                               OnClick="@(() => NavigationService.NavigateTo("/lancamentos/novo"))">
+                        ADICIONAR
+                    </MudButton>
+                </div>
+            </div>
+        </div>
+        @if (IsBusy)
+        {
+            <MudPaper Class="pa-8 mt-4">
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
+            </MudPaper>
+        }
+        else
+        {
+            <MudDataGrid Items="@Transactions"
+                         Filterable="true"
+                         QuickFilter="Filter"
+                         Hideable="true"
+                         ColumnResizeMode="ResizeMode.Column">
+                <ToolBarContent>
+                    <MudSpacer/>
+                    <MudTextField @bind-Value="@SearchTerm"
+                                  Placeholder="Filtrar..."
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Immediate="true"
+                                  IconSize="Size.Medium"
+                                  Class="mt-0"
+                                  Variant="Variant.Outlined"
+                                  Clearable="true"
+                                  AutoFocus/>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x.Title" Title="Lançamento" Sortable="true"/>
+                    <TemplateColumn Title="Tipo" Filterable="true" Sortable="true">
+                        <CellTemplate Context="cellContext">
+                            @if (cellContext.Item.Type == ETransactionType.Deposit)
+                            {
+                                <MudChip Color="Color.Success" Size="Size.Small" Variant="Variant.Outlined">
+                                    entrada
+                                </MudChip>
+                            }
+                            else
+                            {
+                                <MudChip Color="Color.Error" Size="Size.Small" Variant="Variant.Outlined">
+                                    &nbsp;&nbsp;&nbsp;saída&nbsp;&nbsp;
+                                </MudChip>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="x => x.Amount" Format="C" Title="Valor" Sortable="true">
+                        <FooterTemplate Context="cellContext">
+                            @cellContext.Items.Sum(x => x.Amount).ToString("C")
+                        </FooterTemplate>
+                    </PropertyColumn>
+                    <TemplateColumn Class="d-flex justify-end">
+                        <CellTemplate Context="cellContext">
+                            <MudStack Row>
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                               Color="Color.Primary"
+                                               OnClick="@(() => StartService.LinkToUrlTransaction(EditUrl, UserId, cellContext.Item.Id))">
+                                </MudIconButton>
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                               Color="Color.Error"
+                                               aria-label="Exluir"
+                                               OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.Id, cellContext.Item.Title)">
+                                </MudIconButton>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
+    </NotAuthorized>
+</AuthorizeView>

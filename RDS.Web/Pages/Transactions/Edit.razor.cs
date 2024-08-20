@@ -1,21 +1,15 @@
-using RDS.Core.Handlers;
-using RDS.Core.Models;
-using RDS.Core.Requests.Categories;
-using RDS.Core.Requests.Transactions;
-using Microsoft.AspNetCore.Components;
-using MudBlazor;
-
 namespace RDS.Web.Pages.Transactions;
 
 public partial class EditTransactionPage : ComponentBase
 {
     #region Properties
-
-    [Parameter] public string Id { get; set; } = string.Empty;
+    
     public bool IsBusy { get; set; } = false;
     public UpdateTransactionRequest InputModel { get; set; } = new();
     protected List<Category> Categories { get; set; } = [];
-    private long UserId { get; set; }
+    protected long UserId { get; set; }
+    private long CompanyId { get; set; }
+    private long TransactionId { get; set; }
 
     #endregion
 
@@ -39,6 +33,7 @@ public partial class EditTransactionPage : ComponentBase
         StartService.SetPageTitle("Editar Lançamento");
         await StartService.ValidateAccesByToken();
         UserId = StartService.GetSelectedUserId();
+        CompanyId = StartService.GetSelectedCompanyId();
         IsBusy = true;
 
         await GetTransactionByIdAsync();
@@ -91,7 +86,7 @@ public partial class EditTransactionPage : ComponentBase
         IsBusy = true;
         try
         {
-            var request = new GetTransactionByIdRequest { Id = long.Parse(Id) };
+            var request = new GetTransactionByIdRequest { Id = CompanyId };
             var result = await TransactionHandler.GetByIdAsync(request);
             if (result is { IsSuccess: true, Data: not null })
             {
@@ -123,7 +118,7 @@ public partial class EditTransactionPage : ComponentBase
         {
             var request = new GetAllCategoriesRequest
             {
-                CompanyId = UserId
+                CompanyId = CompanyId
             };
             var result = await CategoryHandler.GetAllAsync(request);
             if (result.IsSuccess)
