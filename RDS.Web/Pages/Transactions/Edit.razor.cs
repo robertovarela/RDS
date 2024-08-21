@@ -34,6 +34,7 @@ public partial class EditTransactionPage : ComponentBase
         await StartService.ValidateAccesByToken();
         UserId = StartService.GetSelectedUserId();
         CompanyId = StartService.GetSelectedCompanyId();
+        TransactionId = StartService.GetSelectedTransactionId();
         IsBusy = true;
 
         await GetTransactionByIdAsync();
@@ -56,6 +57,7 @@ public partial class EditTransactionPage : ComponentBase
 
         try
         {
+            InputModel.CompanyId = CompanyId;
             var result = await TransactionHandler.UpdateAsync(InputModel);
             if (result.IsSuccess)
             {
@@ -86,7 +88,11 @@ public partial class EditTransactionPage : ComponentBase
         IsBusy = true;
         try
         {
-            var request = new GetTransactionByIdRequest { Id = CompanyId };
+            var request = new GetTransactionByIdRequest
+            {
+                Id = TransactionId,
+                CompanyId = CompanyId
+            };
             var result = await TransactionHandler.GetByIdAsync(request);
             if (result is { IsSuccess: true, Data: not null })
             {

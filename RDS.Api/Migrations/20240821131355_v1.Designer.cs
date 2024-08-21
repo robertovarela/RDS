@@ -12,7 +12,7 @@ using RDS.Api.Data;
 namespace RDS.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240716021350_v1")]
+    [Migration("20240821131355_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace RDS.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -141,7 +141,12 @@ namespace RDS.Api.Migrations
                     b.Property<long>("RoleId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("ApplicationUserId")
+                        .HasColumnType("BIGINT");
+
                     b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("IdentityUserRole", (string)null);
                 });
@@ -285,7 +290,7 @@ namespace RDS.Api.Migrations
 
                     b.ToTable("IdentityUser", (string)null);
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
+                    b.HasDiscriminator().HasValue("ApplicationUser");
 
                     b.UseTphMappingStrategy();
                 });
@@ -327,6 +332,11 @@ namespace RDS.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(9)
                         .HasColumnType("NVARCHAR");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("CHAR");
 
                     b.Property<string>("Street")
                         .IsRequired()
@@ -385,6 +395,9 @@ namespace RDS.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("BIGINT");
+
                     b.Property<string>("Description")
                         .HasMaxLength(255)
                         .HasColumnType("NVARCHAR");
@@ -394,12 +407,34 @@ namespace RDS.Api.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("NVARCHAR");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Category", (string)null);
+                });
+
+            modelBuilder.Entity("RDS.Core.Models.Company", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("NVARCHAR");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("NVARCHAR");
+
                     b.Property<long>("UserId")
                         .HasColumnType("BIGINT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Company", (string)null);
                 });
 
             modelBuilder.Entity("RDS.Core.Models.Order", b =>
@@ -412,6 +447,9 @@ namespace RDS.Api.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("DECIMAL(18, 2)");
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("BIGINT");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("DATETIME");
@@ -432,9 +470,6 @@ namespace RDS.Api.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("DATETIME");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("BIGINT");
 
                     b.HasKey("Id");
 
@@ -525,6 +560,9 @@ namespace RDS.Api.Migrations
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("BIGINT");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -538,9 +576,6 @@ namespace RDS.Api.Migrations
 
                     b.Property<short>("Type")
                         .HasColumnType("SMALLINT");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("BIGINT");
 
                     b.HasKey("Id");
 
@@ -586,6 +621,10 @@ namespace RDS.Api.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
                 {
                     b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -628,7 +667,7 @@ namespace RDS.Api.Migrations
                     b.HasOne("RDS.Core.Models.Category", "Category")
                         .WithMany("Transactions")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -639,6 +678,8 @@ namespace RDS.Api.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("Telephone");
+
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("RDS.Core.Models.Category", b =>

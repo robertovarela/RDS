@@ -2,7 +2,12 @@ namespace RDS.Web.Pages;
 
 public class HomePage : ComponentBase
 {
+    #region Services
+
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+    
+    #endregion
     //private string roles = "";
     
     #region Overrides
@@ -44,5 +49,15 @@ public class HomePage : ComponentBase
         // }
     }
 
+    #endregion
+    
+    #region Public Methods
+
+    public void SelectCompany(long companyId)
+    {
+        StartService.SetSelectedCompanyId(companyId);
+        Snackbar.Add("Empresa Selecionada", Severity.Success);
+    }
+    
     #endregion
 }

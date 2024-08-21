@@ -664,7 +664,7 @@ namespace RDS.Api.Migrations
                     b.HasOne("RDS.Core.Models.Category", "Category")
                         .WithMany("Transactions")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");

@@ -56,7 +56,7 @@ public class TransactionHandler(HttpClientService httpClientService) : ITransact
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/transactions/byid")
         {
             Content = JsonContent.Create(request)
-        };
+        }; 
         var httpClient = await GetHttpClientAsync();
         var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<Response<Transaction?>>()

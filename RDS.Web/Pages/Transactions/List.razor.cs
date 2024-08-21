@@ -7,22 +7,20 @@ public partial class ListTransactionsPage : ComponentBase
 
     public bool IsBusy { get; set; }
     protected List<Transaction> Transactions { get; set; } = [];
+    protected long UserId { get; set; }
+    protected long CompanyId { get; set; }
     public string SearchTerm { get; set; } = string.Empty;
     protected int CurrentYear { get; set; } = DateTime.Now.Year;
     public int CurrentMonth { get; set; } = DateTime.Now.Month;
     protected int[] Years { get; set; } = LoadYears();
-    protected long UserId { get; set; }
     protected const string EditUrl = "/lancamentos/editar";
-
 
     #endregion
 
     #region Services
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
-
     [Inject] public IDialogService DialogService { get; set; } = null!;
-
     [Inject] public ITransactionHandler Handler { get; set; } = null!;
 
     #endregion
@@ -34,6 +32,7 @@ public partial class ListTransactionsPage : ComponentBase
         StartService.SetPageTitle("Lançamentos");
         await StartService.ValidateAccesByToken();
         UserId = StartService.GetSelectedUserId();
+        CompanyId = StartService.GetSelectedCompanyId();
         await GetTransactionsAsync();
     }
 
@@ -59,7 +58,7 @@ public partial class ListTransactionsPage : ComponentBase
         {
             var request = new GetTransactionsByPeriodRequest
             {
-                CompanyId = UserId,
+                CompanyId = CompanyId,
                 StartDate = DateTime.Now.GetFirstDay(CurrentYear, CurrentMonth),
                 EndDate = DateTime.Now.GetLastDay(CurrentYear, CurrentMonth),
                 PageNumber = 1,
@@ -79,13 +78,32 @@ public partial class ListTransactionsPage : ComponentBase
         }
     }
 
+    public async void OnDeleteButtonClickedAsync(long id, string title)
+    {
+        var result = await DialogService.ShowMessageBox(
+            "ATENÇÃO",
+            $"Ao prosseguir o lançamento {title} será excluído. Esta ação é irreversível! Deseja continuar?",
+            yesText: "EXCLUIR",
+            cancelText: "Cancelar");
+
+        if (result is true)
+            await OnDeleteAsync(id, title);
+
+        StateHasChanged();
+    }
+    
     private async Task OnDeleteAsync(long id, string title)
     {
         IsBusy = true;
 
         try
         {
-            var result = await Handler.DeleteAsync(new DeleteTransactionRequest { Id = id });
+            var request = new DeleteTransactionRequest
+            {
+                Id = id,
+                CompanyId = CompanyId 
+            };
+            var result = await Handler.DeleteAsync(request);
             if (result.IsSuccess)
             {
                 Snackbar.Add($"Lançamento {title} removido!", Severity.Success);
@@ -105,20 +123,6 @@ public partial class ListTransactionsPage : ComponentBase
             IsBusy = false;
         }
     }
-    
-    public async void OnDeleteButtonClickedAsync(long id, string title)
-    {
-        var result = await DialogService.ShowMessageBox(
-            "ATENÇÃO",
-            $"Ao prosseguir o lançamento {title} será excluído. Esta ação é irreversível! Deseja continuar?",
-            yesText: "EXCLUIR",
-            cancelText: "Cancelar");
-
-        if (result is true)
-            await OnDeleteAsync(id, title);
-
-        StateHasChanged();
-    }
 
     public Func<Transaction, bool> Filter => transaction =>
     {
@@ -128,7 +132,7 @@ public partial class ListTransactionsPage : ComponentBase
         return transaction.Id.ToString().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)
                || transaction.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
     };
-    
+
     private static int[] LoadYears()
     {
         int period = 10;
@@ -138,7 +142,7 @@ public partial class ListTransactionsPage : ComponentBase
         {
             years[i] = DateTime.Now.AddYears(yearsToAdd - i).Year;
         }
-        
+
         return years;
     }
 

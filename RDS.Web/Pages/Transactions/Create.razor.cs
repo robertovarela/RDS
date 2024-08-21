@@ -9,16 +9,15 @@ public partial class CreateTransactionPage : ComponentBase
     public bool IsBusy { get; set; }
     public CreateTransactionRequest InputModel { get; set; } = new();
     public List<Category> Categories { get; set; } = [];
-    private long UserId { get; set; }
+    private long UserId => StartService.GetSelectedUserId();
+    private long CompanyId => StartService.GetSelectedCompanyId();
 
     #endregion
 
     #region Services
 
     [Inject] public ITransactionHandler TransactionHandler { get; set; } = null!;
-
     [Inject] public ICategoryHandler CategoryHandler { get; set; } = null!;
-
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
@@ -29,14 +28,22 @@ public partial class CreateTransactionPage : ComponentBase
     {
         StartService.SetPageTitle("Novo Lançamento");
         await StartService.ValidateAccesByToken();
-        UserId = StartService.GetSelectedUserId();
+        await LoadCategories();
+    }
+
+    #endregion
+
+    #region Methods
+
+    private async Task LoadCategories()
+    {
         IsBusy = true;
 
         try
         {
             var request = new GetAllCategoriesRequest
             {
-                CompanyId = UserId
+                CompanyId = CompanyId
             };
             var result = await CategoryHandler.GetAllAsync(request);
             if (result.IsSuccess)
@@ -55,17 +62,14 @@ public partial class CreateTransactionPage : ComponentBase
             IsBusy = false;
         }
     }
-
-    #endregion
-
-    #region Methods
-
+    
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;
 
         try
         {
+            InputModel.CompanyId = CompanyId;
             var result = await TransactionHandler.CreateAsync(InputModel);
             if (result.IsSuccess)
             {

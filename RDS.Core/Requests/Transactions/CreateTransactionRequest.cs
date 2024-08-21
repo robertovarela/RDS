@@ -5,6 +5,9 @@ public class CreateTransactionRequest : Request
     [Required(ErrorMessage = "Título inválido")]
     public string Title { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "Data inválida")]
+    public DateTime? PaidOrReceivedAt { get; set; }
+
     [Required(ErrorMessage = "Tipo inválido")]
     public ETransactionType Type { get; set; } = ETransactionType.Withdraw;
 
@@ -15,6 +18,6 @@ public class CreateTransactionRequest : Request
     [Required(ErrorMessage = "Categoria inválida")]
     public long CategoryId { get; set; }
 
-    [Required(ErrorMessage = "Data inválida")]
-    public DateTime? PaidOrReceivedAt { get; set; }
+    [Required(ErrorMessage = "Companhia inválida")]
+    public long CompanyId { get; set; }
 }

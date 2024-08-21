@@ -25,6 +25,6 @@ public class CategoryMapping : IEntityTypeConfiguration<Category>
         builder.HasMany(c => c.Transactions)
                 .WithOne(t => t.Category)
                 .HasForeignKey(t => t.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
     }
 }

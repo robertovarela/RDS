@@ -1,3 +1,5 @@
+using RDS.Core.Models.ViewModels.ApplicationUser;
+
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 namespace RDS.Api.Controllers;
 
@@ -6,7 +8,7 @@ namespace RDS.Api.Controllers;
 public class UserController(
     SignInManager<User> signInManager,
     UserManager<User> userManager,
-    RoleManager<IdentityRole<long>> roleManager,
+    //RoleManager<IdentityRole<long>> roleManager,
     JwtTokenService jwtTokenService,
     ILogger<UserController> logger,
     AppDbContext context)
@@ -173,7 +175,62 @@ public class UserController(
     }
 
     [HttpPost("allusers")]
-    public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(
+    public async Task<PagedResponse<List<ListAllUsers>>> GetAllAsync(
+        [FromBody] GetAllApplicationUserRequest request)
+    {
+        try
+        {
+            long.TryParse(request.Filter, out long filterId);
+
+            IQueryable<ListAllUsers> query;
+
+            if (filterId != 0)
+            {
+                if (request.Filter.Length == 11)
+                {
+                    // Filtra apenas pelo cpf
+                    query = context.Users.AsNoTracking()
+                        .Where(u => u.Cpf == request.Filter)
+                        .Select(u => new ListAllUsers { Id = u.Id, Name = u.Name, Email = u.Email! });
+                }
+                else
+                {
+                    // Filtra apenas pelo Id
+                    query = context.Users.AsNoTracking()
+                        .Where(u => u.Id == filterId)
+                        .Select(u => new ListAllUsers { Id = u.Id, Name = u.Name, Email = u.Email! });
+                }
+            }
+            else
+            {
+                // Aplica o filtro de nome e email
+                query = context.Users.AsNoTracking()
+                    .Where(u =>
+                        (string.IsNullOrEmpty(request.Filter) || u.Name.Contains(request.Filter)) ||
+                        (string.IsNullOrEmpty(request.Filter) || u.Email == request.Filter))
+                    .OrderBy(u => u.Id)
+                    .Select(u => new ListAllUsers { Id = u.Id, Name = u.Name!, Email = u.Email! });
+            }
+
+            var users = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .OrderByDescending(users => users.Name)
+                .ToListAsync();
+
+            var count = await query.CountAsync();
+            return count == 0
+                ? new PagedResponse<List<ListAllUsers>>(null, 404, "Usuário não encontrado")
+                : new PagedResponse<List<ListAllUsers>>(users, count, request.PageNumber, request.PageSize);
+        }
+        catch
+        {
+            return new PagedResponse<List<ListAllUsers>>(null, 500, "Não foi possível consultar os usuários");
+        }
+    }
+    
+    [HttpPost("allusers2")]
+    public async Task<PagedResponse<List<ApplicationUser>>> GetAll2Async(
         [FromBody] GetAllApplicationUserRequest request)
     {
         try
@@ -312,4 +369,11 @@ public class UserController(
             return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar o usuário");
         }
     }
+}
+
+public class UserResponse // New class to hold only desired properties
+{
+    public long Id { get; set; }
+    public string Name { get; set; } = null!;
+    public string Email { get; set; } = null!;
 }

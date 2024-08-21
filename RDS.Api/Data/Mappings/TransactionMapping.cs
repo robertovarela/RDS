@@ -31,6 +31,6 @@ public class TransactionMapping : IEntityTypeConfiguration<Transaction>
         builder.HasOne(t => t.Category)
                 .WithMany(c => c.Transactions)
                 .HasForeignKey(t => t.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
     }
 }
