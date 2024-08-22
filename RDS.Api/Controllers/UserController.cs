@@ -373,10 +373,3 @@ public class UserController(
         }
     }
 }
-
-public class UserResponse // New class to hold only desired properties
-{
-    public long Id { get; set; }
-    public string Name { get; set; } = null!;
-    public string Email { get; set; } = null!;
-}
