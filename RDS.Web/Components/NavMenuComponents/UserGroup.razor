@@ -1,7 +1,7 @@
 ﻿<AuthorizeView Roles="Admin, Manager, User">
     <Authorized>
         <MudNavGroup Title="Usuários" Class="px-4" Icon="@Icons.Material.Filled.PeopleOutline" IconColor="Color.Success"
-                     Expanded="@(ExpandedGroup == "Users")" ExpandedChanged="@(() => ExpandedChanged.InvokeAsync("SubUsers"))">
+                     Expanded="@(ExpandedGroup == "Users")" ExpandedChanged="@(() => ExpandedChanged.InvokeAsync("Users"))">
             <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuarios"))" Class="responsive-text drawer-subtitle"
                         Icon="@Icons.Material.Filled.People" IconColor="Color.Success">
                 Lista
@@ -16,6 +16,7 @@
 
 @code {
     [Parameter] public string? ExpandedGroup { get; set; }
+    [Parameter] public string? ExpandedSubGroup { get; set; }
 
     [Parameter] public EventCallback<string> ExpandedChanged { get; set; }
 }

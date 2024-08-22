@@ -97,12 +97,12 @@ public class UserController(
             {
                 return new Response<ApplicationUser?>(null, 400, "Não foi possível criar o usuário");
             }
-            
+
             const string roleName = "User";
             var resultRole = await userManager.AddToRoleAsync(user, roleName);
-            
-            return resultRole.Succeeded 
-                ? new Response<ApplicationUser?>(user, 201, "Usuário criado com sucesso!") 
+
+            return resultRole.Succeeded
+                ? new Response<ApplicationUser?>(user, 201, "Usuário criado com sucesso!")
                 : new Response<ApplicationUser?>(null, 400, "Não foi possível criar o usuário");
         }
         catch (Exception ex)
@@ -180,47 +180,50 @@ public class UserController(
     {
         try
         {
+            var notFoundMessage = "";
             long.TryParse(request.Filter, out long filterId);
-
             IQueryable<ListAllUsers> query;
 
             if (filterId != 0)
             {
                 if (request.Filter.Length == 11)
                 {
-                    // Filtra apenas pelo cpf
                     query = context.Users.AsNoTracking()
                         .Where(u => u.Cpf == request.Filter)
                         .Select(u => new ListAllUsers { Id = u.Id, Name = u.Name, Email = u.Email! });
+
+                    notFoundMessage = "CPF não localizado";
                 }
                 else
                 {
-                    // Filtra apenas pelo Id
                     query = context.Users.AsNoTracking()
                         .Where(u => u.Id == filterId)
                         .Select(u => new ListAllUsers { Id = u.Id, Name = u.Name, Email = u.Email! });
+
+                    notFoundMessage = "Código não localizado";
                 }
             }
             else
             {
-                // Aplica o filtro de nome e email
                 query = context.Users.AsNoTracking()
                     .Where(u =>
-                        (string.IsNullOrEmpty(request.Filter) || u.Name.Contains(request.Filter)) ||
+                        (string.IsNullOrEmpty(request.Filter) || u.Name.StartsWith(request.Filter)) ||
                         (string.IsNullOrEmpty(request.Filter) || u.Email == request.Filter))
                     .OrderBy(u => u.Id)
                     .Select(u => new ListAllUsers { Id = u.Id, Name = u.Name!, Email = u.Email! });
+
+                notFoundMessage = request.Filter.Contains("@") ? "Email não localizado" : "Usuário não encontrado";
             }
 
             var users = await query
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .OrderByDescending(users => users.Name)
+                .OrderBy(users => users.Name)
                 .ToListAsync();
 
             var count = await query.CountAsync();
             return count == 0
-                ? new PagedResponse<List<ListAllUsers>>(null, 404, "Usuário não encontrado")
+                ? new PagedResponse<List<ListAllUsers>>(null, 404, notFoundMessage)
                 : new PagedResponse<List<ListAllUsers>>(users, count, request.PageNumber, request.PageSize);
         }
         catch
@@ -228,7 +231,7 @@ public class UserController(
             return new PagedResponse<List<ListAllUsers>>(null, 500, "Não foi possível consultar os usuários");
         }
     }
-    
+
     [HttpPost("allusers2")]
     public async Task<PagedResponse<List<ApplicationUser>>> GetAll2Async(
         [FromBody] GetAllApplicationUserRequest request)
