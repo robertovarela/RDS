@@ -1,4 +1,6 @@
-﻿namespace RDS.Core.Handlers;
+﻿using RDS.Core.Models.Company;
+
+namespace RDS.Core.Handlers;
 
 public interface ICompanyHandler
 {

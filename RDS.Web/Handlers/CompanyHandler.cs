@@ -1,4 +1,5 @@
-﻿using RDS.Core.Requests.Companies;
+﻿using RDS.Core.Models.Company;
+using RDS.Core.Requests.Companies;
 
 namespace RDS.Web.Handlers;
 

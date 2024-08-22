@@ -1,4 +1,5 @@
-﻿using RDS.Core.Requests.Companies;
+﻿using RDS.Core.Models.Company;
+using RDS.Core.Requests.Companies;
 
 namespace RDS.Api.Controllers;
 
@@ -9,24 +10,64 @@ public class CompanyController(AppDbContext context) : ControllerBase
     [HttpPost("create")]
     public async Task<Response<Company?>> CreateAsync([FromBody] CreateCompanyRequest request)
     {
+        await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
             var company = new Company
             {
-                Id = request.CompanyId,
                 Name = request.Name,
                 Description = request.Description,
-                UserId = request.UserId
+                OwnerId = request.OwnerId
             };
 
             await context.Companies.AddAsync(company);
             await context.SaveChangesAsync();
 
-            return new Response<Company?>(company, 201, "companhia criada com sucesso!");
+            var companyUser = new CompanyUser
+            {
+                CompanyId = company.Id,
+                UserId = request.OwnerId,
+                IsAdmin = true
+            };
+
+            await context.CompanyUsers.AddAsync(companyUser);
+            await context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return new Response<Company?>(company, 201, "Empresa criada com sucesso!");
         }
         catch
         {
-            return new Response<Company?>(null, 500, "Não foi possível criar a companhia");
+            await transaction.RollbackAsync();
+            return new Response<Company?>(null, 500, "Não foi possível criar a empresa");
+        }
+    }
+
+    [HttpPost("create-user")]
+    public async Task<Response<CompanyUser?>> CreateUserAsync([FromBody] CreateCompanyUserRequest request)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        try
+        {
+            var companyUser = new CompanyUser
+            {
+                CompanyId = request.CompanyId,
+                UserId = request.OwnerId,
+                IsAdmin = request.IsAdmin
+            };
+
+            await context.CompanyUsers.AddAsync(companyUser);
+            await context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return new Response<CompanyUser?>(companyUser, 201, "Usuário da empresa criado com sucesso!");
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            return new Response<CompanyUser?>(null, 500, "Não foi possível criar o usuário");
         }
     }
 

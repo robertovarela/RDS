@@ -8,5 +8,5 @@ public class CreateCompanyRequest : Request
     
     [Required(ErrorMessage = "Descrição inválida")]
     public string Description { get; set; } = null!;
-    public long UserId { get; set; }
+    public long OwnerId { get; set; }
 }
