@@ -87,7 +87,7 @@ public class CompanyController(AppDbContext context) : ControllerBase
             var query = context
                 .Companies
                 .AsNoTracking()
-                .Where(x => x.Id == request.CompanyId)
+                //.Where(x => x.Id == request.CompanyId)
                 .OrderBy(x => x.Name);
 
             var companies = await query

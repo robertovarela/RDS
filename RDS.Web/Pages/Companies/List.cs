@@ -1,15 +1,17 @@
-namespace RDS.Web.Pages.Categories;
+﻿using RDS.Core.Requests.Companies;
+
+namespace RDS.Web.Pages.Companies;
 
 // ReSharper disable once PartialTypeWithSinglePart
-public partial class ListCategoriesPage : ComponentBase
+public partial class ListCompaniesPage : ComponentBase
 {
     #region Properties
 
     protected bool IsBusy { get; set; }
-    protected List<Category> Categories { get; set; } = [];
-    private long CompanyId { get; set; }
+    protected List<Company> Companies { get; set; } = [];
+    private long UserId { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
-    protected const string AddUrl = "/categorias/adicionar";
+    protected const string AddUrl = "/empresas/adicionar";
     protected const string Url = "/categorias/editar";
     protected const string UrlOrigen = "/categorias";
 
@@ -19,7 +21,7 @@ public partial class ListCategoriesPage : ComponentBase
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IDialogService DialogService { get; set; } = null!;
-    [Inject] public ICategoryHandler CategoryHandler { get; set; } = null!;
+    [Inject] public ICompanyHandler CompanyHandler { get; set; } = null!;
 
     #endregion
 
@@ -29,26 +31,23 @@ public partial class ListCategoriesPage : ComponentBase
     {
         StartService.SetPageTitle("Categorias");
         await StartService.ValidateAccesByToken();
-        CompanyId = StartService.GetSelectedUserId();
-        await LoadCategoriesAsync();
+        UserId = StartService.GetSelectedUserId();
+        await LoadCompaniesAsync();
     }
 
     #endregion
 
     #region Methods
 
-    private async Task LoadCategoriesAsync()
+    private async Task LoadCompaniesAsync()
     {
         IsBusy = true;
         try
         {
-            var request = new GetAllCategoriesRequest
-            {
-                CompanyId = CompanyId
-            };
-            var result = await CategoryHandler.GetAllAsync(request);
+            var request = new GetAllCompaniesRequest();
+            var result = await CompanyHandler.GetAllAsync(request);
             if (result.IsSuccess)
-                Categories = result.Data ?? [];
+                Companies = result.Data ?? [];
         }
         catch (Exception ex)
         {
@@ -64,7 +63,7 @@ public partial class ListCategoriesPage : ComponentBase
     {
         var result = await DialogService.ShowMessageBox(
             "ATENÇÃO",
-            $"Ao prosseguir a categoria ( {id} - {title} ) será excluída. Esta é uma ação irreversível! Deseja continuar?",
+            $"Ao prosseguir a empresa ( {id} - {title} ) será excluída. Esta é uma ação irreversível! Deseja continuar?",
             yesText: "EXCLUIR",
             cancelText: "Cancelar");
 
@@ -78,14 +77,13 @@ public partial class ListCategoriesPage : ComponentBase
     {
         try
         {
-            var request = new DeleteCategoryRequest
+            var request = new DeleteCompanyRequest
             {
-                Id = id,
-                CompanyId = CompanyId
+                CompanyId = id
             };
-            var result = await CategoryHandler.DeleteAsync(request);
+            var result = await CompanyHandler.DeleteAsync(request);
             if (result.IsSuccess)
-                Categories.RemoveAll(x => x.Id == id);
+                Companies.RemoveAll(x => x.Id == id);
             Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
@@ -94,19 +92,18 @@ public partial class ListCategoriesPage : ComponentBase
         }
     }
 
-    public Func<Category, bool> Filter => category =>
+    public Func<Company, bool> Filter => company =>
     {
         if (string.IsNullOrWhiteSpace(SearchTerm))
             return true;
 
-        if (category.Id.ToString().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+        if (company.Id.ToString().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        if (category.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+        if (company.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        if (category.Description is not null &&
-            category.Description.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+        if (company.Description.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
             return true;
 
         return false;

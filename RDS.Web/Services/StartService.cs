@@ -64,7 +64,13 @@ public abstract class StartService
         SetSelectedAddressId(addressId);
         NavigationService.NavigateTo(url);
     }
-        
+
+    public static void LinkToUrlCompany(string url = "", long companyId = 0)
+    {
+        SetSelectedCompanyId(companyId);
+        NavigationService.NavigateTo(url);
+    }
+    
     public static void LinkToUrlCategory(string url = "", long companyId = 0, long categoryId = 0)
     {
         SetSelectedUserId(companyId);

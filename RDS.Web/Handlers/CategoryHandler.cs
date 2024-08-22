@@ -45,18 +45,6 @@ public class CategoryHandler(HttpClientService httpClientService) : ICategoryHan
                ?? new Response<Category?>(null, 400, "Falha ao excluir a categoria");
     }
 
-    public async Task<PagedResponse<List<Category>>> GetAllAsync(GetAllCategoriesRequest request)
-    {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/categories/all")
-            {
-                Content = JsonContent.Create(request)
-            };
-        var httpClient = await GetHttpClientAsync();
-        var result = await httpClient.SendAsync(requestMessage);
-        return await result.Content.ReadFromJsonAsync<PagedResponse<List<Category>>>()
-               ?? new PagedResponse<List<Category>>(null, 400, "Não foi possível obter as categorias");
-    }
-
     public async Task<Response<Category?>> GetByIdAsync(GetCategoryByIdRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/categories/byid")
@@ -67,5 +55,17 @@ public class CategoryHandler(HttpClientService httpClientService) : ICategoryHan
         var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<Response<Category?>>()
                ?? new Response<Category?>(null, 400, "Não foi possível obter a categoria");
+    }
+    
+    public async Task<PagedResponse<List<Category>>> GetAllAsync(GetAllCategoriesRequest request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/categories/all")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<Category>>>()
+               ?? new PagedResponse<List<Category>>(null, 400, "Não foi possível obter as categorias");
     }
 }

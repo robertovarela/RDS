@@ -2,15 +2,23 @@
     <Authorized>
         <MudNavGroup Title="Gerenciamento" Class="px-4" Icon="@Icons.Material.Filled.Class" IconColor="Color.Warning"
                      Expanded="@(ExpandedGroup == "Manager")" ExpandedChanged="@(() => ExpandedChanged.InvokeAsync("Manager"))">
+            
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/empresas"))" Class="responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.Build" IconColor="Color.Info">
+                Empresas
+            </MudNavLink>
+            
             <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/categorias"))" Class="responsive-text drawer-subtitle"
                         Icon="@Icons.Material.Filled.Category" IconColor="Color.Info">
                 Categorias
             </MudNavLink>
+            
             <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/lancamentos/historico"))" Class="responsive-text drawer-subtitle"
                         Icon="@Icons.Material.Filled.History" IconColor="Color.Warning">
                 Transações
             </MudNavLink>
-        </MudNavGroup>
+        
+            </MudNavGroup>
     </Authorized>
 </AuthorizeView>
 

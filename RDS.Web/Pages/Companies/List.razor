@@ -1,5 +1,5 @@
-@page "/categorias"
-@inherits RDS.Web.Pages.Categories.ListCategoriesPage
+﻿@page "/empresas"
+@inherits RDS.Web.Pages.Companies.ListCompaniesPage
 
 <AuthorizeView>
     <Authorized>
@@ -26,7 +26,7 @@
         {
             <MudDataGrid
                 Class="mt-4"
-                Items="@Categories"
+                Items="@Companies"
                 Filterable="true"
                 QuickFilter="Filter"
                 Hideable="true">
@@ -47,21 +47,21 @@
                 </ToolBarContent>
                 <Columns>
                     <PropertyColumn Property="x => x.Id" Title="#"/>
-                    <PropertyColumn Property="x => x.Title" Title="Categoria"/>
+                    <PropertyColumn Property="x => x.Name" Title="Categoria"/>
                     <TemplateColumn Class="d-flex justify-end">
                         <CellTemplate Context="cellContext">
                             <MudStack Row>
                                 <MudIconButton
                                     Icon="@Icons.Material.Filled.Edit"
                                     Color="Color.Success"
-                                    OnClick="@(() => StartService.LinkToUrlCategory(Url, StartService.GetSelectedUserId(), cellContext.Item.Id))">
+                                    OnClick="@(() => StartService.LinkToUrlCompany(Url, cellContext.Item.Id))">
                                     Color="Color.Primary">
                                 </MudIconButton>
                                 <MudIconButton
                                     Icon="@Icons.Material.Filled.Delete"
                                     Color="Color.Error"
                                     aria-label="Excluir"
-                                    OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.Id, cellContext.Item.Title)">
+                                    OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.Id, cellContext.Item.Name)">
                                 </MudIconButton>
                             </MudStack>
                         </CellTemplate>
@@ -69,7 +69,7 @@
                 </Columns>
                 <PagerContent>
                     <MudDataGridPager T="Category"
-                                      RowsPerPageString="Registros por p�gina"
+                                      RowsPerPageString="Registros por página"
                                       InfoFormat="{first_item} - {last_item} de {all_items}"
                                       PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
                 </PagerContent>
