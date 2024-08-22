@@ -20,7 +20,7 @@ public static class ConfigurationWeb
         {
             Default = new Default
             {
-                FontFamily = ["Karla", "Poppins", "Roboto", "sans-serif"]
+                FontFamily = ["Karla", "Poppins", "Roboto", "sans-serif"],
             }
         },
         PaletteLight = new PaletteLight

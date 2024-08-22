@@ -4,12 +4,12 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudNavMenu Margin="Margin.None" Color="Color.Success" Rounded="true" Dense="true" Class="responsive-text drawer-title">
+        <MudNavMenu Margin="Margin.None" Color="Color.Success" Rounded="true" Dense="true" Class="mud-nav-item">
             <HomeLink/>
             <UserGroup ExpandedGroup="@(_expandedGroup)" ExpandedChanged="ToggleGroup"/>
             <ManagementGroup ExpandedGroup="@(_expandedGroup)" ExpandedChanged="ToggleGroup"/>
             <ConfigurationGroup ExpandedGroup="@(_expandedGroup)" ExpandedChanged="ToggleGroup"/>
-            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/sair"))" Icon="@Icons.Material.Filled.Logout" IconColor="Color.Error">Sair</MudNavLink>
+            <LogoutLink/>
         </MudNavMenu>
     </Authorized>
     <NotAuthorized>
@@ -49,4 +49,5 @@
             }
         }
     }
+
 }

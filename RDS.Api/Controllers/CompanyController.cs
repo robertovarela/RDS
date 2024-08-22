@@ -62,7 +62,8 @@ public class CompanyController(AppDbContext context) : ControllerBase
 
             await transaction.CommitAsync();
 
-            return new Response<CompanyUser?>(companyUser, 201, "Usuário da empresa criado com sucesso!");
+            return new Response<CompanyUser?>
+                (companyUser, 201, "Usuário da empresa criado com sucesso!");
         }
         catch
         {
@@ -146,7 +147,8 @@ public class CompanyController(AppDbContext context) : ControllerBase
         }
         catch
         {
-            return new PagedResponse<List<Company>>(null, 500, "Não foi possível consultar as empresas");
+            return new PagedResponse<List<Company>>
+                (null, 500, "Não foi possível consultar as empresas");
         }
     }
 

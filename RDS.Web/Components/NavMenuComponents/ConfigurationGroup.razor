@@ -1,23 +1,36 @@
 ﻿<AuthorizeView Roles="Admin">
     <Authorized>
-        <MudNavGroup Title="Configurações" Class="px-4" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Error"
-                     Expanded="@(ExpandedGroup == "Configurations")" ExpandedChanged="@(() => ExpandedChanged.InvokeAsync("Configurations"))">
-            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/finger"))" Class="responsive-text drawer-subtitle"
-                        Icon="@Icons.Material.Filled.Devices" IconColor="Color.Warning">
+        <MudNavGroup Title="Configurações"
+                     Icon="@Icons.Material.Filled.Settings"
+                     IconColor="Color.Error"
+                     Expanded="@(ExpandedGroup == "Configurations")"
+                     ExpandedChanged="@(() => ExpandedChanged.InvokeAsync("Configurations"))">
+            
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/finger"))"
+                        Class="responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.Devices"
+                        IconColor="Color.Warning">
                 Finger Print
             </MudNavLink>
-            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles"))" Class="responsive-text drawer-subtitle"
-                        Icon="@Icons.Material.Filled.Assignment" IconColor="Color.Error">
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/roles"))"
+                        Class="mud-nav-link responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.Assignment"
+                        IconColor="Color.Error">
                 Roles
             </MudNavLink>
-            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/usuarios-roles"))" Class="responsive-text drawer-subtitle"
-                        Icon="@Icons.Material.Filled.AssignmentInd" IconColor="Color.Error">
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/usuarios-roles"))"
+                        Class="mud-nav-link responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.AssignmentInd"
+                        IconColor="Color.Error">
                 Users Roles
             </MudNavLink>
-            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/lista-usuarios"))" Class="responsive-text drawer-subtitle"
-                        Icon="@Icons.Material.Filled.AssignmentInd" IconColor="Color.Error">
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/lista-usuarios"))"
+                        Class="mud-nav-link responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.AssignmentInd"
+                        IconColor="Color.Error">
                 Users List
             </MudNavLink>
+            
         </MudNavGroup>
     </Authorized>
 </AuthorizeView>
