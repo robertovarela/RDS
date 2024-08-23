@@ -17,7 +17,6 @@ public class HomePage : ComponentBase
         StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
         //await StartService.ValidateAccesByToken();
         StartService.SetDefaultValues();
-        StateHasChanged();
         
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;

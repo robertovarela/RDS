@@ -1,14 +1,18 @@
 namespace RDS.Web.Pages.ApplicationUsers;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class EditApplicationUsersPage : ComponentBase
 {
     #region Properties
 
     protected bool IsBusy { get; set; }
-    public UpdateApplicationUserRequest InputModel { get; set; } = new();
+    protected UpdateApplicationUserRequest InputModel { get; set; } = new();
     protected MudDatePicker Picker = new ();
-    public DateTime MinDate = DateTime.Today.AddYears(-110);
-    public DateTime MaxDate = DateTime.Today.AddYears(-12);
+    protected DateTime MinDate = DateTime.Today.AddYears(-110);
+    protected DateTime MaxDate = DateTime.Today.AddYears(-12);
+    private long UserId { get; set; }
+    private string Email { get; set; } = string.Empty;
+    private bool IsAdmin { get; set; }
     protected const string UrlAddress = "/usuarios/enderecos";
     protected const string UrlPhone = "/usuarios/telefones";
     protected const string UrlOrigen = "/usuarios";
@@ -16,8 +20,8 @@ public partial class EditApplicationUsersPage : ComponentBase
     #endregion
 
     #region Services
-    [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] protected IApplicationUserHandler UserHandler { get; set; } = null!;
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
 
@@ -27,8 +31,8 @@ public partial class EditApplicationUsersPage : ComponentBase
     {
         StartService.SetPageTitle("Editar Usuário");
         await StartService.ValidateAccesByToken();
-        var userId = StartService.GetSelectedUserId();
-        await LoadUser(userId);
+        UserId = await StartService.GetSelectedUserIdIfAdminAsync();
+        await LoadUser(UserId);
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -53,7 +57,7 @@ public partial class EditApplicationUsersPage : ComponentBase
                 InputModel = new UpdateApplicationUserRequest
                 {
                     CompanyId = response.Data.Id,
-                    Name = response.Data.Name ?? string.Empty,
+                    Name = response.Data.Name,
                     Email = response.Data.Email ?? string.Empty,
                     Cpf = response.Data.Cpf ?? string.Empty,
                     BirthDate = response.Data.BirthDate
@@ -69,7 +73,7 @@ public partial class EditApplicationUsersPage : ComponentBase
         }
     }
     
-    public async Task OnValidSubmitAsync()
+    protected async Task OnValidSubmitAsync()
     {
         IsBusy = true;
         if (InputModel.Cpf == string.Empty)

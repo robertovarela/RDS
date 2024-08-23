@@ -24,7 +24,7 @@ public partial class ListUserRolesPage : ComponentBase
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IDialogService DialogService { get; set; } = null!;
-    [Inject] public IApplicationUserConfigurationHandler Handler { get; set; } = null!;
+    [Inject] public IApplicationUserConfigurationHandler ApplicationUserConfigurationHandler { get; set; } = null!;
 
     #endregion
 
@@ -39,22 +39,10 @@ public partial class ListUserRolesPage : ComponentBase
             NavigationService.NavigateToAccessNotAllowed();
 
         await StartService.ValidateAccesByToken();
+        //await LoadRolesFromUser();
         IsBusy = true;
-        try
-        {
-            var request = new GetAllApplicationUserRoleRequest { CompanyId = UserId };
-            var result = await Handler.ListUserRoleAsync(request);
-            if (result.IsSuccess)
-                RolesFromUser = result.Data ?? [];
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add(ex.Message, Severity.Error);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        RolesFromUser = await StartService.GetRolesFromUser(UserId);
+        IsBusy = false;
     }
 
     #endregion
@@ -84,7 +72,7 @@ public partial class ListUserRolesPage : ComponentBase
                 CompanyId = userId,
                 RoleName = roleName
             };
-            var result = await Handler.DeleteUserRoleAsync(request);
+            var result = await ApplicationUserConfigurationHandler.DeleteUserRoleAsync(request);
             if (result is { IsSuccess: true, StatusCode: 200 })
                 RolesFromUser.RemoveAll(x => x != null && x.RoleName == roleName);
             Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);

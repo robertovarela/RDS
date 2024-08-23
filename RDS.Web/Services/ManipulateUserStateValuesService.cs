@@ -5,14 +5,19 @@ public class ManipulateUserStateValuesService(
     ILocalStorageService localStorage,
     TokenService tokenService,
     AuthenticationService authenticationService,
+    IApplicationUserConfigurationHandler applicationUserConfigurationHandler,
     DeviceService deviceService,
     ISnackbar snackbar)
 {
+    private List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
+
     public void SetDefaultValues()
     {
         userState.SetSelectedUserId(userState.GetLoggedUserId());
         userState.SetSelectedAddressId(0);
         userState.SetSelectedCategoryId(0);
+        userState.SetSelectedCompanyId(0);
+        userState.SetSelectedTransactionId(0);
     }
 
     public async Task ValidateAccessByToken()
@@ -75,8 +80,8 @@ public class ManipulateUserStateValuesService(
     }
 
     public bool ValidateSourceUrl(List<string> sourceUrl,
-        string currentUrl, 
-        bool navigateToAccessNotAllowed = true, 
+        string currentUrl,
+        bool navigateToAccessNotAllowed = true,
         bool showMessage = true)
     {
         var commonUrls = sourceUrl.Intersect(GetSourceUrl()).ToList();
@@ -84,28 +89,28 @@ public class ManipulateUserStateValuesService(
         if (commonUrls.Any()) return true;
         var currentUrlMemory = GetSourceUrl();
         if (GetCurrentUrl().Equals(currentUrl)) return true;
-        
-        if(showMessage)
+
+        if (showMessage)
         {
             snackbar.Add("Acesso não permitido!", Severity.Error);
             snackbar.Add("URL de origem não reconhecida", Severity.Error);
         }
-        
-        if(navigateToAccessNotAllowed)
+
+        if (navigateToAccessNotAllowed)
         {
             NavigationService.NavigateToAccessNotAllowed();
             return false;
         }
-        
+
         NavigationService.NavigateToLogin();
-        
+
         return false;
     }
-    
+
     public string GetPageTitle() => userState.GetPageTitle();
     public List<string> GetSourceUrl() => userState.GetSourceUrl();
     public string GetCurrentUrl() => userState.GetCurrentUrl();
-    public long GetLoggedUserId() =>userState.GetLoggedUserId();
+    public long GetLoggedUserId() => userState.GetLoggedUserId();
 
     public long GetSelectedUserId()
     {
@@ -118,6 +123,7 @@ public class ManipulateUserStateValuesService(
 
         return selectedUserId;
     }
+
     public string GetSelectedUserName() => userState.GetSelectedUserName();
     public long GetSelectedAddressId() => userState.GetSelectedAddressId();
     public long GetSelectedCompanyID() => userState.GetSelectedCompanyId();
@@ -133,4 +139,43 @@ public class ManipulateUserStateValuesService(
     public void SetSelectedCompanyId(long companyId) => userState.SetSelectedCompanyId(companyId);
     public void SetSelectedCategoryId(long categoryId) => userState.SetSelectedCategoryId(categoryId);
     public void SetSelectedTransactionId(long transactionId) => userState.SetSelectedTransactionId(transactionId);
+
+    public async Task<List<ApplicationUserRole?>> GetRolesFromUser(long userId)
+    {
+        try
+        {
+            var request = new GetAllApplicationUserRoleRequest { CompanyId = userId };
+            var result = await applicationUserConfigurationHandler.ListUserRoleAsync(request);
+            if (result.IsSuccess)
+                RolesFromUser = result.Data ?? [];
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(ex.Message, Severity.Error);
+        }
+
+        return RolesFromUser;
+    }
+
+    public async Task<bool> IsAdminInRoles(long userId)
+    {
+        var roles = await GetRolesFromUser(userId);
+
+        foreach (var role in roles)
+        {
+            if (role != null && role.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public async Task<long> GetSelectedUserIdIfAdminAsync()
+    {
+        var loggedUserId = GetLoggedUserId();
+        var isAdmin = await IsAdminInRoles(loggedUserId);
+        return isAdmin ? GetSelectedUserId() : loggedUserId;
+    }
 }

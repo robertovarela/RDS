@@ -27,17 +27,19 @@
                                   Variant="Variant.Outlined"
                                   Disabled/>
 
+                    <MudTextField Label="E-mail"
+                                  HelperText="Campo obrigatório"
+                                  @bind-Value="InputModel.Email"
+                                  For="@(() => InputModel.Email)"
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="true"
+                                  Disabled/>
+
                     <MudTextField Label="Nome"
                                   HelperText="Campo obrigatório"
                                   @bind-Value="InputModel.Name"
                                   For="@(() => InputModel.Name)"
                                   Variant="Variant.Outlined" AutoFocus/>
-
-                    <MudTextField Label="E-mail"
-                                  HelperText="Campo obrigatório"
-                                  @bind-Value="InputModel.Email"
-                                  For="@(() => InputModel.Email)"
-                                  Variant="Variant.Outlined"/>
 
                     <MudTextField Label="CPF"
                                   HelperText="&nbsp;"

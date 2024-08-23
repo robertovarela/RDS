@@ -35,20 +35,18 @@ namespace RDS.Web.Pages.ApplicationUsers
             StartService.SetPageTitle("Usuários");
             await StartService.ValidateAccesByToken();
             StartService.SetDefaultValues();
-            //await LoadUsers();
-            StateHasChanged();
         }
 
         #endregion
 
         #region Methods
         
-        private async Task LoadUsers()
+        private async Task LoadUsers(string filter = "")
         {
             IsBusy = true;
             try
             {
-                var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize};
+                var request = new GetAllApplicationUserRequest { Filter = filter, PageSize = _pageSize};
                 var result = await UserHandler.GetAllAsync(request);
                 if (result.IsSuccess)
                 {
@@ -65,8 +63,7 @@ namespace RDS.Web.Pages.ApplicationUsers
                 IsBusy = false;
             }
         }
-
-        
+       
         protected void HandleKeyDown(KeyboardEventArgs e)
         {
             if (e.Key == "Enter")
@@ -77,7 +74,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         
         protected async void OnSearch()
         {
-            await LoadUsers();
+            await LoadUsers(SearchFilter);
             StateHasChanged();
         }
         protected async void OnDeleteButtonClickedAsync(long id, string name)

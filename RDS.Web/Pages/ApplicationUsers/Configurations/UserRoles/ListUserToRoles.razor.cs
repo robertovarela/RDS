@@ -33,7 +33,6 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             StartService.SetPageTitle("Usuários - Roles");
             await StartService.ValidateAccesByToken();
             StartService.SetSourceUrl(_sourceUrl);
-            await LoadUsers();
         }
 
         #endregion
@@ -60,6 +59,14 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             finally
             {
                 IsBusy = false;
+            }
+        }
+
+        protected void HandleKeyDown(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter")
+            {
+                OnSearch();
             }
         }
 

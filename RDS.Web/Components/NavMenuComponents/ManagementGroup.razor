@@ -5,6 +5,13 @@
                      IconColor="Color.Warning"
                      Expanded="@(ExpandedGroup == "Manager")" 
                      ExpandedChanged="@(() => ExpandedChanged.InvokeAsync("Manager"))">
+
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuarios"))"
+                        Class="mud-nav-link responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.People"
+                        IconColor="Color.Success">
+                Lista de Usuários
+            </MudNavLink>
             
             <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/empresas"))" 
                         Class="mud-nav-link responsive-text drawer-subtitle"

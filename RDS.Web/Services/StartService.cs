@@ -43,6 +43,11 @@ public abstract class StartService
     public static void SetSelectedCompanyId(long companyId) => _manipulateUserStateValuesService.SetSelectedCompanyId(companyId);
     public static void SetSelectedCategoryId(long categoryId) => _manipulateUserStateValuesService.SetSelectedCategoryId(categoryId);
     public static void SetSelectedTransactionId(long transactionId) => _manipulateUserStateValuesService.SetSelectedTransactionId(transactionId);
+
+    public static async Task<List<ApplicationUserRole?>> GetRolesFromUser(long userId) => await _manipulateUserStateValuesService.GetRolesFromUser(userId);
+    public static async Task<bool> IsAdminInRoles(long userId) => await _manipulateUserStateValuesService.IsAdminInRoles(userId);
+    public static async Task<long> GetSelectedUserIdIfAdminAsync() => await _manipulateUserStateValuesService.GetSelectedUserIdIfAdminAsync();
+    
     
     // This methods are used to set and get the selected user id and name in the application and are used in the LinkUserStateService
     public static void LinkToUrlUser(string url = "", long userId = 0)

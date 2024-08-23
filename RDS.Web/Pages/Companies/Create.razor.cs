@@ -49,13 +49,6 @@ public class CreateCompanyPage : ComponentBase
         StateHasChanged();
     }
 
-    protected async Task OnSelect(long userId)
-    {
-        OwnerSelected = true;
-        await LoadUsers(filter: userId.ToString());
-        OwnerDisplayText = FilteredUsers.FirstOrDefault()?.Id + " - " + FilteredUsers.FirstOrDefault()?.Name;
-        StateHasChanged();
-    }
     private async Task LoadUsers(string filter = "")
     {
         IsBusy = true;
@@ -83,6 +76,15 @@ public class CreateCompanyPage : ComponentBase
             IsBusy = false;
         }
     }
+    
+    protected async Task OnSelect(long userId)
+    {
+        OwnerSelected = true;
+        await LoadUsers(filter: userId.ToString());
+        OwnerDisplayText = FilteredUsers.FirstOrDefault()?.Id + " - " + FilteredUsers.FirstOrDefault()?.Name;
+        StateHasChanged();
+    }
+    
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;
