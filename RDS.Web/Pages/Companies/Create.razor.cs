@@ -12,9 +12,7 @@ public class CreateCompanyPage : ComponentBase
     protected List<Company> Companies { get; set; } = [];
     protected List<ApplicationUser> FilteredUsers { get; set; } = [];
     protected string SearchFilter { get; set; } = string.Empty;
-    private long UserId { get; set; }
     public string OwnerDisplayText { get; set; } = string.Empty;
-    //   FilteredUsers.FirstOrDefault()?.Id + " - " + FilteredUsers.FirstOrDefault()?.Name ?? "";
 
     #endregion
 
@@ -32,9 +30,6 @@ public class CreateCompanyPage : ComponentBase
     {
         StartService.SetPageTitle("Nova Empresa");
         await StartService.ValidateAccesByToken();
-        UserId = StartService.GetSelectedUserId();
-        //SearchFilter = "rob";
-        //await LoadUsers(SearchFilter);
     }
 
     #endregion
@@ -51,7 +46,7 @@ public class CreateCompanyPage : ComponentBase
     {
         OwnerSelected = true;
         await LoadUsers(filter: userId.ToString());
-        OwnerDisplayText = FilteredUsers.FirstOrDefault()?.Id + " - " + FilteredUsers.FirstOrDefault()?.Name ?? "";
+        OwnerDisplayText = FilteredUsers.FirstOrDefault()?.Id + " - " + FilteredUsers.FirstOrDefault()?.Name;
         StateHasChanged();
     }
     private async Task LoadUsers(string filter = "")
@@ -84,7 +79,6 @@ public class CreateCompanyPage : ComponentBase
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;
-        InputModel.CompanyId = UserId;
         try
         {
             var result = await CompanyHandler.CreateAsync(InputModel);

@@ -1,5 +1,6 @@
 ﻿using RDS.Core.Models.Company;
 using RDS.Core.Requests.Companies;
+using UpdateCompanyRequest = RDS.Core.Requests.Companies.UpdateCompanyRequest;
 
 namespace RDS.Api.Controllers;
 

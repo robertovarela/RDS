@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace RDS.Core.Requests.Categories;
 
 public class UpdateCategoryRequest : Request

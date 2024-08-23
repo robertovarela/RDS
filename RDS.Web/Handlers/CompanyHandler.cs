@@ -1,5 +1,6 @@
 ﻿using RDS.Core.Models.Company;
 using RDS.Core.Requests.Companies;
+using UpdateCompanyRequest = RDS.Core.Requests.Companies.UpdateCompanyRequest;
 
 namespace RDS.Web.Handlers;
 
@@ -50,7 +51,7 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
 
     public async Task<Response<Company?>> GetByIdAsync(GetCompanyByIdRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/categories/byid")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/byid")
         {
             Content = JsonContent.Create(request)
         };
