@@ -13,7 +13,7 @@ public partial class ListCompaniesPage : ComponentBase
     private long UserId { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string AddUrl = "/empresas/adicionar";
-    protected const string Url = "/categorias/editar";
+    protected const string Url = "/empresas/editar";
     protected const string UrlOrigen = "/categorias";
 
     #endregion

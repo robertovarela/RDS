@@ -12,8 +12,7 @@ public class CreateCategoryPage : ComponentBase
 
     #region Services
 
-    [Inject] public ICategoryHandler Handler { get; set; } = null!;
-
+    [Inject] public ICategoryHandler CategoryHandler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
@@ -37,7 +36,7 @@ public class CreateCategoryPage : ComponentBase
         InputModel.CompanyId = UserId;
         try
         {
-            var result = await Handler.CreateAsync(InputModel);
+            var result = await CategoryHandler.CreateAsync(InputModel);
             if (result.IsSuccess)
             {
                 Snackbar.Add(result.Message, Severity.Success);
