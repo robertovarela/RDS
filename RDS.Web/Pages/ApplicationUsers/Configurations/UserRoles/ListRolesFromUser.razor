@@ -15,7 +15,7 @@
         </div>
         @if (IsBusy)
         {
-            <MudPaper Class="pa-8 mt-4">
+            <MudPaper Class="mud-data-grid pa-8 mt-4">
                 <MudSkeleton Height="55px"/>
                 <MudSkeleton Height="110px"/>
                 <MudSkeleton Height="55px"/>
@@ -37,8 +37,12 @@
                     <MudSpacer/>
                 </ToolBarContent>
                 <Columns>
-                    <PropertyColumn Property="x => x!.RoleId" Title="#"/>
-                    <PropertyColumn Property="x => x!.RoleName" Title="Role"/>
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x!.RoleId" Title="#"/>
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x!.RoleName" Title="Role"/>
                     <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
                         <CellTemplate Context="cellContext">
                             <MudStack Row>
@@ -57,6 +61,7 @@
                 </Columns>
                 <PagerContent>
                     <MudDataGridPager T="ApplicationUserRole"
+                                      Class="custom-pager mud-typography"
                                       RowsPerPageString="Registros por página"
                                       InfoFormat="{first_item} - {last_item} de {all_items}"
                                       PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>

@@ -44,7 +44,12 @@
         }
         else
         {
-            <MudDataGrid T="ApplicationUser" Items="@PagedApplicationUsers" Filterable="true" QuickFilter="Filter" Hideable="true">
+            <MudDataGrid Class="mud-data-grid"
+                         T="ApplicationUser"
+                         Items="@PagedApplicationUsers"
+                         Filterable="true"
+                         QuickFilter="Filter"
+                         Hideable="true">
                 <ToolBarContent>
                     <MudSpacer/>
                     <MudTextField ShrinkLabel="true"
@@ -60,9 +65,15 @@
                     </MudTextField>
                 </ToolBarContent>
                 <Columns>
-                    <PropertyColumn Property="x => x.Id" Title="#"/>
-                    <PropertyColumn Property="x => x.Name" Title="Nome"/>
-                    <PropertyColumn Property="x => x.Email" Title="Email"/>
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x.Id" Title="#"/>
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x.Name" Title="Nome"/>
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x.Email" Title="Email"/>
                     <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
                         <CellTemplate Context="cellContext">
                             <MudStack Row>
@@ -77,6 +88,7 @@
                 </Columns>
                 <PagerContent>
                     <MudDataGridPager T="ApplicationUser"
+                                      Class="custom-pager mud-typography"
                                       RowsPerPageString="Registros por página"
                                       InfoFormat="{first_item} - {last_item} de {all_items}"
                                       PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>

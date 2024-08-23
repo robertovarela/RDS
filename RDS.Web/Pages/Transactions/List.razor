@@ -69,7 +69,8 @@
         }
         else
         {
-            <MudDataGrid Items="@Transactions"
+            <MudDataGrid Class="mud-data-grid"
+                         Items="@Transactions"
                          Filterable="true"
                          QuickFilter="Filter"
                          Hideable="true"
@@ -88,8 +89,10 @@
                                   AutoFocus/>
                 </ToolBarContent>
                 <Columns>
-                    <PropertyColumn Property="x => x.Title" Title="Lançamento" Sortable="true"/>
-                    <TemplateColumn Title="Tipo" Filterable="true" Sortable="true">
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x.Title" Title="Lançamento" Sortable="true"/>
+                    <TemplateColumn Class="mud-data-grid" Title="Tipo" Filterable="true" Sortable="true">
                         <CellTemplate Context="cellContext">
                             @if (cellContext.Item.Type == ETransactionType.Deposit)
                             {
@@ -105,7 +108,9 @@
                             }
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="x => x.Amount" Format="C" Title="Valor" Sortable="true">
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x.Amount" Format="C" Title="Valor" Sortable="true">
                         <FooterTemplate Context="cellContext">
                             @cellContext.Items.Sum(x => x.Amount).ToString("C")
                         </FooterTemplate>
