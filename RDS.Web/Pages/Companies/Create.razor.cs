@@ -36,6 +36,13 @@ public class CreateCompanyPage : ComponentBase
 
     #region Methods
 
+    protected void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            OnSearch();
+        }
+    }
     protected async void OnSearch()
     {
         await LoadUsers(SearchFilter);

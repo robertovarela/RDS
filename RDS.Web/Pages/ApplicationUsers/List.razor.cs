@@ -1,3 +1,5 @@
+
+
 namespace RDS.Web.Pages.ApplicationUsers
 {
     // ReSharper disable once PartialTypeWithSinglePart
@@ -33,7 +35,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             StartService.SetPageTitle("Usuários");
             await StartService.ValidateAccesByToken();
             StartService.SetDefaultValues();
-            await LoadUsers();
+            //await LoadUsers();
             StateHasChanged();
         }
 
@@ -64,12 +66,21 @@ namespace RDS.Web.Pages.ApplicationUsers
             }
         }
 
-        public async void OnSearch()
+        
+        protected void HandleKeyDown(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter")
+            {
+                OnSearch();
+            }
+        }
+        
+        protected async void OnSearch()
         {
             await LoadUsers();
             StateHasChanged();
         }
-        public async void OnDeleteButtonClickedAsync(long id, string name)
+        protected async void OnDeleteButtonClickedAsync(long id, string name)
         {
             var result = await DialogService.ShowMessageBox(
                 "ATENÇÃO",
@@ -99,7 +110,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             }
         }
 
-        public Func<ApplicationUser, bool> Filter => applicationUser =>
+        protected Func<ApplicationUser, bool> Filter => applicationUser =>
         {
             if (string.IsNullOrWhiteSpace(SearchTerm))
                 return true;
@@ -122,7 +133,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             return false;
         };
 
-        public async void OnNewUserButton()
+        protected async void OnNewUserButton()
         {
             var result = await DialogService.ShowMessageBox(
                 "ATENÇÃO",
