@@ -1,7 +1,7 @@
 @page "/usuarios"
 @inherits ListApplicationUsersPage
 
-<UserState/>
+@* <UserState/> *@
 <AuthorizeView>
     <Authorized>
         <div class="d-flex mt-2 mb-2">
@@ -46,20 +46,20 @@
         else
         {
             <MudDataGrid T="ApplicationUser" Items="@PagedApplicationUsers" Filterable="true" QuickFilter="Filter" Hideable="true">
-                <ToolBarContent>
-                    <MudSpacer/>
-                    <MudTextField ShrinkLabel="true"
-                                  @bind-Value="@SearchTerm"
-                                  Placeholder="Filtrar..."
-                                  Adornment="Adornment.Start"
-                                  AdornmentIcon="@Icons.Material.Filled.Search"
-                                  Immediate="true"
-                                  IconSize="Size.Medium"
-                                  Class="mt-0"
-                                  Variant="Variant.Outlined"
-                                  Clearable="true">
-                    </MudTextField>
-                </ToolBarContent>
+                @* <ToolBarContent> *@
+                @*     <MudSpacer/> *@
+                @*     <MudTextField ShrinkLabel="true" *@
+                @*                   @bind-Value="@SearchTerm" *@
+                @*                   Placeholder="Filtrar..." *@
+                @*                   Adornment="Adornment.Start" *@
+                @*                   AdornmentIcon="@Icons.Material.Filled.Search" *@
+                @*                   Immediate="true" *@
+                @*                   IconSize="Size.Medium" *@
+                @*                   Class="mt-0" *@
+                @*                   Variant="Variant.Outlined" *@
+                @*                   Clearable="true"> *@
+                @*     </MudTextField> *@
+                @* </ToolBarContent> *@
                 <Columns>
                     <PropertyColumn Class="mud-data-grid"
                                     CellClass="mud-data-grid mud-data-grid-cell" 

@@ -1,7 +1,7 @@
 ﻿@page "/usuariosconfiguracao/lista-usuarios"
 @inherits ListAllUsersPage
 
-<UserState/>
+@* <UserState/> *@
 <AuthorizeView>
     <Authorized>
         <div class="d-flex mt-2 mb-2">
@@ -13,6 +13,7 @@
                           Immediate="true"
                           Variant="Variant.Outlined"
                           Clearable="true"
+                          OnKeyDown="HandleKeyDown"
                           AutoFocus/>
             <div class="d-flex mt-2 mb-2">
                 <MudButton Class="mr-4"
@@ -50,20 +51,20 @@
                          Filterable="true"
                          QuickFilter="Filter"
                          Hideable="true">
-                <ToolBarContent>
-                    <MudSpacer/>
-                    <MudTextField ShrinkLabel="true"
-                                  @bind-Value="@SearchTerm"
-                                  Placeholder="Filtrar..."
-                                  Adornment="Adornment.Start"
-                                  AdornmentIcon="@Icons.Material.Filled.Search"
-                                  Immediate="true"
-                                  IconSize="Size.Medium"
-                                  Class="mt-0"
-                                  Variant="Variant.Outlined"
-                                  Clearable="true">
-                    </MudTextField>
-                </ToolBarContent>
+                @* <ToolBarContent> *@
+                @*     <MudSpacer/> *@
+                @*     <MudTextField ShrinkLabel="true" *@
+                @*                   @bind-Value="@SearchTerm" *@
+                @*                   Placeholder="Filtrar..." *@
+                @*                   Adornment="Adornment.Start" *@
+                @*                   AdornmentIcon="@Icons.Material.Filled.Search" *@
+                @*                   Immediate="true" *@
+                @*                   IconSize="Size.Medium" *@
+                @*                   Class="mt-0" *@
+                @*                   Variant="Variant.Outlined" *@
+                @*                   Clearable="true"> *@
+                @*     </MudTextField> *@
+                @* </ToolBarContent> *@
                 <Columns>
                     <PropertyColumn Class="mud-data-grid"
                                     CellClass="mud-data-grid mud-data-grid-cell"

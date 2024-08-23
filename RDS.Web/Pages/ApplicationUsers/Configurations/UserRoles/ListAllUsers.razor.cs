@@ -33,20 +33,18 @@ public partial class ListAllUsersPage : ComponentBase
         StartService.SetPageTitle("Usuários");
         await StartService.ValidateAccesByToken();
         StartService.SetDefaultValues();
-        await LoadUsers();
-        StateHasChanged();
     }
 
     #endregion
 
     #region Methods
 
-    private async Task LoadUsers()
+    private async Task LoadUsers(string filter = "")
     {
         IsBusy = true;
         try
         {
-            var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize };
+            var request = new GetAllApplicationUserRequest { Filter = filter, PageSize = _pageSize };
             var result = await UserHandler.GetAllAsync(request);
             if (result.IsSuccess)
             {
@@ -64,9 +62,16 @@ public partial class ListAllUsersPage : ComponentBase
         }
     }
 
+    protected void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            OnSearch();
+        }
+    }
     public async void OnSearch()
     {
-        await LoadUsers();
+        await LoadUsers(SearchFilter);
         StateHasChanged();
     }
 
