@@ -62,7 +62,7 @@
 
 /* ---------------------------------------------------------------------*/
 html {
-    font-size: 62.5%; /* Altera a base para 1rem = 10 pixels */
+    font-size: 1rem; /* Altera a base para 1rem = 10 pixels */
 }
 
 body {
@@ -70,7 +70,7 @@ body {
 }
 
 body.responsive-body {
-    font-size: .5rem; /* Tamanho padrão */
+    font-size: 2rem; /* Tamanho padrão */
 }
 
 @media (min-width: 600px) {
@@ -237,49 +237,49 @@ body.responsive-body {
 
 /* ---------------------------------------------------------------------*/
 .responsive-text.grid-title {
-    font-size: 1.2rem; /* Tamanho padrão */
+    font-size: 2rem; /* Tamanho padrão */
     font-weight: 600;
 }
 
 @media (min-width: 600px) {
-    .responsive-text.drawer-subtitle {
-        font-size: 1.3rem; /* Tamanho para telas médias */
+    .responsive-text.grid-title{
+        font-size: 2.15rem; /* Tamanho para telas médias */
     }
 }
 
 @media (min-width: 960px) {
-    .responsive-text.drawer-subtitle {
-        font-size: 1.4rem; /* Tamanho para telas grandes */
+    .responsive-text.grid-title {
+        font-size: 2.25rem; /* Tamanho para telas grandes */
     }
 }
 
 @media (min-width: 1280px) {
-    .responsive-text.drawer-subtitle {
-        font-size: 1.4rem; /* Tamanho para telas extra grandes */
+    .responsive-text.grid-title {
+        font-size: 2.4rem; /* Tamanho para telas extra grandes */
     }
 }
 
 /* ---------------------------------------------------------------------*/
 .responsive-text.grid-cell {
-    font-size: 1.1rem; /* Tamanho padrão */
+    font-size: 1rem; /* Tamanho padrão */
     font-weight: 600;
 }
 
 @media (min-width: 600px) {
-    .responsive-text.drawer-subtitle {
-        font-size: 1.2rem; /* Tamanho para telas médias */
+    .responsive-text.grid-cell {
+        font-size: 1rem; /* Tamanho para telas médias */
     }
 }
 
 @media (min-width: 960px) {
-    .responsive-text.drawer-subtitle {
-        font-size: 1.3rem; /* Tamanho para telas grandes */
+    .responsive-text.grid-cell {
+        font-size: 1rem; /* Tamanho para telas grandes */
     }
 }
 
 @media (min-width: 1280px) {
-    .responsive-text.drawer-subtitle {
-        font-size: 1.3rem; /* Tamanho para telas extra grandes */
+    .responsive-text.grid-cell {
+        font-size: 1rem; /* Tamanho para telas extra grandes */
     }
 }
 
@@ -290,49 +290,57 @@ body.responsive-body {
 }
 
 @media (min-width: 600px) {
-    .responsive-text.drawer-subtitle {
+    .responsive-text.grid-foot {
         font-size: 0.9rem; /* Tamanho para telas médias */
     }
 }
 
 @media (min-width: 960px) {
-    .responsive-text.drawer-subtitle {
+    .responsive-text.grid-foot {
         font-size: 1rem; /* Tamanho para telas grandes */
     }
 }
 
 @media (min-width: 1280px) {
-    .responsive-text.drawer-subtitle {
+    .responsive-text.grid-foot {
         font-size: 1rem; /* Tamanho para telas extra grandes */
     }
 }
 
 /* ---------------------------------------------------------------------*/
+.mud-data-grid {
+    font-size: 1.1rem !important;
+}
+
 .mud-data-grid .mud-data-grid-cell {
-    font-size: 18px !important;
+    font-size: 1rem !important;
 }
 
-.custom-pager .mud-pagination-item {
-    font-size: 18px !important;
-}
+/*.custom-pager {*/
+/*    font-size: 1.5rem !important;*/
+/*}*/
 
-.custom-pager .mud-select {
-    font-size: 18px !important;
-}
+/*.custom-pager .mud-pagination-item {*/
+/*    font-size: 1rem !important;*/
+/*}*/
+
+/*.custom-pager .mud-select {*/
+/*    font-size: 1rem !important;*/
+/*}*/
 
 .custom-pager .mud-typography {
-    font-size: 18px !important;
+    font-size: 0.75rem !important;
 }
 
 .mud-nav-item {
-    font-size: 2.2rem !important;
+    font-size: 1.4rem !important;
     display: block !important; /* Força cada item a ocupar uma linha inteira */
-    width: 100%; /* Garante que o item ocupe toda a largura do contêiner */
+    /*width: 100%; !* Garante que o item ocupe toda a largura do contêiner *!*/
     flex-direction: column !important; /* Garante que os itens se empilhem verticalmente se estiverem usando flexbox */
 }
 
 .mud-nav-link {
-    font-size: 1.8rem;
+    font-size: 1rem;
     padding: 3px 15px !important;
     width: 100%; /* Faz com que o link ocupe toda a largura disponível */
     box-sizing: border-box; /* Inclui o padding na largura do elemento */
