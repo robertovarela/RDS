@@ -1,4 +1,5 @@
 ﻿using RDS.Core.Models.Company;
+using RDS.Core.Models.ViewModels.company;
 using RDS.Core.Requests.Companies;
 using UpdateCompanyRequest = RDS.Core.Requests.Companies.UpdateCompanyRequest;
 
@@ -153,6 +154,38 @@ public class CompanyController(AppDbContext context) : ControllerBase
         }
     }
 
+    [HttpPost("allbyuserid")]
+    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllByUserIdAsync([FromBody] GetAllComaniesByUserIdRequest request)
+    {
+        try
+        {
+            var query = context
+                .Companies
+                .AsNoTracking()
+                .Where(x => x.OwnerId == request.UserId)
+                .Select(x => new AllCompaniesIdViewModel { CompanyId = x.Id})
+                .OrderBy(x => x.CompanyId);
+
+            var companies = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToListAsync();
+
+            var count = await query.CountAsync();
+
+            return new PagedResponse<List<AllCompaniesIdViewModel>>(
+                companies,
+                count,
+                request.PageNumber,
+                request.PageSize);
+        }
+        catch
+        {
+            return new PagedResponse<List<AllCompaniesIdViewModel>>
+                (null, 500, "Não foi possível consultar as empresas");
+        }
+    }
+    
     [HttpPost("byid")]
     public async Task<Response<Company?>> GetByIdAsync([FromBody] GetCompanyByIdRequest request)
     {

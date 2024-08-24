@@ -1,4 +1,5 @@
 ﻿using RDS.Core.Models.Company;
+using RDS.Core.Models.ViewModels.company;
 using RDS.Core.Requests.Companies;
 using UpdateCompanyRequest = RDS.Core.Requests.Companies.UpdateCompanyRequest;
 
@@ -49,18 +50,6 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
                ?? new Response<Company?>(null, 400, "Falha ao excluir a empresa");    
     }
 
-    public async Task<Response<Company?>> GetByIdAsync(GetCompanyByIdRequest request)
-    {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/byid")
-        {
-            Content = JsonContent.Create(request)
-        };
-        var httpClient = await GetHttpClientAsync();
-        var result = await httpClient.SendAsync(requestMessage);
-        return await result.Content.ReadFromJsonAsync<Response<Company?>>()
-               ?? new Response<Company?>(null, 400, "Não foi possível obter a empresa");    
-    }
-
     public async Task<PagedResponse<List<Company>>> GetAllAsync(GetAllCompaniesRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/all")
@@ -71,5 +60,29 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
         var result = await httpClient.SendAsync(requestMessage);
         return await result.Content.ReadFromJsonAsync<PagedResponse<List<Company>>>()
                ?? new PagedResponse<List<Company>>(null, 400, "Não foi possível obter as empresas");    
+    }
+    
+    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllByUserIdAsync(GetAllComaniesByUserIdRequest request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/allbyuserid")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<AllCompaniesIdViewModel>>>()
+               ?? new PagedResponse<List<AllCompaniesIdViewModel>>(null, 400, "Não foi possível obter as empresas");    
+    }
+    
+    public async Task<Response<Company?>> GetByIdAsync(GetCompanyByIdRequest request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/byid")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<Response<Company?>>()
+               ?? new Response<Company?>(null, 400, "Não foi possível obter a empresa");    
     }
 }

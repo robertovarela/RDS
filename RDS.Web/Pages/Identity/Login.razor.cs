@@ -23,7 +23,6 @@ public partial class LoginPage : ComponentBase
     #region Parameters
 
     [Parameter] public InputType PasswordInput { get; set; } = InputType.Password;
-    
     [Parameter] public string PasswordInputIcon { get; set; } = Icons.Material.Filled.VisibilityOff;
 
     #endregion

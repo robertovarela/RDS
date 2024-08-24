@@ -2,6 +2,7 @@ namespace RDS.Web.Pages;
 
 public class HomePage : ComponentBase
 {
+    protected long Company  { get; set; } 
     #region Services
 
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
@@ -15,11 +16,12 @@ public class HomePage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
-        //await StartService.ValidateAccesByToken();
-        StartService.SetDefaultValues();
-        
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+        await StartService.ValidateAccesByTokenAsync(blockNavigation: false);
+        await StartService.SetDefaultValues();
+        Company = StartService.GetSelectedCompanyId();
+        var teste = "";
+        //var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        //var user = authState.User;
 
         // if (user.Identity != null && user.Identity.IsAuthenticated)
         // {
@@ -51,7 +53,7 @@ public class HomePage : ComponentBase
     #endregion
     
     #region Public Methods
-
+    
     public void SelectCompany(long companyId)
     {
         StartService.SetSelectedCompanyId(companyId);

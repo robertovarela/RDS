@@ -1,4 +1,7 @@
-﻿namespace RDS.Web.Services;
+﻿using RDS.Core.Models.ViewModels.company;
+using RDS.Core.Requests.Companies;
+
+namespace RDS.Web.Services;
 
 public class ManipulateUserStateValuesService(
     UserStateService userState,
@@ -6,28 +9,39 @@ public class ManipulateUserStateValuesService(
     TokenService tokenService,
     AuthenticationService authenticationService,
     IApplicationUserConfigurationHandler applicationUserConfigurationHandler,
-    AuthenticationStateProvider AuthenticationStateProvider,
+    ICompanyHandler companyHandler,
+    AuthenticationStateProvider authenticationStateProvider,
     DeviceService deviceService,
     ISnackbar snackbar)
 {
     private List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
+    private List<AllCompaniesIdViewModel> CompanyIdsFromUser { get; set; } = [];
 
-    public void SetDefaultValues()
+    public async Task SetDefaultValuesAsync()
     {
         userState.SetSelectedUserId(userState.GetLoggedUserId());
         userState.SetSelectedAddressId(0);
         userState.SetSelectedCategoryId(0);
-        userState.SetSelectedCompanyId(0);
         userState.SetSelectedTransactionId(0);
+
+        long loggedUserId = GetLoggedUserId();
+        if (await IsAdminInRolesAsync(loggedUserId))
+        {
+            var companies = await GetCompaniesByUserIdAsync(loggedUserId);
+
+            if (!companies.Any()) SetSelectedCompanyId(0);
+
+            SetSelectedCompanyId(companies.First().CompanyId);
+        }
     }
 
-    public async Task ValidateAccessByToken()
+    public async Task ValidateAccessByTokenAsync(bool blockNavigation = true)
     {
-        string token = await GetTokenFromLocalStorage();
+        string token = await GetTokenFromLocalStorageAsync();
         if (string.IsNullOrEmpty(token))
         {
             snackbar.Add("Token não encontrado", Severity.Warning);
-            HandleInvalidToken();
+            HandleInvalidToken(blockNavigation);
             return;
         }
 
@@ -35,10 +49,10 @@ public class ManipulateUserStateValuesService(
 
         if (ConfigurationWeb.RenewToken)
         {
-            if (!TrySetUserIdFromToken(token, out var newId, validateToken: false) || newId == 0)
+            if (!TrySetUserIdFromToken(token, out var newId, validateTokenLifeTime: false) || newId == 0)
             {
                 snackbar.Add("Token inválido!", Severity.Warning);
-                HandleInvalidToken();
+                HandleInvalidToken(blockNavigation);
                 return;
             }
 
@@ -47,26 +61,29 @@ public class ManipulateUserStateValuesService(
             snackbar.Add("Não foi possível atualizar o token", Severity.Error);
         }
 
-        HandleInvalidToken();
+        HandleInvalidToken(blockNavigation);
     }
 
-    private async Task<string> GetTokenFromLocalStorage()
+    private async Task<string> GetTokenFromLocalStorageAsync()
     {
         return await localStorage.GetItemAsync<string>("authToken") ?? string.Empty;
     }
 
-    private bool TrySetUserIdFromToken(string token, out long userId, bool validateToken = true)
+    private bool TrySetUserIdFromToken(string token, out long userId, bool validateTokenLifeTime = true)
     {
         userId = 0;
-        if (!long.TryParse(tokenService.GetUserIdFromToken(token, validateToken), out var id))
+        if (!long.TryParse(tokenService.GetUserIdFromToken(token, validateTokenLifeTime), out var loggedId))
             return false;
 
-        userState.SetLoggedUserId(id);
-        userId = id;
+        SetLoggedUserId(loggedId);
+        userId = loggedId;
         return true;
     }
 
-    private static void HandleInvalidToken() => NavigationService.NavigateToLogin();
+    private static void HandleInvalidToken(bool blockNavigation)
+    {
+        if (blockNavigation) NavigationService.NavigateToLogin();
+    }
 
     public async Task<bool> RefreshToken(string token, bool showMessage)
     {
@@ -134,6 +151,7 @@ public class ManipulateUserStateValuesService(
     public void SetPageTitle(string title) => userState.SetPageTitle(title);
     public void SetSourceUrl(List<string> urlList) => userState.SetSourceUrl(urlList);
     public void SetCurrentUrl(string url) => userState.SetCurrentUrl(url);
+    private void SetLoggedUserId(long userId) => userState.SetLoggedUserId(userId);
     public void SetSelectedUserId(long userId) => userState.SetSelectedUserId(userId);
     public void SetSelectedUserName(string userName) => userState.SetSelectedUserName(userName);
     public void SetSelectedAddressId(long addressId) => userState.SetSelectedAddressId(addressId);
@@ -141,48 +159,9 @@ public class ManipulateUserStateValuesService(
     public void SetSelectedCategoryId(long categoryId) => userState.SetSelectedCategoryId(categoryId);
     public void SetSelectedTransactionId(long transactionId) => userState.SetSelectedTransactionId(transactionId);
 
-    public async Task<List<ApplicationUserRole?>> GetRolesFromUser(long companyId)
+    public async Task VerifyIfLoggedInAsync(string destinationUrlLoggedIn = "/", string destinationUrlNotLoggedIn = "")
     {
-        try
-        {
-            var request = new GetAllApplicationUserRoleRequest { CompanyId = companyId };
-            var result = await applicationUserConfigurationHandler.ListUserRoleAsync(request);
-            if (result.IsSuccess)
-                RolesFromUser = result.Data ?? [];
-        }
-        catch (Exception ex)
-        {
-            snackbar.Add(ex.Message, Severity.Error);
-        }
-
-        return RolesFromUser;
-    }
-
-    public async Task<bool> IsAdminInRoles(long userId)
-    {
-        var roles = await GetRolesFromUser(userId);
-
-        foreach (var role in roles)
-        {
-            if (role != null && role.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public async Task<long> GetSelectedUserIdIfAdminAsync()
-    {
-        var loggedUserId = GetLoggedUserId();
-        var isAdmin = await IsAdminInRoles(loggedUserId);
-        return isAdmin ? GetSelectedUserId() : loggedUserId;
-    }
-
-    public async Task VerifyIfLoggedIn(string destinationUrlLoggedIn = "/", string destinationUrlNotLoggedIn = "")
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
         if (user.Identity is { IsAuthenticated: true })
@@ -199,5 +178,61 @@ public class ManipulateUserStateValuesService(
         {
             NavigationService.NavigateTo(destinationUrlNotLoggedIn);
         }
+    }
+
+    public async Task<List<AllCompaniesIdViewModel>> GetCompaniesByUserIdAsync(long userId)
+    {
+        try
+        {
+            var request = new GetAllComaniesByUserIdRequest { UserId = userId };
+            var result = await companyHandler.GetAllByUserIdAsync(request);
+            if (result.IsSuccess)
+                CompanyIdsFromUser = result.Data ?? [];
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(ex.Message, Severity.Error);
+        }
+
+        return CompanyIdsFromUser;
+    }
+
+    public async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long companyId)
+    {
+        try
+        {
+            var request = new GetAllApplicationUserRoleRequest { CompanyId = companyId };
+            var result = await applicationUserConfigurationHandler.ListUserRoleAsync(request);
+            if (result.IsSuccess)
+                RolesFromUser = result.Data ?? [];
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(ex.Message, Severity.Error);
+        }
+
+        return RolesFromUser;
+    }
+
+    public async Task<bool> IsAdminInRolesAsync(long userId)
+    {
+        var roles = await GetRolesFromUserAsync(userId);
+
+        foreach (var role in roles)
+        {
+            if (role != null && role.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public async Task<long> GetSelectedUserIdIfAdminAsync()
+    {
+        var loggedUserId = GetLoggedUserId();
+        var isAdmin = await IsAdminInRolesAsync(loggedUserId);
+        return isAdmin ? GetSelectedUserId() : loggedUserId;
     }
 }

@@ -1,3 +1,5 @@
+using RDS.Core.Models.ViewModels.company;
+
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 namespace RDS.Web.Services;
 
@@ -10,9 +12,9 @@ public abstract class StartService
         _manipulateUserStateValuesService = manipulateUserStateValuesService;
     }
 
-    public static async Task ValidateAccesByTokenAsync()
+    public static async Task ValidateAccesByTokenAsync(bool blockNavigation = true)
     {
-        await _manipulateUserStateValuesService.ValidateAccessByToken();
+        await _manipulateUserStateValuesService.ValidateAccessByTokenAsync(blockNavigation);
         SetSourceUrl([]);
     }
 
@@ -37,40 +39,45 @@ public abstract class StartService
     public static long GetSelectedCategoryId() => _manipulateUserStateValuesService.GetSelectedCategoryId();
     public static long GetSelectedTransactionId() => _manipulateUserStateValuesService.GetSelectedTransactionId();
 
-    public static void SetDefaultValues() => _manipulateUserStateValuesService.SetDefaultValues();
+    public static async Task SetDefaultValues() => await _manipulateUserStateValuesService.SetDefaultValuesAsync();
     public static void SetPageTitle(string title) => _manipulateUserStateValuesService.SetPageTitle(title);
     public static void SetSourceUrl(List<string> urlList) => _manipulateUserStateValuesService.SetSourceUrl(urlList);
     public static void SetCurrentUrl(string url) => _manipulateUserStateValuesService.SetCurrentUrl(url);
     public static void SetSelectedUserId(long userId) => _manipulateUserStateValuesService.SetSelectedUserId(userId);
 
-    public static void SetSelectedUserName(string userName) =>
-        _manipulateUserStateValuesService.SetSelectedUserName(userName);
+    public static void SetSelectedUserName(string userName) 
+        => _manipulateUserStateValuesService.SetSelectedUserName(userName);
 
-    public static void SetSelectedAddressId(long addressId) =>
-        _manipulateUserStateValuesService.SetSelectedAddressId(addressId);
+    public static void SetSelectedAddressId(long addressId) 
+        => _manipulateUserStateValuesService.SetSelectedAddressId(addressId);
 
-    public static void SetSelectedCompanyId(long companyId) =>
-        _manipulateUserStateValuesService.SetSelectedCompanyId(companyId);
+    public static void SetSelectedCompanyId(long companyId) 
+        => _manipulateUserStateValuesService.SetSelectedCompanyId(companyId);
 
-    public static void SetSelectedCategoryId(long categoryId) =>
-        _manipulateUserStateValuesService.SetSelectedCategoryId(categoryId);
+    public static void SetSelectedCategoryId(long categoryId) 
+        => _manipulateUserStateValuesService.SetSelectedCategoryId(categoryId);
 
-    public static void SetSelectedTransactionId(long transactionId) =>
-        _manipulateUserStateValuesService.SetSelectedTransactionId(transactionId);
+    public static void SetSelectedTransactionId(long transactionId) 
+        => _manipulateUserStateValuesService.SetSelectedTransactionId(transactionId);
 
-    public static async Task<List<ApplicationUserRole?>> GetRolesFromUser(long userId) =>
-        await _manipulateUserStateValuesService.GetRolesFromUser(userId);
+    public static async Task<List<AllCompaniesIdViewModel>> GetCompaniesByUserIdAsync(long userId)
+        => await _manipulateUserStateValuesService.GetCompaniesByUserIdAsync(userId);
 
-    public static async Task<bool> IsAdminInRoles(long userId) =>
-        await _manipulateUserStateValuesService.IsAdminInRoles(userId);
+    public static async Task<List<ApplicationUserRole?>> GetRolesFromUser(long userId)
+        => await _manipulateUserStateValuesService.GetRolesFromUserAsync(userId);
 
-    public static async Task<long> GetSelectedUserIdIfAdminAsync() =>
-        await _manipulateUserStateValuesService.GetSelectedUserIdIfAdminAsync();
+    public static async Task<bool> IsAdminInRoles(long userId)
+        => await _manipulateUserStateValuesService.IsAdminInRolesAsync(userId);
+
+    public static async Task<long> GetSelectedUserIdIfAdminAsync() 
+        => await _manipulateUserStateValuesService.GetSelectedUserIdIfAdminAsync();
 
     public static async Task VerifyIfLoggedIn(
         string destinationUrlNotLoggedIn = "/",
         string destinationUrlLoggedIn = "")
-        => await _manipulateUserStateValuesService.VerifyIfLoggedIn(destinationUrlNotLoggedIn, destinationUrlLoggedIn);
+        => await _manipulateUserStateValuesService.VerifyIfLoggedInAsync(
+            destinationUrlNotLoggedIn, 
+            destinationUrlLoggedIn);
 
 
     // This methods are used to set and get the selected user id and name in the application and are used in the LinkUserStateService

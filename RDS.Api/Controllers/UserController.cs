@@ -175,14 +175,14 @@ public class UserController(
     }
 
     [HttpPost("allusers")]
-    public async Task<PagedResponse<List<ListAllUsers>>> GetAllAsync(
+    public async Task<PagedResponse<List<AllUsersViewModel>>> GetAllAsync(
         [FromBody] GetAllApplicationUserRequest request)
     {
         try
         {
             var notFoundMessage = "";
             long.TryParse(request.Filter, out long filterId);
-            IQueryable<ListAllUsers> query;
+            IQueryable<AllUsersViewModel> query;
 
             if (filterId != 0)
             {
@@ -190,7 +190,7 @@ public class UserController(
                 {
                     query = context.Users.AsNoTracking()
                         .Where(u => u.Cpf == request.Filter)
-                        .Select(u => new ListAllUsers { Id = u.Id, Name = u.Name, Email = u.Email! });
+                        .Select(u => new AllUsersViewModel { Id = u.Id, Name = u.Name, Email = u.Email! });
 
                     notFoundMessage = "CPF não localizado";
                 }
@@ -198,7 +198,7 @@ public class UserController(
                 {
                     query = context.Users.AsNoTracking()
                         .Where(u => u.Id == filterId)
-                        .Select(u => new ListAllUsers { Id = u.Id, Name = u.Name, Email = u.Email! });
+                        .Select(u => new AllUsersViewModel { Id = u.Id, Name = u.Name, Email = u.Email! });
 
                     notFoundMessage = "Código não localizado";
                 }
@@ -210,7 +210,7 @@ public class UserController(
                         (string.IsNullOrEmpty(request.Filter) || u.Name.StartsWith(request.Filter)) ||
                         (string.IsNullOrEmpty(request.Filter) || u.Email == request.Filter))
                     .OrderBy(u => u.Id)
-                    .Select(u => new ListAllUsers { Id = u.Id, Name = u.Name!, Email = u.Email! });
+                    .Select(u => new AllUsersViewModel { Id = u.Id, Name = u.Name!, Email = u.Email! });
 
                 notFoundMessage = request.Filter.Contains("@") ? "Email não localizado" : "Usuário não encontrado";
             }
@@ -223,12 +223,12 @@ public class UserController(
 
             var count = await query.CountAsync();
             return count == 0
-                ? new PagedResponse<List<ListAllUsers>>(null, 404, notFoundMessage)
-                : new PagedResponse<List<ListAllUsers>>(users, count, request.PageNumber, request.PageSize);
+                ? new PagedResponse<List<AllUsersViewModel>>(null, 404, notFoundMessage)
+                : new PagedResponse<List<AllUsersViewModel>>(users, count, request.PageNumber, request.PageSize);
         }
         catch
         {
-            return new PagedResponse<List<ListAllUsers>>(null, 500, "Não foi possível consultar os usuários");
+            return new PagedResponse<List<AllUsersViewModel>>(null, 500, "Não foi possível consultar os usuários");
         }
     }
 
