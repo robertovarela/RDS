@@ -38,7 +38,7 @@ public class EditApplicationUserAddressPage : ComponentBase
         try
         {
             StartService.SetPageTitle("Editar Endereço");
-            await StartService.ValidateAccesByToken();
+            await StartService.ValidateAccesByTokenAsync();
             var userId = StartService.GetSelectedUserId();
             var id = StartService.GetSelectedAddressId();
  

@@ -24,7 +24,7 @@ public class EditCompanyPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Editar Empresa");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
         CompanyId = StartService.GetSelectedCompanyId();
         await LoadCompany();
     }

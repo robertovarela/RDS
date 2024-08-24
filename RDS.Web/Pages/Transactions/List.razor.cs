@@ -30,7 +30,7 @@ public partial class ListTransactionsPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Lançamentos");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
         UserId = StartService.GetSelectedUserId();
         CompanyId = StartService.GetSelectedCompanyId();
         await GetTransactionsAsync();

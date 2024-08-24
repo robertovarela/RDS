@@ -38,7 +38,7 @@ public partial class ListUserRolesPage : ComponentBase
         if (UserId == 0)
             NavigationService.NavigateToAccessNotAllowed();
 
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
         //await LoadRolesFromUser();
         IsBusy = true;
         RolesFromUser = await StartService.GetRolesFromUser(UserId);

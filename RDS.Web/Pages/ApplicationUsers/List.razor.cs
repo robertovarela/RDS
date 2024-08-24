@@ -33,7 +33,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected override async Task OnInitializedAsync()
         {
             StartService.SetPageTitle("Usuários");
-            await StartService.ValidateAccesByToken();
+            await StartService.ValidateAccesByTokenAsync();
             StartService.SetDefaultValues();
         }
 

@@ -1,22 +1,21 @@
 namespace RDS.Web.Pages.Identity;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class LoginPage : ComponentBase
 {
     #region Services
     
     [Inject] public DeviceService DeviceService { get; set; } = null!;
-    [Inject] ILogger<Login> Logger { get; set; } = null!;
-    [Inject] AuthenticationService AuthenticationService { get; set; } = null!;
-    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
-    [Inject] public UserStateService UserState { get; set; } = null!;
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private ILogger<Login> Logger { get; set; } = null!;
+    [Inject] private AuthenticationService AuthenticationService { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
 
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
-    private bool IsShow { get; set; } = false;
+    protected bool IsBusy { get; set; }
+    private bool IsShow { get; set; }
     public LoginRequest LoginModel { get; set; } = new();
 
     #endregion
@@ -34,19 +33,13 @@ public partial class LoginPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetDefaultValues();
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        
-        if (user.Identity is { IsAuthenticated: true })
-        {
-            NavigationService.NavigateTo("/");
-        }
+        await StartService.VerifyIfLoggedIn();
     }
 
     #endregion
 
     #region Methods
-
+    
     public async Task OnValidSubmitAsync()
     {
         Logger.LogInformation("Starting HandleLogin");

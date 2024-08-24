@@ -33,7 +33,7 @@ public partial class CreateApplicationUserAddressPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Novo Endereço");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
     }
     
     #endregion

@@ -30,7 +30,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Editar Usuário");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
         UserId = await StartService.GetSelectedUserIdIfAdminAsync();
         await LoadUser(UserId);
     }

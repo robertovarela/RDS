@@ -8,6 +8,7 @@ public partial class EditCategoryPage : ComponentBase
     protected bool IsBusy { get; set; }
     public UpdateCategoryRequest InputModel { get; set; } = new();
     private long UserId { get; set; }
+    private long CompanyId { get; set; }
     private long Id { get; set; }
 
     #endregion
@@ -24,17 +25,25 @@ public partial class EditCategoryPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Editar Categoria");
-        await StartService.ValidateAccesByToken();
-        UserId = StartService.GetSelectedUserId();
+        await StartService.ValidateAccesByTokenAsync();
+        UserId = await StartService.GetSelectedUserIdIfAdminAsync();
+        CompanyId = StartService.GetSelectedCompanyId();
         Id = StartService.GetSelectedCategoryId();
-        //StateHasChanged();
- 
+        await LoadCategoryAsync();
+    }
+
+    #endregion
+
+    #region Methods
+
+    private async Task LoadCategoryAsync()
+    {
         try
         {
             var request = new GetCategoryByIdRequest
             {
                 Id = Id,
-                CompanyId = UserId
+                CompanyId = CompanyId
             };
 
             IsBusy = true;
@@ -57,11 +66,7 @@ public partial class EditCategoryPage : ComponentBase
             IsBusy = false;
         }
     }
-
-    #endregion
-
-    #region Methods
-
+    
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;

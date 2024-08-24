@@ -21,7 +21,7 @@ public partial class CreateRolePage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Nova Role");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
     }
     
     #endregion

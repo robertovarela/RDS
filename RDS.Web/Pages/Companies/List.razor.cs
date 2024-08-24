@@ -31,7 +31,7 @@ public partial class ListCompaniesPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Empresas");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
         UserId = StartService.GetSelectedUserId();
         await LoadCompaniesAsync();
     }

@@ -25,7 +25,7 @@ public class ListApplicationUserAdressesPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Endereços");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
         var userId = StartService.GetSelectedUserId();
         IsBusy = true; 
 

@@ -27,7 +27,7 @@ public partial class CreateTransactionPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Novo Lançamento");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
         await LoadCategories();
     }
 

@@ -6,6 +6,7 @@ public class ManipulateUserStateValuesService(
     TokenService tokenService,
     AuthenticationService authenticationService,
     IApplicationUserConfigurationHandler applicationUserConfigurationHandler,
+    AuthenticationStateProvider AuthenticationStateProvider,
     DeviceService deviceService,
     ISnackbar snackbar)
 {
@@ -126,7 +127,7 @@ public class ManipulateUserStateValuesService(
 
     public string GetSelectedUserName() => userState.GetSelectedUserName();
     public long GetSelectedAddressId() => userState.GetSelectedAddressId();
-    public long GetSelectedCompanyID() => userState.GetSelectedCompanyId();
+    public long GetSelectedCompanyId() => userState.GetSelectedCompanyId();
     public long GetSelectedCategoryId() => userState.GetSelectedCategoryId();
     public long GetSelectedTransactionId() => userState.GetSelectedTransactionId();
 
@@ -140,11 +141,11 @@ public class ManipulateUserStateValuesService(
     public void SetSelectedCategoryId(long categoryId) => userState.SetSelectedCategoryId(categoryId);
     public void SetSelectedTransactionId(long transactionId) => userState.SetSelectedTransactionId(transactionId);
 
-    public async Task<List<ApplicationUserRole?>> GetRolesFromUser(long userId)
+    public async Task<List<ApplicationUserRole?>> GetRolesFromUser(long companyId)
     {
         try
         {
-            var request = new GetAllApplicationUserRoleRequest { CompanyId = userId };
+            var request = new GetAllApplicationUserRoleRequest { CompanyId = companyId };
             var result = await applicationUserConfigurationHandler.ListUserRoleAsync(request);
             if (result.IsSuccess)
                 RolesFromUser = result.Data ?? [];
@@ -177,5 +178,26 @@ public class ManipulateUserStateValuesService(
         var loggedUserId = GetLoggedUserId();
         var isAdmin = await IsAdminInRoles(loggedUserId);
         return isAdmin ? GetSelectedUserId() : loggedUserId;
+    }
+
+    public async Task VerifyIfLoggedIn(string destinationUrlLoggedIn = "/", string destinationUrlNotLoggedIn = "")
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is { IsAuthenticated: true })
+        {
+            if (!destinationUrlLoggedIn.Equals("", StringComparison.OrdinalIgnoreCase))
+            {
+                NavigationService.NavigateTo(destinationUrlLoggedIn);
+            }
+
+            return;
+        }
+
+        if (!destinationUrlNotLoggedIn.Equals("", StringComparison.OrdinalIgnoreCase))
+        {
+            NavigationService.NavigateTo(destinationUrlNotLoggedIn);
+        }
     }
 }

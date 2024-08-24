@@ -28,7 +28,7 @@ public partial class ListCategoriesPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Categorias");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
         CompanyId = StartService.GetSelectedUserId();
         await LoadCategoriesAsync();
     }

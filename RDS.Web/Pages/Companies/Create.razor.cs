@@ -29,7 +29,7 @@ public class CreateCompanyPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("Nova Empresa");
-        await StartService.ValidateAccesByToken();
+        await StartService.ValidateAccesByTokenAsync();
     }
 
     #endregion

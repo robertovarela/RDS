@@ -31,7 +31,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         protected override async Task OnInitializedAsync()
         {
             StartService.SetPageTitle("Usuários - Roles");
-            await StartService.ValidateAccesByToken();
+            await StartService.ValidateAccesByTokenAsync();
             StartService.SetSourceUrl(_sourceUrl);
         }
 
