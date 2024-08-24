@@ -36,7 +36,7 @@ public partial class ListUserRolesPage : ComponentBase
         //StartService.ValidateSourceUrl(_sourceUrl, CurrentUrl, true, true);
         UserId = StartService.GetSelectedUserId();
         if (UserId == 0)
-            NavigationService.NavigateToAccessNotAllowed();
+            NavigationService.NavigateToAccessNotAllowedAsync();
 
         await StartService.ValidateAccesByTokenAsync();
         //await LoadRolesFromUser();

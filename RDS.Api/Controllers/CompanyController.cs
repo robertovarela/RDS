@@ -155,7 +155,38 @@ public class CompanyController(AppDbContext context) : ControllerBase
     }
 
     [HttpPost("allbyuserid")]
-    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllByUserIdAsync([FromBody] GetAllComaniesByUserIdRequest request)
+    public async Task<PagedResponse<List<Company>>> GetAllByUserIdAsync([FromBody] GetAllCompaniesByUserIdRequest request)
+    {
+        try
+        {
+            var query = context
+                .Companies
+                .AsNoTracking()
+                .Where(x => x.OwnerId == request.UserId)
+                .OrderBy(x => x.Name);
+
+            var companies = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToListAsync();
+
+            var count = await query.CountAsync();
+
+            return new PagedResponse<List<Company>>(
+                companies,
+                count,
+                request.PageNumber,
+                request.PageSize);
+        }
+        catch
+        {
+            return new PagedResponse<List<Company>>
+                (null, 500, "Não foi possível consultar as empresas");
+        }
+    }
+    
+    [HttpPost("allcompanyidbyuserid")]
+    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync([FromBody] GetAllCompaniesByUserIdRequest request)
     {
         try
         {

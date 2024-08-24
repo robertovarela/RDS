@@ -12,10 +12,9 @@ public class LogoutPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        StartService.SetDefaultValues();
         await AuthenticationService.LogoutAsync();
         await base.OnInitializedAsync();
-        
+        await StartService.SetDefaultValues();
         await NavigateToLoginAsync();
     }
 
@@ -25,8 +24,7 @@ public class LogoutPage : ComponentBase
     
     private async Task NavigateToLoginAsync()
     {
-        StartService.SetDefaultValues();
-        await Task.Delay(1000);
+        await Task.Delay(500);
         NavigationService.NavigateTo("/login");
     }
     

@@ -1,7 +1,4 @@
-﻿using RDS.Core.Models.ViewModels.company;
-using RDS.Core.Requests.Companies;
-
-namespace RDS.Web.Services;
+﻿namespace RDS.Web.Services;
 
 public class ManipulateUserStateValuesService(
     UserStateService userState,
@@ -97,7 +94,7 @@ public class ManipulateUserStateValuesService(
         return true;
     }
 
-    public bool ValidateSourceUrl(List<string> sourceUrl,
+    public async Task<bool> ValidateSourceUrl(List<string> sourceUrl,
         string currentUrl,
         bool navigateToAccessNotAllowed = true,
         bool showMessage = true)
@@ -105,7 +102,7 @@ public class ManipulateUserStateValuesService(
         var commonUrls = sourceUrl.Intersect(GetSourceUrl()).ToList();
 
         if (commonUrls.Any()) return true;
-        var currentUrlMemory = GetSourceUrl();
+        //var currentUrlMemory = GetSourceUrl();
         if (GetCurrentUrl().Equals(currentUrl)) return true;
 
         if (showMessage)
@@ -116,7 +113,7 @@ public class ManipulateUserStateValuesService(
 
         if (navigateToAccessNotAllowed)
         {
-            NavigationService.NavigateToAccessNotAllowed();
+            await NavigationService.NavigateToAccessNotAllowedAsync();
             return false;
         }
 
@@ -184,8 +181,8 @@ public class ManipulateUserStateValuesService(
     {
         try
         {
-            var request = new GetAllComaniesByUserIdRequest { UserId = userId };
-            var result = await companyHandler.GetAllByUserIdAsync(request);
+            var request = new GetAllCompaniesByUserIdRequest { UserId = userId };
+            var result = await companyHandler.GetAllCompanyIdByUserIdAsync(request);
             if (result.IsSuccess)
                 CompanyIdsFromUser = result.Data ?? [];
         }

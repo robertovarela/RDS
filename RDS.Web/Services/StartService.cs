@@ -18,11 +18,11 @@ public abstract class StartService
         SetSourceUrl([]);
     }
 
-    public static bool ValidateSourceUrl(List<string> sourceUrl,
+    public static async Task<bool> ValidateSourceUrl(List<string> sourceUrl,
         string currentUrl,
         bool navigateToAccessNotAllowed = true,
         bool showMessage = true) =>
-        _manipulateUserStateValuesService.ValidateSourceUrl(sourceUrl, currentUrl, navigateToAccessNotAllowed,
+        await _manipulateUserStateValuesService.ValidateSourceUrl(sourceUrl, currentUrl, navigateToAccessNotAllowed,
             showMessage);
 
     public static async Task RefreshToken(string refreshToken, bool showMessage) =>
@@ -72,15 +72,11 @@ public abstract class StartService
     public static async Task<long> GetSelectedUserIdIfAdminAsync() 
         => await _manipulateUserStateValuesService.GetSelectedUserIdIfAdminAsync();
 
-    public static async Task VerifyIfLoggedIn(
-        string destinationUrlNotLoggedIn = "/",
-        string destinationUrlLoggedIn = "")
-        => await _manipulateUserStateValuesService.VerifyIfLoggedInAsync(
-            destinationUrlNotLoggedIn, 
-            destinationUrlLoggedIn);
+    public static async Task VerifyIfLoggedIn(string destinationUrlNotLoggedIn = "/", string destinationUrlLoggedIn = "")
+        => await _manipulateUserStateValuesService.VerifyIfLoggedInAsync(destinationUrlNotLoggedIn, destinationUrlLoggedIn);
 
 
-    // This methods are used to set and get the selected user id and name in the application and are used in the LinkUserStateService
+    // These methods are used to set and get the selected user id and name in the application and are used in the LinkUserStateService
     public static void LinkToUrlUser(string url = "", long userId = 0)
     {
         SetSelectedUserId(userId);

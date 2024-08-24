@@ -1,9 +1,4 @@
-﻿using RDS.Core.Models.Company;
-using RDS.Core.Models.ViewModels.company;
-using RDS.Core.Requests.Companies;
-using UpdateCompanyRequest = RDS.Core.Requests.Companies.UpdateCompanyRequest;
-
-namespace RDS.Web.Handlers;
+﻿namespace RDS.Web.Handlers;
 
 public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandler
 {
@@ -61,10 +56,22 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
         return await result.Content.ReadFromJsonAsync<PagedResponse<List<Company>>>()
                ?? new PagedResponse<List<Company>>(null, 400, "Não foi possível obter as empresas");    
     }
-    
-    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllByUserIdAsync(GetAllComaniesByUserIdRequest request)
+  
+    public async Task<PagedResponse<List<Company>>> GetAllByUserIdAsync(GetAllCompaniesByUserIdRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/allbyuserid")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<Company>>>()
+               ?? new PagedResponse<List<Company>>(null, 400, "Não foi possível obter as empresas");    
+    }
+    
+    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync(GetAllCompaniesByUserIdRequest request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/allcompanyidbyuserid")
         {
             Content = JsonContent.Create(request)
         };

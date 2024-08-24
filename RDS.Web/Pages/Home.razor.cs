@@ -18,8 +18,7 @@ public class HomePage : ComponentBase
         StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
         await StartService.ValidateAccesByTokenAsync(blockNavigation: false);
         await StartService.SetDefaultValues();
-        Company = StartService.GetSelectedCompanyId();
-        var teste = "";
+
         //var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         //var user = authState.User;
 

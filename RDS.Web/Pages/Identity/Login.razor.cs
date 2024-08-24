@@ -31,7 +31,7 @@ public partial class LoginPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        StartService.SetDefaultValues();
+        await StartService.SetDefaultValues();
         await StartService.VerifyIfLoggedIn();
     }
 

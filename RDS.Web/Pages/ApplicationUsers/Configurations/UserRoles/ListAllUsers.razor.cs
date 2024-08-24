@@ -32,7 +32,7 @@ public partial class ListAllUsersPage : ComponentBase
     {
         StartService.SetPageTitle("Usuários");
         await StartService.ValidateAccesByTokenAsync();
-        StartService.SetDefaultValues();
+        await StartService.SetDefaultValues();
     }
 
     #endregion
@@ -113,8 +113,7 @@ public partial class ListAllUsersPage : ComponentBase
         if (applicationUser.Id.ToString().Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        if (applicationUser.Name is not null &&
-            applicationUser.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+        if (applicationUser.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
             return true;
 
         if (applicationUser.Email is not null &&

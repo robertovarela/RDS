@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace RDS.Web
+﻿namespace RDS.Web
 {
     public class NavigationService
     {
@@ -28,9 +26,9 @@ namespace RDS.Web
             _navigationManager?.NavigateTo("/registrar");
         }
         
-        public static void NavigateToAccessNotAllowed()
+        public static async Task NavigateToAccessNotAllowedAsync()
         {
-            StartService.SetDefaultValues();
+            await StartService.SetDefaultValues();
             StartService.SetSourceUrl([]);
             _navigationManager?.NavigateTo("/access-not-allowed");
         }

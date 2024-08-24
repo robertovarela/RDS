@@ -10,7 +10,8 @@ public interface ICompanyHandler
     Task<Response<Company?>> UpdateAsync(UpdateCompanyRequest request);
     Task<Response<Company?>> DeleteAsync(DeleteCompanyRequest request);//  
     Task<PagedResponse<List<Company>>> GetAllAsync(GetAllCompaniesRequest request);
-    Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllByUserIdAsync(GetAllComaniesByUserIdRequest request);
+    Task<PagedResponse<List<Company>>> GetAllByUserIdAsync(GetAllCompaniesByUserIdRequest request);
+    Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync(GetAllCompaniesByUserIdRequest request);
     Task<Response<Company?>> GetByIdAsync(GetCompanyByIdRequest request);
     
 }

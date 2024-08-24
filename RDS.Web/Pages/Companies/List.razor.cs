@@ -1,7 +1,4 @@
-﻿using RDS.Core.Models.Company;
-using RDS.Core.Requests.Companies;
-
-namespace RDS.Web.Pages.Companies;
+﻿namespace RDS.Web.Pages.Companies;
 
 // ReSharper disable once PartialTypeWithSinglePart
 public partial class ListCompaniesPage : ComponentBase
@@ -9,11 +6,11 @@ public partial class ListCompaniesPage : ComponentBase
     #region Properties
 
     protected bool IsBusy { get; set; }
-    protected List<Company> Companies { get; set; } = [];
+    protected List<Company> Companies { get; private set; } = [];
     private long UserId { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string AddUrl = "/empresas/adicionar";
-    protected const string Url = "/empresas/editar";
+    protected const string EditUrl = "/empresas/editar";
     protected const string UrlOrigen = "/categorias";
 
     #endregion
@@ -45,6 +42,8 @@ public partial class ListCompaniesPage : ComponentBase
         IsBusy = true;
         try
         {
+            //verificar se é Admin
+            //Implementar no UserStateService
             var request = new GetAllCompaniesRequest();
             var result = await CompanyHandler.GetAllAsync(request);
             if (result.IsSuccess)
