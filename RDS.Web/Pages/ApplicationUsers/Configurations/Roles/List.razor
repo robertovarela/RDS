@@ -1,7 +1,7 @@
 @page "/usuariosconfiguracao/roles"
 @inherits ListRolesPage
 
-<AuthorizeView>
+<AuthorizeView Roles="Admin">
     <Authorized>
         <div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
             <MudButton
@@ -76,6 +76,6 @@
         }
     </Authorized>
     <NotAuthorized>
-        <PageRedirect pageRedirect="/login" message="Redirecionando para o login..."/>
+        @(async () => await NavigationService.NavigateToAccessNotAllowedAsync())
     </NotAuthorized>
 </AuthorizeView>

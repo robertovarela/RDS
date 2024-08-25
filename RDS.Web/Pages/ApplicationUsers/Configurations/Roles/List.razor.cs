@@ -26,6 +26,16 @@ public partial class ListRolesPage : ComponentBase
     {
         StartService.SetPageTitle("Roles");
         await StartService.ValidateAccesByTokenAsync();
+        if(!await StartService.PermissionOnlyAdmin()) return;
+        await LoadRolesAsync();
+    }
+
+    #endregion
+
+    #region Methods
+
+    private async Task LoadRolesAsync()
+    {
         IsBusy = true;
         try
         {
@@ -42,11 +52,6 @@ public partial class ListRolesPage : ComponentBase
             IsBusy = false;
         }
     }
-
-    #endregion
-
-    #region Methods
-
     public async void OnDeleteButtonClickedAsync(string roleName)
     {
         var result = await DialogService.ShowMessageBox(

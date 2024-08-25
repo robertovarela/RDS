@@ -230,4 +230,15 @@ public class ManipulateUserStateValuesService(
         var isAdmin = await IsAdminInRolesAsync(loggedUserId);
         return isAdmin ? GetSelectedUserId() : loggedUserId;
     }
+
+    public async Task<bool> PermissionOnlyAdmin()
+    {
+        var isAdmin = await StartService.IsAdminInRolesAsync(GetLoggedUserId());
+        if (!isAdmin)
+        {
+            await NavigationService.NavigateToAccessNotAllowedAsync();
+        }
+
+        return isAdmin;
+    }
 }
