@@ -14,13 +14,8 @@
     {
         await StartService.ValidateAccesByTokenAsync();
         await StartService.ValidateAccesByTokenAsync();
-        LoggedUserId = StartService.GetLoggedUserId();
-        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
-        if (!IsAdmin)
-        {
-            await NavigationService.NavigateToAccessNotAllowedAsync();
-            return;
-        }
+        if(!await StartService.PermissionOnlyAdmin()) return;
+
         _fingerprint = await DeviceService.GetDeviceFingerprint();
         if (string.IsNullOrEmpty(_fingerprint))
         {

@@ -103,6 +103,6 @@
         }
     </Authorized>
     <NotAuthorized>
-        <PageRedirect RedirectToPage="/sair" Message="Redirecionando para o login..."/>
+        @(async () => await NavigationService.NavigateToAccessNotAllowedAsync())
     </NotAuthorized>
 </AuthorizeView>
