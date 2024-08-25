@@ -1,5 +1,3 @@
-using RDS.Core.Models.ViewModels.company;
-
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 namespace RDS.Web.Services;
 

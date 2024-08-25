@@ -1,6 +1,6 @@
 ﻿namespace RDS.Web
 {
-    public class NavigationService
+    public abstract class NavigationService
     {
         private static NavigationManager? _navigationManager;
 

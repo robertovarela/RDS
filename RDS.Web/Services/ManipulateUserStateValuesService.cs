@@ -130,13 +130,11 @@ public class ManipulateUserStateValuesService(
     public long GetSelectedUserId()
     {
         long selectedUserId = userState.GetSelectedUserId();
-        if (selectedUserId == 0)
-        {
-            userState.SetSelectedUserId(userState.GetLoggedUserId());
-            selectedUserId = userState.GetSelectedUserId();
-        }
+        if (selectedUserId != 0) return selectedUserId;
 
-        return selectedUserId;
+        SetSelectedUserId(userState.GetLoggedUserId());
+
+        return userState.GetSelectedUserId();
     }
 
     public string GetSelectedUserName() => userState.GetSelectedUserName();

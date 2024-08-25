@@ -19,6 +19,13 @@
                         IconColor="Color.Info">
                 Empresas
             </MudNavLink>
+
+            <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/usuariosconfiguracao/usuarios-roles"))"
+                        Class="mud-nav-link responsive-text drawer-subtitle"
+                        Icon="@Icons.Material.Filled.AssignmentInd"
+                        IconColor="Color.Error">
+                Users Roles
+            </MudNavLink>
             
             <MudNavLink OnClick="@(() => NavigationService.NavigateTo("/categorias"))" 
                         Class="mud-nav-link responsive-text drawer-subtitle"

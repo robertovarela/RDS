@@ -7,7 +7,7 @@ public partial class ListCompaniesPage : ComponentBase
 
     protected bool IsBusy { get; set; }
     protected List<Company> Companies { get; private set; } = [];
-    private long UserId { get; set; }
+    private long LoggedUserId { get; set; }
     protected bool IsAdmin { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string AddUrl = "/empresas/adicionar";
@@ -30,8 +30,8 @@ public partial class ListCompaniesPage : ComponentBase
     {
         StartService.SetPageTitle("Empresas");
         await StartService.ValidateAccesByTokenAsync();
-        UserId = StartService.GetSelectedUserId();
-        IsAdmin = await StartService.IsAdminInRolesAsync(UserId);
+        LoggedUserId = StartService.GetLoggedUserId();
+        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
 
         await LoadCompaniesAsync();
     }
@@ -49,7 +49,7 @@ public partial class ListCompaniesPage : ComponentBase
             {
                 true => await CompanyHandler.GetAllAsync(new GetAllCompaniesRequest()),
                 false => await CompanyHandler.GetAllByUserIdAsync(
-                    new GetAllCompaniesByUserIdRequest { UserId = UserId })
+                    new GetAllCompaniesByUserIdRequest { UserId = LoggedUserId })
             };
 
             Companies = result.IsSuccess ? result.Data ?? [] : [];
@@ -71,7 +71,7 @@ public partial class ListCompaniesPage : ComponentBase
         {
             Func<Task<Response<List<Company>>>> getCompaniesTask = IsAdmin
                 ? () => CompanyHandler.GetAllAsync(new GetAllCompaniesRequest())
-                : () => CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest { UserId = UserId });
+                : () => CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest { UserId = LoggedUserId });
 
             var result = await getCompaniesTask();
             if (result.IsSuccess)
