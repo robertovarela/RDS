@@ -1,7 +1,7 @@
 ﻿@page "/empresas"
 @inherits RDS.Web.Pages.Companies.ListCompaniesPage
 
-<AuthorizeView>
+<AuthorizeView Roles="Admin">
     <Authorized>
         <div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
             <MudButton
@@ -13,75 +13,83 @@
                 ADICIONAR
             </MudButton>
         </div>
+    </Authorized>
+</AuthorizeView>
+
+<AuthorizeView>
+    <Authorized>
         @if (IsBusy)
         {
-        <MudPaper Class="pa-8 mt-4">
-            <MudSkeleton Height="55px"/>
-            <MudSkeleton Height="110px"/>
-            <MudSkeleton Height="55px"/>
-            <MudSkeleton Height="55px"/>
-        </MudPaper>
+            <MudPaper Class="pa-8 mt-4">
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
+            </MudPaper>
         }
         else
         {
-        <MudDataGrid
-            Class="mt-4"
-            Items="@Companies"
-            Filterable="true"
-            QuickFilter="Filter"
-            Hideable="true">
-            <ToolBarContent>
-                <MudSpacer/>
-                <MudTextField
-                    @bind-Value="@SearchTerm"
-                    Placeholder="Filtrar..."
-                    Adornment="Adornment.Start"
-                    AdornmentIcon="@Icons.Material.Filled.Search"
-                    Immediate="true"
-                    IconSize="Size.Medium"
-                    Class="mt-0"
-                    Variant="Variant.Outlined"
-                    Clearable="true"
-                    AutoFocus>
-                </MudTextField>
-            </ToolBarContent>
-            <Columns>
-                <PropertyColumn Class="mud-data-grid" 
-                                CellClass="mud-data-grid mud-data-grid-cell"  
-                                Property="x => x.Id" Title="#"/>
-                <PropertyColumn Class="mud-data-grid" 
-                                CellClass="mud-data-grid mud-data-grid-cell" 
-                                Property="x => x.Name" Title="Empresa"/>
-                <PropertyColumn Class="mud-data-grid" 
-                                CellClass="mud-data-grid mud-data-grid-cell" 
-                                Property="x => x.Description" Title="Descrição"/>
-                <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
-                    <CellTemplate Context="cellContext">
-                        <MudStack Row>
-                            <MudIconButton
-                                Icon="@Icons.Material.Filled.Edit"
-                                Color="Color.Success"
-                                OnClick="@(() => StartService.LinkToUrlCompany(EditUrl, cellContext.Item.Id))">
-                                Color="Color.Primary">
-                            </MudIconButton>
-                            <MudIconButton
-                                Icon="@Icons.Material.Filled.Delete"
-                                Color="Color.Error"
-                                aria-label="Excluir"
-                                OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.Id, cellContext.Item.Name)">
-                            </MudIconButton>
-                        </MudStack>
-                    </CellTemplate>
-                </TemplateColumn>
-            </Columns>
-            <PagerContent>
-                <MudDataGridPager T="Company"
-                                  Class="custom-pager mud-typography"
-                                  RowsPerPageString="Registros por página"
-                                  InfoFormat="{first_item} - {last_item} de {all_items}"
-                                  PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
-            </PagerContent>
-        </MudDataGrid>
+            <MudDataGrid
+                Class="mt-4"
+                Items="@Companies"
+                Filterable="true"
+                QuickFilter="Filter"
+                Hideable="true">
+                <ToolBarContent>
+                    <MudSpacer/>
+                    <MudTextField
+                        @bind-Value="@SearchTerm"
+                        Placeholder="Filtrar..."
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Search"
+                        Immediate="true"
+                        IconSize="Size.Medium"
+                        Class="mt-0"
+                        Variant="Variant.Outlined"
+                        Clearable="true"
+                        AutoFocus>
+                    </MudTextField>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x.Id" Title="#"/>
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x.Name" Title="Empresa"/>
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x.Description" Title="Descrição"/>
+                    <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
+                        <CellTemplate Context="cellContext">
+                            <MudStack Row>
+                                <MudIconButton
+                                    Icon="@Icons.Material.Filled.Edit"
+                                    Color="Color.Success"
+                                    OnClick="@(() => StartService.LinkToUrlCompany(EditUrl, cellContext.Item.Id))">
+                                    Color="Color.Primary">
+                                </MudIconButton>
+                                @if(IsAdmin)
+                                {
+                                    <MudIconButton
+                                        Icon="@Icons.Material.Filled.Delete"
+                                        Color="Color.Error"
+                                        aria-label="Excluir"
+                                        OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.Id, cellContext.Item.Name)">
+                                    </MudIconButton>
+                                }
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="Company"
+                                      Class="custom-pager mud-typography"
+                                      RowsPerPageString="Registros por página"
+                                      InfoFormat="{first_item} - {last_item} de {all_items}"
+                                      PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
+                </PagerContent>
+            </MudDataGrid>
         }
     </Authorized>
     <NotAuthorized>

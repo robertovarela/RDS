@@ -103,6 +103,10 @@ public class CompanyController(AppDbContext context) : ControllerBase
     [HttpDelete("delete")]
     public async Task<Response<Company?>> DeleteAsync([FromBody] DeleteCompanyRequest request)
     {
+        if (!request.IsAdmin)
+            return new Response<Company?>(null, 
+                500, 
+                "Não foi possível excluir a empresa, verifique as permissões");
         try
         {
             var company = await context
@@ -154,7 +158,8 @@ public class CompanyController(AppDbContext context) : ControllerBase
     }
 
     [HttpPost("allbyuserid")]
-    public async Task<PagedResponse<List<Company>>> GetAllByUserIdAsync([FromBody] GetAllCompaniesByUserIdRequest request)
+    public async Task<PagedResponse<List<Company>>> GetAllByUserIdAsync(
+        [FromBody] GetAllCompaniesByUserIdRequest request)
     {
         try
         {
@@ -183,9 +188,10 @@ public class CompanyController(AppDbContext context) : ControllerBase
                 (null, 500, "Não foi possível consultar as empresas");
         }
     }
-    
+
     [HttpPost("allcompanyidbyuserid")]
-    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync([FromBody] GetAllCompaniesByUserIdRequest request)
+    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync(
+        [FromBody] GetAllCompaniesByUserIdRequest request)
     {
         try
         {
@@ -193,7 +199,7 @@ public class CompanyController(AppDbContext context) : ControllerBase
                 .Companies
                 .AsNoTracking()
                 .Where(x => x.OwnerId == request.UserId)
-                .Select(x => new AllCompaniesIdViewModel { CompanyId = x.Id})
+                .Select(x => new AllCompaniesIdViewModel { CompanyId = x.Id })
                 .OrderBy(x => x.CompanyId);
 
             var companies = await query
@@ -215,7 +221,7 @@ public class CompanyController(AppDbContext context) : ControllerBase
                 (null, 500, "Não foi possível consultar as empresas");
         }
     }
-    
+
     [HttpPost("byid")]
     public async Task<Response<Company?>> GetByIdAsync([FromBody] GetCompanyByIdRequest request)
     {

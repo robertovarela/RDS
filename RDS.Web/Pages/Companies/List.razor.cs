@@ -8,7 +8,7 @@ public partial class ListCompaniesPage : ComponentBase
     protected bool IsBusy { get; set; }
     protected List<Company> Companies { get; private set; } = [];
     private long UserId { get; set; }
-    private bool IsAdmin { get; set; }
+    protected bool IsAdmin { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string AddUrl = "/empresas/adicionar";
     protected const string EditUrl = "/empresas/editar";
@@ -32,7 +32,7 @@ public partial class ListCompaniesPage : ComponentBase
         await StartService.ValidateAccesByTokenAsync();
         UserId = StartService.GetSelectedUserId();
         IsAdmin = await StartService.IsAdminInRolesAsync(UserId);
-        
+
         await LoadCompaniesAsync();
     }
 
@@ -48,7 +48,8 @@ public partial class ListCompaniesPage : ComponentBase
             var result = IsAdmin switch
             {
                 true => await CompanyHandler.GetAllAsync(new GetAllCompaniesRequest()),
-                false => await CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest{UserId = UserId})
+                false => await CompanyHandler.GetAllByUserIdAsync(
+                    new GetAllCompaniesByUserIdRequest { UserId = UserId })
             };
 
             Companies = result.IsSuccess ? result.Data ?? [] : [];
@@ -62,14 +63,15 @@ public partial class ListCompaniesPage : ComponentBase
             IsBusy = false;
         }
     }
+
     private async Task LoadCompaniesAsyncByFunc()
     {
         IsBusy = true;
         try
         {
-            Func<Task<Response<List<Company>>>> getCompaniesTask = IsAdmin 
-                ? () => CompanyHandler.GetAllAsync(new GetAllCompaniesRequest()) 
-                : () => CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest{UserId = UserId});
+            Func<Task<Response<List<Company>>>> getCompaniesTask = IsAdmin
+                ? () => CompanyHandler.GetAllAsync(new GetAllCompaniesRequest())
+                : () => CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest { UserId = UserId });
 
             var result = await getCompaniesTask();
             if (result.IsSuccess)
@@ -87,6 +89,8 @@ public partial class ListCompaniesPage : ComponentBase
 
     public async void OnDeleteButtonClickedAsync(long id, string title)
     {
+        if (!IsAdmin) return;
+        
         var result = await DialogService.ShowMessageBox(
             "ATENÇÃO",
             $"Ao prosseguir a empresa ( {id} - {title} ) será excluída. Esta é uma ação irreversível! Deseja continuar?",
@@ -105,7 +109,8 @@ public partial class ListCompaniesPage : ComponentBase
         {
             var request = new DeleteCompanyRequest
             {
-                CompanyId = id
+                CompanyId = id,
+                IsAdmin = IsAdmin
             };
             var result = await CompanyHandler.DeleteAsync(request);
             if (result.IsSuccess)
