@@ -1,17 +1,24 @@
 @page "/usuariosconfiguracao/adicionar-role"
 @inherits CreateRolePage
 
-<MudPaper Class="pa-8 mt-4">
-    <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
-        <DataAnnotationsValidator/>
+<AuthorizeView>
+    <Authorized>
+        <MudPaper Class="pa-8 mt-4">
+            <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
+                <DataAnnotationsValidator/>
 
-        <MudTextField Label="Título"
-                      HelperText="Campo obrigatório"
-                      @bind-Value="InputModel.Name"
-                      For="@(() => InputModel.Name)"
-                      Variant="Variant.Outlined"
-                      AutoFocus/>
+                <MudTextField Label="Título"
+                              HelperText="Campo obrigatório"
+                              @bind-Value="InputModel.Name"
+                              For="@(() => InputModel.Name)"
+                              Variant="Variant.Outlined"
+                              AutoFocus/>
 
-       <SaveAndCancelButtons CancelPage="/usuariosconfiguracao/roles"/>
-    </EditForm>
-</MudPaper>
+                <SaveAndCancelButtons CancelPage="/usuariosconfiguracao/roles"/>
+            </EditForm>
+        </MudPaper>
+    </Authorized>
+    <NotAuthorized>
+        @(async () => await NavigationService.NavigateToAccessNotAllowedAsync())
+    </NotAuthorized>
+</AuthorizeView>

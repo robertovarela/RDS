@@ -25,9 +25,10 @@ public partial class CreateUserRolePage : ComponentBase
     {
         StartService.SetPageTitle("Nova Role");
         await StartService.ValidateAccesByTokenAsync();
+        if(!await StartService.PermissionOnlyAdmin()) return;
         StartService.SetSourceUrl(_urlOrigen);
         IsBusy = true;
-
+        //await LoadRolesFromUser();
         try
         {
             InputModel.CompanyId = UserId;

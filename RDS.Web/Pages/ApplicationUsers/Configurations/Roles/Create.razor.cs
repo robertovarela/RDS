@@ -22,6 +22,7 @@ public partial class CreateRolePage : ComponentBase
     {
         StartService.SetPageTitle("Nova Role");
         await StartService.ValidateAccesByTokenAsync();
+        await StartService.PermissionOnlyAdmin();
     }
     
     #endregion

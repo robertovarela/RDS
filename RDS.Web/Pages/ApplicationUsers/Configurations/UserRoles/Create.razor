@@ -1,33 +1,40 @@
 @page "/usuariosconfiguracao/roles-do-usuario/adicionar-role"
 @inherits CreateUserRolePage
 
-<MudPaper Class="pa-8 mt-4">
-    <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
-        <DataAnnotationsValidator/>
-            <MudSpacer/>
-            <MudText Class="responsive-text subtitle-screen" Align="Align.Center">
-                @StartService.GetSelectedUserName()
-            </MudText>
-            <MudSpacer/>
-        <MudSelect
-            T="string"
-            Label="Role"
-            @bind-Value="InputModel.RoleName"
-            HelperText="Selecione a Role"
-            Placeholder="Please Select"
-            AdornmentIcon="@Icons.Material.Outlined.Assignment"
-            AdornmentColor="Color.Primary"
-            AnchorOrigin="Origin.BottomCenter"
-            Variant="Variant.Outlined"
-            AutoFocus>
-            @foreach (var role in Roles)
-            {
-                <MudSelectItem T="string" Value="@role!.RoleName">
-                    @role.RoleName
-                </MudSelectItem>
-            }
-        </MudSelect>
+<AuthorizeView>
+    <Authorized>
+        <MudPaper Class="pa-8 mt-4">
+            <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
+                <DataAnnotationsValidator/>
+                <MudSpacer/>
+                <MudText Class="responsive-text subtitle-screen" Align="Align.Center">
+                    @StartService.GetSelectedUserName()
+                </MudText>
+                <MudSpacer/>
+                <MudSelect
+                    T="string"
+                    Label="Role"
+                    @bind-Value="InputModel.RoleName"
+                    HelperText="Selecione a Role"
+                    Placeholder="Please Select"
+                    AdornmentIcon="@Icons.Material.Outlined.Assignment"
+                    AdornmentColor="Color.Primary"
+                    AnchorOrigin="Origin.BottomCenter"
+                    Variant="Variant.Outlined"
+                    AutoFocus>
+                    @foreach (var role in Roles)
+                    {
+                        <MudSelectItem T="string" Value="@role!.RoleName">
+                            @role.RoleName
+                        </MudSelectItem>
+                    }
+                </MudSelect>
 
-        <SaveAndCancelButtons CancelPage="/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario"/>
-    </EditForm>
-</MudPaper>
+                <SaveAndCancelButtons CancelPage="/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario"/>
+            </EditForm>
+        </MudPaper>
+    </Authorized>
+    <NotAuthorized>
+        @(async () => await NavigationService.NavigateToAccessNotAllowedAsync())
+    </NotAuthorized>
+</AuthorizeView>

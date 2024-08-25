@@ -1,8 +1,8 @@
-@page "/usuariosconfiguracao/usuarios-roles"
+@page "/usuariosconfiguracao/usuarios-para-roles"
 @inherits ListApplicationUsersRolesPage
 
 <!--<UserState/>-->
-<AuthorizeView>
+<AuthorizeView Roles="Admin">
     <Authorized>
         <div class="d-flex mt-2 mb-2">
             <MudTextField @bind-Value="@SearchFilter"
@@ -24,14 +24,7 @@
                 </MudButton>
             </div>
             <MudSpacer/>
-            <div class="d-flex mt-2 mb-2">
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.TwoTone.Add"
-                           OnClick="OnNewUserButton">
-                    ADICIONAR
-                </MudButton>
-            </div>
+
         </div>
         @if (IsBusy)
         {
