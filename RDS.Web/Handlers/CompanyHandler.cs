@@ -45,7 +45,7 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
                ?? new Response<Company?>(null, 400, "Falha ao excluir a empresa");    
     }
 
-    public async Task<PagedResponse<List<Company>>> GetAllAsync(GetAllCompaniesRequest request)
+    public async Task<Response<List<Company>>> GetAllAsync(GetAllCompaniesRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/all")
         {
@@ -57,7 +57,7 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
                ?? new PagedResponse<List<Company>>(null, 400, "Não foi possível obter as empresas");    
     }
   
-    public async Task<PagedResponse<List<Company>>> GetAllByUserIdAsync(GetAllCompanyIdByUserIdRequest request)
+    public async Task<Response<List<Company>>> GetAllByUserIdAsync(GetAllCompaniesByUserIdRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/allbyuserid")
         {
@@ -69,7 +69,7 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
                ?? new PagedResponse<List<Company>>(null, 400, "Não foi possível obter as empresas");    
     }
     
-    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync(GetAllCompanyIdByUserIdRequest request)
+    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync(GetAllCompaniesByUserIdRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/allcompanyidbyuserid")
         {

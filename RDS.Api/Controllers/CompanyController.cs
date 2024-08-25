@@ -131,7 +131,6 @@ public class CompanyController(AppDbContext context) : ControllerBase
             var query = context
                 .Companies
                 .AsNoTracking()
-                //.Where(x => x.Id == request.CompanyId)
                 .OrderBy(x => x.Name);
 
             var companies = await query
@@ -155,7 +154,7 @@ public class CompanyController(AppDbContext context) : ControllerBase
     }
 
     [HttpPost("allbyuserid")]
-    public async Task<PagedResponse<List<Company>>> GetAllByUserIdAsync([FromBody] GetAllCompanyIdByUserIdRequest request)
+    public async Task<PagedResponse<List<Company>>> GetAllByUserIdAsync([FromBody] GetAllCompaniesByUserIdRequest request)
     {
         try
         {
@@ -186,7 +185,7 @@ public class CompanyController(AppDbContext context) : ControllerBase
     }
     
     [HttpPost("allcompanyidbyuserid")]
-    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync([FromBody] GetAllCompanyIdByUserIdRequest request)
+    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync([FromBody] GetAllCompaniesByUserIdRequest request)
     {
         try
         {

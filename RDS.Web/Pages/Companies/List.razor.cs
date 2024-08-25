@@ -31,6 +31,8 @@ public partial class ListCompaniesPage : ComponentBase
         StartService.SetPageTitle("Empresas");
         await StartService.ValidateAccesByTokenAsync();
         UserId = StartService.GetSelectedUserId();
+        IsAdmin = await StartService.IsAdminInRolesAsync(UserId);
+        
         await LoadCompaniesAsync();
     }
 
@@ -43,10 +45,33 @@ public partial class ListCompaniesPage : ComponentBase
         IsBusy = true;
         try
         {
-            //verificar se é Admin
-            //Implementar no UserStateService
-            var request = new GetAllCompaniesRequest();
-            var result = await CompanyHandler.GetAllAsync(request);
+            var result = IsAdmin switch
+            {
+                true => await CompanyHandler.GetAllAsync(new GetAllCompaniesRequest()),
+                false => await CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest{UserId = UserId})
+            };
+
+            Companies = result.IsSuccess ? result.Data ?? [] : [];
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+    private async Task LoadCompaniesAsyncByFunc()
+    {
+        IsBusy = true;
+        try
+        {
+            Func<Task<Response<List<Company>>>> getCompaniesTask = IsAdmin 
+                ? () => CompanyHandler.GetAllAsync(new GetAllCompaniesRequest()) 
+                : () => CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest{UserId = UserId});
+
+            var result = await getCompaniesTask();
             if (result.IsSuccess)
                 Companies = result.Data ?? [];
         }
@@ -59,7 +84,7 @@ public partial class ListCompaniesPage : ComponentBase
             IsBusy = false;
         }
     }
-    
+
     public async void OnDeleteButtonClickedAsync(long id, string title)
     {
         var result = await DialogService.ShowMessageBox(

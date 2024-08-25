@@ -181,7 +181,7 @@ public class ManipulateUserStateValuesService(
     {
         try
         {
-            var request = new GetAllCompanyIdByUserIdRequest { UserId = userId };
+            var request = new GetAllCompaniesByUserIdRequest { UserId = userId };
             var result = await companyHandler.GetAllCompanyIdByUserIdAsync(request);
             if (result.IsSuccess)
                 CompanyIdsFromUser = result.Data ?? [];
