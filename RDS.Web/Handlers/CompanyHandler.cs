@@ -57,7 +57,7 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
                ?? new PagedResponse<List<Company>>(null, 400, "Não foi possível obter as empresas");    
     }
   
-    public async Task<PagedResponse<List<Company>>> GetAllByUserIdAsync(GetAllCompaniesByUserIdRequest request)
+    public async Task<PagedResponse<List<Company>>> GetAllByUserIdAsync(GetAllCompanyIdByUserIdRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/allbyuserid")
         {
@@ -69,7 +69,7 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
                ?? new PagedResponse<List<Company>>(null, 400, "Não foi possível obter as empresas");    
     }
     
-    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync(GetAllCompaniesByUserIdRequest request)
+    public async Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync(GetAllCompanyIdByUserIdRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/allcompanyidbyuserid")
         {

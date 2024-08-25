@@ -24,7 +24,7 @@ public class ManipulateUserStateValuesService(
         long loggedUserId = GetLoggedUserId();
         if (await IsAdminInRolesAsync(loggedUserId))
         {
-            var companies = await GetCompaniesByUserIdAsync(loggedUserId);
+            var companies = await GetAllCompanyIdByUserIdAsync(loggedUserId);
 
             if (!companies.Any()) SetSelectedCompanyId(0);
 
@@ -177,11 +177,11 @@ public class ManipulateUserStateValuesService(
         }
     }
 
-    public async Task<List<AllCompaniesIdViewModel>> GetCompaniesByUserIdAsync(long userId)
+    public async Task<List<AllCompaniesIdViewModel>> GetAllCompanyIdByUserIdAsync(long userId)
     {
         try
         {
-            var request = new GetAllCompaniesByUserIdRequest { UserId = userId };
+            var request = new GetAllCompanyIdByUserIdRequest { UserId = userId };
             var result = await companyHandler.GetAllCompanyIdByUserIdAsync(request);
             if (result.IsSuccess)
                 CompanyIdsFromUser = result.Data ?? [];

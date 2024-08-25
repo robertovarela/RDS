@@ -41,7 +41,7 @@ public partial class ListUserRolesPage : ComponentBase
         await StartService.ValidateAccesByTokenAsync();
         //await LoadRolesFromUser();
         IsBusy = true;
-        RolesFromUser = await StartService.GetRolesFromUser(UserId);
+        RolesFromUser = await StartService.GetRolesFromUserAsync(UserId);
         IsBusy = false;
     }
 

@@ -1,6 +1,6 @@
 ﻿namespace RDS.Core.Requests.Companies;
 
-public class GetAllCompaniesByUserIdRequest : PagedRequest
+public class GetAllCompanyIdByUserIdRequest : PagedRequest
 {
     public long UserId { get; set; }
 }

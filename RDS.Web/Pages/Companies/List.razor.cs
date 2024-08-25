@@ -8,6 +8,7 @@ public partial class ListCompaniesPage : ComponentBase
     protected bool IsBusy { get; set; }
     protected List<Company> Companies { get; private set; } = [];
     private long UserId { get; set; }
+    private bool IsAdmin { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string AddUrl = "/empresas/adicionar";
     protected const string EditUrl = "/empresas/editar";

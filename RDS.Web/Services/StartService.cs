@@ -60,20 +60,20 @@ public abstract class StartService
     public static void SetSelectedTransactionId(long transactionId) 
         => _manipulateUserStateValuesService.SetSelectedTransactionId(transactionId);
 
-    public static async Task<List<AllCompaniesIdViewModel>> GetCompaniesByUserIdAsync(long userId)
-        => await _manipulateUserStateValuesService.GetCompaniesByUserIdAsync(userId);
+    public static async Task VerifyIfLoggedInAsync(string destinationUrlNotLoggedIn = "/", string destinationUrlLoggedIn = "")
+        => await _manipulateUserStateValuesService.VerifyIfLoggedInAsync(destinationUrlNotLoggedIn, destinationUrlLoggedIn);
+    
+    public static async Task<List<AllCompaniesIdViewModel>> GetAllCompanyIdByUserIdAsync(long userId)
+        => await _manipulateUserStateValuesService.GetAllCompanyIdByUserIdAsync(userId);
 
-    public static async Task<List<ApplicationUserRole?>> GetRolesFromUser(long userId)
+    public static async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long userId)
         => await _manipulateUserStateValuesService.GetRolesFromUserAsync(userId);
 
-    public static async Task<bool> IsAdminInRoles(long userId)
+    public static async Task<bool> IsAdminInRolesAsync(long userId)
         => await _manipulateUserStateValuesService.IsAdminInRolesAsync(userId);
 
     public static async Task<long> GetSelectedUserIdIfAdminAsync() 
         => await _manipulateUserStateValuesService.GetSelectedUserIdIfAdminAsync();
-
-    public static async Task VerifyIfLoggedIn(string destinationUrlNotLoggedIn = "/", string destinationUrlLoggedIn = "")
-        => await _manipulateUserStateValuesService.VerifyIfLoggedInAsync(destinationUrlNotLoggedIn, destinationUrlLoggedIn);
 
 
     // These methods are used to set and get the selected user id and name in the application and are used in the LinkUserStateService
