@@ -32,7 +32,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         {
             StartService.SetPageTitle("Usuários - Roles");
             await StartService.ValidateAccesByTokenAsync();
-            if(!await StartService.PermissionOnlyAdmin()) return;
+            if(!await StartService.PermissionOnlyAdminOrOwner()) return;
             StartService.SetSourceUrl(_sourceUrl);
         }
 

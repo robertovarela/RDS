@@ -19,8 +19,8 @@ public abstract class StartService
     public static async Task<bool> ValidateSourceUrl(List<string> sourceUrl,
         string currentUrl,
         bool navigateToAccessNotAllowed = true,
-        bool showMessage = true) =>
-        await _manipulateUserStateValuesService.ValidateSourceUrl(sourceUrl, currentUrl, navigateToAccessNotAllowed,
+        bool showMessage = true)
+        => await _manipulateUserStateValuesService.ValidateSourceUrl(sourceUrl, currentUrl, navigateToAccessNotAllowed,
             showMessage);
 
     public static async Task RefreshToken(string refreshToken, bool showMessage) =>
@@ -43,24 +43,26 @@ public abstract class StartService
     public static void SetCurrentUrl(string url) => _manipulateUserStateValuesService.SetCurrentUrl(url);
     public static void SetSelectedUserId(long userId) => _manipulateUserStateValuesService.SetSelectedUserId(userId);
 
-    public static void SetSelectedUserName(string userName) 
+    public static void SetSelectedUserName(string userName)
         => _manipulateUserStateValuesService.SetSelectedUserName(userName);
 
-    public static void SetSelectedAddressId(long addressId) 
+    public static void SetSelectedAddressId(long addressId)
         => _manipulateUserStateValuesService.SetSelectedAddressId(addressId);
 
-    public static void SetSelectedCompanyId(long companyId) 
+    public static void SetSelectedCompanyId(long companyId)
         => _manipulateUserStateValuesService.SetSelectedCompanyId(companyId);
 
-    public static void SetSelectedCategoryId(long categoryId) 
+    public static void SetSelectedCategoryId(long categoryId)
         => _manipulateUserStateValuesService.SetSelectedCategoryId(categoryId);
 
-    public static void SetSelectedTransactionId(long transactionId) 
+    public static void SetSelectedTransactionId(long transactionId)
         => _manipulateUserStateValuesService.SetSelectedTransactionId(transactionId);
 
-    public static async Task VerifyIfLoggedInAsync(string destinationUrlNotLoggedIn = "/", string destinationUrlLoggedIn = "")
-        => await _manipulateUserStateValuesService.VerifyIfLoggedInAsync(destinationUrlNotLoggedIn, destinationUrlLoggedIn);
-    
+    public static async Task VerifyIfLoggedInAsync(string destinationUrlNotLoggedIn = "/",
+        string destinationUrlLoggedIn = "")
+        => await _manipulateUserStateValuesService.VerifyIfLoggedInAsync(destinationUrlNotLoggedIn,
+            destinationUrlLoggedIn);
+
     public static async Task<List<AllCompaniesIdViewModel>> GetAllCompanyIdByUserIdAsync(long userId)
         => await _manipulateUserStateValuesService.GetAllCompanyIdByUserIdAsync(userId);
 
@@ -70,10 +72,17 @@ public abstract class StartService
     public static async Task<bool> IsAdminInRolesAsync(long userId)
         => await _manipulateUserStateValuesService.IsAdminInRolesAsync(userId);
 
-    public static async Task<long> GetSelectedUserIdIfAdminAsync() 
+    public static async Task<long> GetSelectedUserIdIfAdminAsync()
         => await _manipulateUserStateValuesService.GetSelectedUserIdIfAdminAsync();
-    
-    public static async Task<bool> PermissionOnlyAdmin() => await _manipulateUserStateValuesService.PermissionOnlyAdmin();
+
+    public static async Task<bool> PermissionOnlyAdmin() 
+        => await _manipulateUserStateValuesService.PermissionOnlyAdmin();
+
+    public static async Task<bool> PermissionOnlyOwner() 
+        => await _manipulateUserStateValuesService.PermissionOnlyOwner();
+
+    public static async Task<bool> PermissionOnlyAdminOrOwner() 
+        => await _manipulateUserStateValuesService.PermissionOnlyAdminOrOwner();
 
 
     // These methods are used to set and get the selected user id and name in the application and are used in the LinkUserStateService

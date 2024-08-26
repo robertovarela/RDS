@@ -212,13 +212,39 @@ public class ManipulateUserStateValuesService(
     public async Task<bool> IsAdminInRolesAsync(long userId)
     {
         var roles = await GetRolesFromUserAsync(userId);
-
         foreach (var role in roles)
         {
             if (role != null && role.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    public async Task<bool> IsOwnerInRolesAsync(long userId)
+    {
+        var roles = await GetRolesFromUserAsync(userId);
+
+        foreach (var role in roles)
+        {
+            if (role != null && role.RoleName.Equals("Owner", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public async Task<bool> IsAdminOrOwnerInRolesAsync(long userId)
+    {
+        var roles = await GetRolesFromUserAsync(userId);
+        foreach (var role in roles.Where(r => r != null &&
+                                              (r.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
+                                               r.RoleName.Equals("Owner", StringComparison.OrdinalIgnoreCase))))
+        {
+            return true;
         }
 
         return false;
@@ -240,5 +266,27 @@ public class ManipulateUserStateValuesService(
         }
 
         return isAdmin;
+    }
+
+    public async Task<bool> PermissionOnlyOwner()
+    {
+        var isAdmin = await IsAdminInRolesAsync(GetLoggedUserId());
+        var isOwner = await IsOwnerInRolesAsync(GetLoggedUserId());
+        if (!isAdmin && !isOwner)
+        {
+            await NavigationService.NavigateToAccessNotAllowedAsync();
+        }
+
+        return isAdmin;
+    }
+    public async Task<bool> PermissionOnlyAdminOrOwner()
+    {
+        var isAllowed = await IsAdminOrOwnerInRolesAsync(GetLoggedUserId());
+        if (!isAllowed)
+        {
+            await NavigationService.NavigateToAccessNotAllowedAsync();
+        }
+
+        return isAllowed;
     }
 }
