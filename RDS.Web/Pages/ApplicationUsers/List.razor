@@ -2,7 +2,7 @@
 @inherits ListApplicationUsersPage
 
 @* <UserState/> *@
-<AuthorizeView>
+<AuthorizeView Roles="Admin, Owner">
     <Authorized>
         <div class="d-flex mt-2 mb-2">
             <MudTextField @bind-Value="@SearchFilter"

@@ -6,10 +6,13 @@ namespace RDS.Web.Pages.ApplicationUsers
         #region Properties
 
         protected bool IsBusy { get; private set; }
-        private List<ApplicationUser> ApplicationUsers { get; set; } = [];
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
-        protected string SearchTerm { get; set; } = string.Empty;
+        private string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
+        private long LoggedUserId { get; set; }
+        private long CompanyId { get; set; }
+        private bool IsAdmin { get; set; }
+        private bool IsOwner { get; set; }
         protected const string EditUrl = "/usuarios/editar";
         protected const string SourceUrl = "/usuarios";
 
@@ -33,6 +36,11 @@ namespace RDS.Web.Pages.ApplicationUsers
             StartService.SetPageTitle("Usuários");
             await StartService.ValidateAccesByTokenAsync();
             await StartService.SetDefaultValues();
+            if (!await StartService.PermissionOnlyAdminOrOwner()) return;
+            LoggedUserId = StartService.GetLoggedUserId();
+            CompanyId = StartService.GetSelectedCompanyId();
+            IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
+            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
         }
 
         #endregion
@@ -44,15 +52,25 @@ namespace RDS.Web.Pages.ApplicationUsers
             IsBusy = true;
             try
             {
-                var request = new GetAllApplicationUserRequest { Filter = filter, PageSize = _pageSize };
-                var result = await UserHandler.GetAllAsync(request);
+                var result = IsAdmin switch
+                {
+                    true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest
+                        { Filter = SearchFilter, PageSize = _pageSize }),
+                    false => await UserHandler.GetAllByCompanyIdAsync(
+                        new GetAllApplicationUserRequest
+                        {
+                            CompanyId = CompanyId,
+                            Filter = SearchFilter,
+                            PageSize = _pageSize
+                        })
+                };
                 PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
                     ? result.Data
                         .Where(Filter)
                         .Skip((_currentPage - 1) * _pageSize)
                         .Take(_pageSize)
                         .ToList()
-                    : new List<ApplicationUser>();
+                    : [];
             }
             catch
             {
