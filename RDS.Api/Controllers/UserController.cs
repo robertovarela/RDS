@@ -232,6 +232,129 @@ public class UserController(
         }
     }
 
+    [HttpPost("allusersbycompanyid")]
+    public async Task<PagedResponse<List<AllUsersViewModel>>> GetAllByCompanyIdAsync(
+        [FromBody] GetAllApplicationUserRequest request)
+    {
+        try
+        {
+            var notFoundMessage = "";
+            long.TryParse(request.Filter, out long filterId);
+            IQueryable<AllUsersViewModel> query;
+
+            if (filterId != 0)
+            {
+                if (request.Filter.Length == 11)
+                {
+                    query = from u in context.Users.AsNoTracking()
+                        join cu in context.CompanyUsers.AsNoTracking()
+                            on u.Id equals cu.UserId
+                        where u.Cpf == request.Filter && cu.CompanyId == request.CompanyId
+                        select new AllUsersViewModel { Id = u.Id, Name = u.Name, Email = u.Email! };
+
+                    notFoundMessage = "CPF não localizado";
+                }
+                else
+                {
+                    query = from u in context.Users.AsNoTracking()
+                        join cu in context.CompanyUsers.AsNoTracking()
+                            on u.Id equals cu.UserId
+                        where u.Id == filterId && cu.CompanyId == request.CompanyId
+                        select new AllUsersViewModel { Id = u.Id, Name = u.Name, Email = u.Email! };
+
+                    notFoundMessage = "Código não localizado";
+                }
+            }
+            else
+            {
+                query = from u in context.Users.AsNoTracking()
+                    join cu in context.CompanyUsers.AsNoTracking()
+                        on u.Id equals cu.UserId
+                    where cu.CompanyId == request.CompanyId &&
+                          ((string.IsNullOrEmpty(request.Filter) || u.Name.StartsWith(request.Filter)) ||
+                           (string.IsNullOrEmpty(request.Filter) || u.Email == request.Filter))
+                    orderby u.Id
+                    select new AllUsersViewModel { Id = u.Id, Name = u.Name!, Email = u.Email! };
+
+                notFoundMessage = request.Filter.Contains("@") ? "Email não localizado" : "Usuário não encontrado";
+            }
+
+            var users = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .OrderBy(users => users.Name)
+                .ToListAsync();
+
+            var count = await query.CountAsync();
+            return count == 0
+                ? new PagedResponse<List<AllUsersViewModel>>(null, 404, notFoundMessage)
+                : new PagedResponse<List<AllUsersViewModel>>(users, count, request.PageNumber, request.PageSize);
+        }
+        catch
+        {
+            return new PagedResponse<List<AllUsersViewModel>>(null, 500, "Não foi possível consultar os usuários");
+        }
+    }
+
+
+    [HttpPost("allusersbyuseridOrigin")]
+    public async Task<PagedResponse<List<AllUsersViewModel>>> GetAllByUserIdAsyncOrigin(
+        [FromBody] GetAllApplicationUserByCompanyIdRequest request)
+    {
+        try
+        {
+            var notFoundMessage = "";
+            long.TryParse(request.Filter, out long filterId);
+            IQueryable<AllUsersViewModel> query;
+
+            if (filterId != 0)
+            {
+                if (request.Filter.Length == 11)
+                {
+                    query = context.Users.AsNoTracking()
+                        .Where(u => u.Cpf == request.Filter)
+                        .Select(u => new AllUsersViewModel { Id = u.Id, Name = u.Name, Email = u.Email! });
+
+                    notFoundMessage = "CPF não localizado";
+                }
+                else
+                {
+                    query = context.Users.AsNoTracking()
+                        .Where(u => u.Id == filterId)
+                        .Select(u => new AllUsersViewModel { Id = u.Id, Name = u.Name, Email = u.Email! });
+
+                    notFoundMessage = "Código não localizado";
+                }
+            }
+            else
+            {
+                query = context.Users.AsNoTracking()
+                    .Where(u =>
+                        (string.IsNullOrEmpty(request.Filter) || u.Name.StartsWith(request.Filter)) ||
+                        (string.IsNullOrEmpty(request.Filter) || u.Email == request.Filter))
+                    .OrderBy(u => u.Id)
+                    .Select(u => new AllUsersViewModel { Id = u.Id, Name = u.Name!, Email = u.Email! });
+
+                notFoundMessage = request.Filter.Contains("@") ? "Email não localizado" : "Usuário não encontrado";
+            }
+
+            var users = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .OrderBy(users => users.Name)
+                .ToListAsync();
+
+            var count = await query.CountAsync();
+            return count == 0
+                ? new PagedResponse<List<AllUsersViewModel>>(null, 404, notFoundMessage)
+                : new PagedResponse<List<AllUsersViewModel>>(users, count, request.PageNumber, request.PageSize);
+        }
+        catch
+        {
+            return new PagedResponse<List<AllUsersViewModel>>(null, 500, "Não foi possível consultar os usuários");
+        }
+    }
+
     [HttpPost("allusers2")]
     public async Task<PagedResponse<List<ApplicationUser>>> GetAll2Async(
         [FromBody] GetAllApplicationUserRequest request)

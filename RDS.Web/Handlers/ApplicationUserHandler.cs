@@ -57,6 +57,18 @@ public class ApplicationUserHandler(HttpClientService httpClientService) : IAppl
                ?? new PagedResponse<List<ApplicationUser>>(null, 400, "Não foi possível obter os usuários");
     }
 
+    public async Task<PagedResponse<List<ApplicationUser>>> GetAllByCompanyIdAsync(GetAllApplicationUserRequest request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/allusersbycompanyid") 
+            {
+                Content = JsonContent.Create(request)
+            };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<ApplicationUser>>>()
+               ?? new PagedResponse<List<ApplicationUser>>(null, 400, "Não foi possível obter os usuários");
+    }
+    
     public async Task<Response<ApplicationUser?>> GetByIdAsync(GetApplicationUserByIdRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/userbyid")
