@@ -2,4 +2,5 @@
 
 public class GetAllApplicationUserRoleRequest : Request
 {
+    public long UserId { get; set; }
 }

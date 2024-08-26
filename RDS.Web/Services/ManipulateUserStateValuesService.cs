@@ -192,11 +192,11 @@ public class ManipulateUserStateValuesService(
         return CompanyIdsFromUser;
     }
 
-    public async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long companyId)
+    public async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long userId)
     {
         try
         {
-            var request = new GetAllApplicationUserRoleRequest { CompanyId = companyId };
+            var request = new GetAllApplicationUserRoleRequest { UserId = userId };
             var result = await applicationUserConfigurationHandler.ListUserRoleAsync(request);
             if (result.IsSuccess)
                 RolesFromUser = result.Data ?? [];

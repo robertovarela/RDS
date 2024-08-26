@@ -1,7 +1,7 @@
 @page "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario"
 @inherits ListUserRolesPage
 
-<AuthorizeView>
+<AuthorizeView Roles="Admin, Owner">
     <Authorized>
         <div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
             <MudButton
@@ -9,7 +9,7 @@
                 Variant="Variant.Filled"
                 Color="Color.Primary"
                 StartIcon="@Icons.Material.TwoTone.Add"
-                OnClick="@(() => NavigationService.NavigateTo(AddUrl))">
+                OnClick="@(() => StartService.LinkToUrlUserRole(UserId, UserName, AddUrl))">
                 ADICIONAR
             </MudButton>
         </div>
@@ -32,7 +32,7 @@
                 <ToolBarContent>
                     <MudSpacer/>
                     <MudText Class="responsive-text subtitle-screen" Align="Align.Center">
-                        @StartService.GetSelectedUserName()
+                        @UserName
                     </MudText>
                     <MudSpacer/>
                 </ToolBarContent>
@@ -47,9 +47,7 @@
                         <CellTemplate Context="cellContext">
                             <MudStack Row>
                                 <MudIconButton
-                                    Disabled="@(cellContext.Item!.RoleName == "Admin" 
-                                                || cellContext.Item!.RoleName == "Owner" 
-                                                || cellContext.Item!.RoleName == "User")"
+                                    Disabled="@(cellContext.Item!.RoleName == "Admin" || cellContext.Item!.RoleName == "Owner" || cellContext.Item!.RoleName == "User")"
                                     Icon="@Icons.Material.Filled.Delete"
                                     Color="Color.Error"
                                     aria-label="Excluir"

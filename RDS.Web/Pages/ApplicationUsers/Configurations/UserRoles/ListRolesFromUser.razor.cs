@@ -1,5 +1,6 @@
 namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class ListUserRolesPage : ComponentBase
 {
     #region Properties
@@ -17,14 +18,15 @@ public partial class ListUserRolesPage : ComponentBase
     protected bool IsBusy { get; private set; }
     protected List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
     protected long UserId { get; set; }
+    protected string UserName { get; set; } = StartService.GetSelectedUserName();
 
     #endregion
 
     #region Services
 
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
-    [Inject] public IDialogService DialogService { get; set; } = null!;
-    [Inject] public IApplicationUserConfigurationHandler ApplicationUserConfigurationHandler { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
+    [Inject] private IApplicationUserConfigurationHandler ApplicationUserConfigurationHandler { get; set; } = null!;
 
     #endregion
 
@@ -34,12 +36,14 @@ public partial class ListUserRolesPage : ComponentBase
     {
         StartService.SetPageTitle("Roles");
         //StartService.ValidateSourceUrl(_sourceUrl, CurrentUrl, true, true);
-        UserId = StartService.GetSelectedUserId();
         await StartService.ValidateAccesByTokenAsync();
         if(!await StartService.PermissionOnlyAdmin()) return;
-       
+        
+        UserId = StartService.GetSelectedUserId();
         IsBusy = true;
         RolesFromUser = await StartService.GetRolesFromUserAsync(UserId);
+        StartService.SetSelectedUserId(0);
+        StartService.SetSelectedUserName("");
         IsBusy = false;
     }
 

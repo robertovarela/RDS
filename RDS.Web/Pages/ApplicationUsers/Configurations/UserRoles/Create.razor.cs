@@ -4,18 +4,20 @@ public partial class CreateUserRolePage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; }
-    public CreateApplicationUserRoleRequest InputModel { get; set; } = new();
+    protected bool IsBusy { get; set; }
+    protected CreateApplicationUserRoleRequest InputModel { get; set; } = new();
     protected List<ApplicationUserRole?> Roles { get; set; } = [];
-    private long UserId => StartService.GetSelectedUserId();
+    private long UserId { get; set; }
+    private string UserName { get; set; } = StartService.GetSelectedUserName();
+    private const string ListUrl = "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario";
     private readonly List<string> _urlOrigen = ["/usuariosconfiguracao/roles-do-usuario/adicionar-role"];
 
     #endregion
 
     #region Services
 
-    [Inject] public IApplicationUserConfigurationHandler UserRoleHandler { get; set; } = null!;
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private IApplicationUserConfigurationHandler UserRoleHandler { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
 
@@ -26,15 +28,26 @@ public partial class CreateUserRolePage : ComponentBase
         StartService.SetPageTitle("Nova Role");
         await StartService.ValidateAccesByTokenAsync();
         if(!await StartService.PermissionOnlyAdmin()) return;
+        UserId = StartService.GetSelectedUserId();
         StartService.SetSourceUrl(_urlOrigen);
         IsBusy = true;
-        //await LoadRolesFromUser();
+        await LoadRolesFromUser();
+        StartService.SetSelectedUserId(0);
+        StartService.SetSelectedUserName("");
+    }
+
+    #endregion
+
+    #region Methods
+
+    private async Task LoadRolesFromUser()
+    {
         try
         {
             InputModel.CompanyId = UserId;
             var request = new GetAllApplicationUserRoleRequest
             {
-                CompanyId = UserId
+                UserId = UserId
             };
 
             var result = await UserRoleHandler.ListRoleToAddUserAsync(request);
@@ -54,11 +67,7 @@ public partial class CreateUserRolePage : ComponentBase
             IsBusy = false;
         }
     }
-
-    #endregion
-
-    #region Methods
-
+    
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;
@@ -69,7 +78,7 @@ public partial class CreateUserRolePage : ComponentBase
             if (result.IsSuccess)
             {
                 Snackbar.Add(result.Message, Severity.Success);
-                NavigationService.NavigateTo("/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario");
+                StartService.LinkToUrlUserRole(UserId, UserName, ListUrl);
             }
             else
                 Snackbar.Add(result.Message, Severity.Error);

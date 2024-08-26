@@ -1,7 +1,7 @@
 @page "/usuariosconfiguracao/adicionar-role"
 @inherits CreateRolePage
 
-<AuthorizeView>
+<AuthorizeView Roles="Admin, Owner">
     <Authorized>
         <MudPaper Class="pa-8 mt-4">
             <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">

@@ -2,7 +2,7 @@
 @inherits ListApplicationUsersRolesPage
 
 <!--<UserState/>-->
-<AuthorizeView Roles="Admin">
+<AuthorizeView Roles="Admin, Owner">
     <Authorized>
         <div class="d-flex mt-2 mb-2">
             <MudTextField @bind-Value="@SearchFilter"
@@ -74,7 +74,7 @@
                                 <MudIconButton
                                     Icon="@Icons.Material.Filled.Edit"
                                     Color="Color.Primary"
-                                    OnClick="@(() => StartService.LinkToUrlUserRole(cellContext.Item.Id, cellContext.Item.Name + "  -  " + cellContext.Item.UserName, Url))">
+                                    OnClick="@(() => StartService.LinkToUrlUserRole(cellContext.Item.Id, cellContext.Item.Name, Url))">
                                 </MudIconButton>
                             </MudStack>
                         </CellTemplate>

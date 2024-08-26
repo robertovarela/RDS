@@ -164,7 +164,7 @@ public class UserConfigurationController(
     [HttpPost("list-roles-for-user")]
     public async Task<Response<List<ApplicationUserRole>>> ListRolesForUser(GetAllApplicationUserRoleRequest request)
     {
-        var userId = request.CompanyId;
+        var userId = request.UserId;
         try
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
@@ -179,7 +179,11 @@ public class UserConfigurationController(
                 RoleName = roleName,
                 RoleId = roleManager.Roles.FirstOrDefault(x => x.Name == roleName)?.Id ?? 0,
                 UserId = userId,
-            }).ToList();
+            })
+            .OrderBy(role => role.RoleName != "Admin")
+            .ThenBy(role => role.RoleName != "Owner")
+            .ThenBy(role => role.RoleName != "User")
+            .ToList();
 
             return new Response<List<ApplicationUserRole>>(response, 200, "Roles do usuário listadas com sucesso!");
         }
@@ -192,7 +196,7 @@ public class UserConfigurationController(
     [HttpPost("list-roles-not-for-user")]
     public async Task<Response<List<ApplicationUserRole>>> ListRolesNotForUser(GetAllApplicationUserRoleRequest request)
     {
-        var userId = request.CompanyId;
+        var userId = request.UserId;
         try
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
