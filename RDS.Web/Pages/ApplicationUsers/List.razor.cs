@@ -38,19 +38,21 @@ namespace RDS.Web.Pages.ApplicationUsers
         #endregion
 
         #region Methods
-        
+
         private async Task LoadUsers(string filter = "")
         {
             IsBusy = true;
             try
             {
-                var request = new GetAllApplicationUserRequest { Filter = filter, PageSize = _pageSize};
+                var request = new GetAllApplicationUserRequest { Filter = filter, PageSize = _pageSize };
                 var result = await UserHandler.GetAllAsync(request);
-                if (result.IsSuccess)
-                {
-                    ApplicationUsers = result.Data ?? [];
-                    PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);
-                }
+                PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
+                    ? result.Data
+                        .Where(Filter)
+                        .Skip((_currentPage - 1) * _pageSize)
+                        .Take(_pageSize)
+                        .ToList()
+                    : new List<ApplicationUser>();
             }
             catch
             {
@@ -61,7 +63,7 @@ namespace RDS.Web.Pages.ApplicationUsers
                 IsBusy = false;
             }
         }
-       
+
         protected void HandleKeyDown(KeyboardEventArgs e)
         {
             if (e.Key == "Enter")
@@ -69,12 +71,13 @@ namespace RDS.Web.Pages.ApplicationUsers
                 OnSearch();
             }
         }
-        
+
         protected async void OnSearch()
         {
             await LoadUsers(SearchFilter);
             StateHasChanged();
         }
+
         protected async void OnDeleteButtonClickedAsync(long id, string name)
         {
             var result = await DialogService.ShowMessageBox(
@@ -84,7 +87,10 @@ namespace RDS.Web.Pages.ApplicationUsers
                 cancelText: "Cancelar");
 
             if (result is true)
+            {
                 await OnDeleteAsync(id);
+                //await LoadUsers(SearchFilter);
+            }
 
             StateHasChanged();
         }
@@ -95,8 +101,21 @@ namespace RDS.Web.Pages.ApplicationUsers
             {
                 var request = new DeleteApplicationUserRequest { CompanyId = id };
                 var result = await UserHandler.DeleteAsync(request);
-                ApplicationUsers.RemoveAll(x => x.Id == id);
-                PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);
+                PagedApplicationUsers.RemoveAll(x => x.Id == id);
+
+                if (result is { IsSuccess: true, Data: not null })
+                {
+                    PagedApplicationUsers = PagedApplicationUsers
+                        .Where(Filter)
+                        .Skip((_currentPage - 1) * _pageSize)
+                        .Take(_pageSize)
+                        .ToList();
+                }
+                else
+                {
+                    PagedApplicationUsers = [];
+                }
+
                 Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
             }
             catch (Exception)
@@ -142,15 +161,6 @@ namespace RDS.Web.Pages.ApplicationUsers
         private void OnNewUser()
         {
             NavigationService.NavigateToRegister();
-        }
-
-        private List<ApplicationUser> PaginateUsers(int currentPage, int pageSize)
-        {
-            return ApplicationUsers
-                .Where(Filter)
-                .Skip((currentPage - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
         }
 
         #endregion
