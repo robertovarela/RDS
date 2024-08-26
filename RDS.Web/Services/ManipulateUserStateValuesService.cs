@@ -22,7 +22,7 @@ public class ManipulateUserStateValuesService(
         userState.SetSelectedTransactionId(0);
 
         long loggedUserId = GetLoggedUserId();
-        if (await IsAdminInRolesAsync(loggedUserId))
+        if (await IsAdminInRolesAsync(loggedUserId) || await IsOwnerInRolesAsync(loggedUserId))
         {
             var companies = await GetAllCompanyIdByUserIdAsync(loggedUserId);
 
@@ -237,17 +237,45 @@ public class ManipulateUserStateValuesService(
 
         return false;
     }
-    public async Task<bool> IsAdminOrOwnerInRolesAsync(long userId)
+    
+    public async Task<bool> IsHabilitedInRolesAsync(long userId, string roleName)
     {
         var roles = await GetRolesFromUserAsync(userId);
-        foreach (var role in roles.Where(r => r != null &&
-                                              (r.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
-                                               r.RoleName.Equals("Owner", StringComparison.OrdinalIgnoreCase))))
+
+        foreach (var role in roles)
         {
-            return true;
+            if (role != null && role.RoleName.Equals(roleName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
         }
 
         return false;
+    }
+    
+    public async Task<List<string>> GetHabilitedRolesAsync(long userId, List<string> listRoleNames)
+    {
+        var roles = await GetRolesFromUserAsync(userId);
+        var habilitedRoles = new List<string>();
+
+        foreach (var role in roles)
+        {
+            if (role != null && listRoleNames.Any(rn => rn.Equals(role.RoleName, StringComparison.OrdinalIgnoreCase)))
+            {
+                habilitedRoles.Add(role.RoleName);
+            }
+        }
+
+        return habilitedRoles;
+    }
+    
+    private async Task<bool> IsAdminOrOwnerInRolesAsync(long userId)
+    {
+        var roles = await GetRolesFromUserAsync(userId);
+        return roles.Any(r => 
+            r != null && 
+            (r.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase) || 
+             r.RoleName.Equals("Owner", StringComparison.OrdinalIgnoreCase)));
     }
 
     public async Task<long> GetSelectedUserIdIfAdminAsync()

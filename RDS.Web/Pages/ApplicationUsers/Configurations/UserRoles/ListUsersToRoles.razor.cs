@@ -10,6 +10,10 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
         protected string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
+        private long LoggedUserId { get; set; }
+        private long CompanyId { get; set; }
+        private bool IsAdmin { get; set; }
+        private bool IsOwner { get; set; }
         protected const string Url = "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario";
         private readonly List<string> _sourceUrl = ["/usuariosconfiguracao/usuarios-para-roles"];
 
@@ -33,6 +37,10 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             StartService.SetPageTitle("Usuários - Roles");
             await StartService.ValidateAccesByTokenAsync();
             if(!await StartService.PermissionOnlyAdminOrOwner()) return;
+            LoggedUserId = StartService.GetLoggedUserId();
+            CompanyId = StartService.GetSelectedCompanyId();
+            IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
+            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
             StartService.SetSourceUrl(_sourceUrl);
         }
 
@@ -45,13 +53,31 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             IsBusy = true;
             try
             {
-                var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize };
-                var result = await UserHandler.GetAllAsync(request);
-                if (result.IsSuccess)
+                var result = IsAdmin switch
                 {
-                    ApplicationUsers = result.Data ?? [];
-                    PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);
-                }
+                    true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest{ Filter = SearchFilter, PageSize = _pageSize }),
+                    false => await UserHandler.GetAllByCompanyIdAsync(
+                        new GetAllApplicationUserRequest
+                        {
+                            CompanyId = CompanyId,
+                            Filter = SearchFilter,
+                            PageSize = _pageSize 
+                        })
+                };
+                
+                //Resolver lista duplicada
+                ////verificar em outras páginas de Users
+                ApplicationUsers = result.IsSuccess ? result.Data ?? [] : [];
+                PagedApplicationUsers = result.IsSuccess ? PaginateUsers(_currentPage, _pageSize) : [];
+                
+                
+                // var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize };
+                // var result2 = await UserHandler.GetAllAsync(request);
+                // if (result2.IsSuccess)
+                // {
+                //     ApplicationUsers = result2.Data ?? [];
+                //     PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);
+                // }
             }
             catch
             {

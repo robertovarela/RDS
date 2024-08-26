@@ -72,6 +72,16 @@ public abstract class StartService
     public static async Task<bool> IsAdminInRolesAsync(long userId)
         => await _manipulateUserStateValuesService.IsAdminInRolesAsync(userId);
 
+    public static async Task<bool> IsOwnerInRolesAsync(long userId)
+        => await _manipulateUserStateValuesService.IsOwnerInRolesAsync(userId);
+    
+    public static async Task<bool> IsHabilitedInRolesAsync(long userId, string roleName)
+    => await _manipulateUserStateValuesService.IsHabilitedInRolesAsync(userId, roleName);
+    
+    public static async Task<List<string>> GetHabilitedRolesAsync(long userId, List<string> listRoleNames)
+    => await _manipulateUserStateValuesService.GetHabilitedRolesAsync(userId, listRoleNames);
+
+
     public static async Task<long> GetSelectedUserIdIfAdminAsync()
         => await _manipulateUserStateValuesService.GetSelectedUserIdIfAdminAsync();
 

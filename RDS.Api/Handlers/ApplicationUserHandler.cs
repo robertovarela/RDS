@@ -1,6 +1,6 @@
 ﻿namespace RDS.Api.Handlers
 {
-    public class ApplicationUserHandler(UserManager<User> userManager, AppDbContext context) : IApplicationUserHandler
+    public class ApplicationUserHandler(UserManager<User> userManager, AppDbContext context) //: IApplicationUserHandler
     {
         public async Task<Response<ApplicationUser?>> CreateAsync(CreateApplicationUserRequest request)
         {
