@@ -35,7 +35,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         {
             StartService.SetPageTitle("Usuários - Roles");
             await StartService.ValidateAccesByTokenAsync();
-            if(!await StartService.PermissionOnlyAdminOrOwner()) return;
+            if (!await StartService.PermissionOnlyAdminOrOwner()) return;
             LoggedUserId = StartService.GetLoggedUserId();
             CompanyId = StartService.GetSelectedCompanyId();
             IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
@@ -54,17 +54,20 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             {
                 var result = IsAdmin switch
                 {
-                    true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest{ Filter = SearchFilter, PageSize = _pageSize }),
+                    true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest
+                        { Filter = SearchFilter, PageSize = _pageSize }),
                     false => await UserHandler.GetAllByCompanyIdAsync(
                         new GetAllApplicationUserRequest
                         {
                             CompanyId = CompanyId,
                             Filter = SearchFilter,
-                            PageSize = _pageSize 
+                            PageSize = _pageSize
                         })
                 };
-                
-                PagedApplicationUsers = result.IsSuccess ? PaginateUsers(result.Data, _currentPage, _pageSize) : [];
+
+                PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
+                    ? PaginateUsers(result.Data, _currentPage, _pageSize)
+                    : new List<ApplicationUser>();
             }
             catch
             {
@@ -113,7 +116,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             return false;
         };
 
-        private List<ApplicationUser> PaginateUsers(List<ApplicationUser> users,int currentPage, int pageSize)
+        private List<ApplicationUser> PaginateUsers(List<ApplicationUser> users, int currentPage, int pageSize)
         {
             return users
                 .Where(Filter)
