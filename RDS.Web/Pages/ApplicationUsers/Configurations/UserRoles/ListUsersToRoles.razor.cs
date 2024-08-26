@@ -6,7 +6,6 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         #region Properties
 
         protected bool IsBusy { get; private set; }
-        private List<ApplicationUser> ApplicationUsers { get; set; } = [];
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
         protected string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
@@ -65,19 +64,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
                         })
                 };
                 
-                //Resolver lista duplicada
-                ////verificar em outras páginas de Users
-                ApplicationUsers = result.IsSuccess ? result.Data ?? [] : [];
-                PagedApplicationUsers = result.IsSuccess ? PaginateUsers(_currentPage, _pageSize) : [];
-                
-                
-                // var request = new GetAllApplicationUserRequest { Filter = SearchFilter, PageSize = _pageSize };
-                // var result2 = await UserHandler.GetAllAsync(request);
-                // if (result2.IsSuccess)
-                // {
-                //     ApplicationUsers = result2.Data ?? [];
-                //     PagedApplicationUsers = PaginateUsers(_currentPage, _pageSize);
-                // }
+                PagedApplicationUsers = result.IsSuccess ? PaginateUsers(result.Data, _currentPage, _pageSize) : [];
             }
             catch
             {
@@ -126,26 +113,9 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             return false;
         };
 
-        public async void OnNewUserButton()
+        private List<ApplicationUser> PaginateUsers(List<ApplicationUser> users,int currentPage, int pageSize)
         {
-            var result = await DialogService.ShowMessageBox(
-                "ATENÇÃO",
-                $"Ao prosseguir será efetuado logout para permitir o cadastro de um novo usuário. Deseja continuar?",
-                yesText: "LOGOUT",
-                cancelText: "Cancelar");
-
-            if (result is true)
-                OnNewUser();
-        }
-
-        private void OnNewUser()
-        {
-            NavigationService.NavigateToRegister();
-        }
-
-        private List<ApplicationUser> PaginateUsers(int currentPage, int pageSize)
-        {
-            return ApplicationUsers
+            return users
                 .Where(Filter)
                 .Skip((currentPage - 1) * pageSize)
                 .Take(pageSize)
