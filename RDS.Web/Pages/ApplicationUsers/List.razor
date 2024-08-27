@@ -4,27 +4,27 @@
 @* <UserState/> *@
 <AuthorizeView Roles="Owner">
     <Authorized>
-        <MudSelect
-            T="long"
-            Label="Empresas"
-            @bind-Value="InputModel.CompanyId"
-            HelperText="Selecione a Empresa"
-            Placeholder="Favor selecionar"
-            AdornmentIcon="@Icons.Material.Filled.CorporateFare"
-            AdornmentColor="Color.Primary"
-            AnchorOrigin="Origin.BottomCenter"
-            Variant="Variant.Outlined"
-            ToStringFunc="(companyId) 
-                => Companies.FirstOrDefault(c 
-                => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
+        <MudPaper Class="pa-2">
+            <MudSelect
+                T="long"
+                Label="Empresas"
+                @bind-Value="InputModel.CompanyId"
+                HelperText="Selecione a Empresa"
+                Placeholder="Favor selecionar"
+                AdornmentIcon="@Icons.Material.Filled.CorporateFare"
+                AdornmentColor="Color.Primary"
+                AnchorOrigin="Origin.BottomCenter"
+                Variant="Variant.Outlined"
+                ToStringFunc="(companyId) => Companies.FirstOrDefault(c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
 
-        @foreach (var company in Companies)
-            {
-                <MudSelectItem T="long" Value="@company.CompanyId">
-                    @company.CompanyName
-                </MudSelectItem>
-            }
-        </MudSelect>
+                @foreach (var company in Companies)
+                {
+                    <MudSelectItem T="long" Value="@company.CompanyId">
+                        @company.CompanyName
+                    </MudSelectItem>
+                }
+            </MudSelect>
+        </MudPaper>
     </Authorized>
 </AuthorizeView>
 <AuthorizeView Roles="Admin, Owner">
