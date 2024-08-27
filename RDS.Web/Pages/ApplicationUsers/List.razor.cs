@@ -47,7 +47,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         #region Methods
 
-        private async Task LoadUsers(string filter = "")
+        private async Task LoadUsers()
         {
             IsBusy = true;
             try
@@ -92,7 +92,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected async void OnSearch()
         {
-            await LoadUsers(SearchFilter);
+            await LoadUsers();
             StateHasChanged();
         }
 
