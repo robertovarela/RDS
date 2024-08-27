@@ -12,7 +12,7 @@ public class ManipulateUserStateValuesService(
     ISnackbar snackbar)
 {
     private List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
-    private List<AllCompaniesIdViewModel> CompanyIdsFromUser { get; set; } = [];
+    private List<CompanyIdNameViewModel> CompanyIdsFromUser { get; set; } = [];
 
     public async Task SetDefaultValuesAsync()
     {
@@ -22,13 +22,12 @@ public class ManipulateUserStateValuesService(
         userState.SetSelectedTransactionId(0);
 
         long loggedUserId = GetLoggedUserId();
-        if (await IsAdminInRolesAsync(loggedUserId) || await IsOwnerInRolesAsync(loggedUserId))
+        if (await IsOwnerInRolesAsync(loggedUserId))
         {
             var companies = await GetAllCompanyIdByUserIdAsync(loggedUserId);
-
-            if (!companies.Any()) SetSelectedCompanyId(0);
-
-            SetSelectedCompanyId(companies.First().CompanyId);
+            SetUserCompanies(companies);
+            var first = companies.FirstOrDefault();
+            if (first != null) SetSelectedCompanyId(first.CompanyId);
         }
     }
 
@@ -140,6 +139,7 @@ public class ManipulateUserStateValuesService(
     public string GetSelectedUserName() => userState.GetSelectedUserName();
     public long GetSelectedAddressId() => userState.GetSelectedAddressId();
     public long GetSelectedCompanyId() => userState.GetSelectedCompanyId();
+    public List<CompanyIdNameViewModel> GetUserCompanies() => userState.GetUserCompanies();
     public long GetSelectedCategoryId() => userState.GetSelectedCategoryId();
     public long GetSelectedTransactionId() => userState.GetSelectedTransactionId();
 
@@ -151,6 +151,7 @@ public class ManipulateUserStateValuesService(
     public void SetSelectedUserName(string userName) => userState.SetSelectedUserName(userName);
     public void SetSelectedAddressId(long addressId) => userState.SetSelectedAddressId(addressId);
     public void SetSelectedCompanyId(long companyId) => userState.SetSelectedCompanyId(companyId);
+    public void SetUserCompanies(List<CompanyIdNameViewModel> companies) => userState.SetUserCompanies(companies);
     public void SetSelectedCategoryId(long categoryId) => userState.SetSelectedCategoryId(categoryId);
     public void SetSelectedTransactionId(long transactionId) => userState.SetSelectedTransactionId(transactionId);
 
@@ -175,12 +176,12 @@ public class ManipulateUserStateValuesService(
         }
     }
 
-    public async Task<List<AllCompaniesIdViewModel>> GetAllCompanyIdByUserIdAsync(long userId)
+    private async Task<List<CompanyIdNameViewModel>> GetAllCompanyIdByUserIdAsync(long userId)
     {
         try
         {
             var request = new GetAllCompaniesByUserIdRequest { UserId = userId };
-            var result = await companyHandler.GetAllCompanyIdByUserIdAsync(request);
+            var result = await companyHandler.GetAllCompanyIdNameByUserIdAsync(request);
             if (result.IsSuccess)
                 CompanyIdsFromUser = result.Data ?? [];
         }
@@ -237,7 +238,7 @@ public class ManipulateUserStateValuesService(
 
         return false;
     }
-    
+
     public async Task<bool> IsHabilitedInRolesAsync(long userId, string roleName)
     {
         var roles = await GetRolesFromUserAsync(userId);
@@ -252,7 +253,7 @@ public class ManipulateUserStateValuesService(
 
         return false;
     }
-    
+
     public async Task<List<string>> GetHabilitedRolesAsync(long userId, List<string> listRoleNames)
     {
         var roles = await GetRolesFromUserAsync(userId);
@@ -268,13 +269,13 @@ public class ManipulateUserStateValuesService(
 
         return habilitedRoles;
     }
-    
+
     private async Task<bool> IsAdminOrOwnerInRolesAsync(long userId)
     {
         var roles = await GetRolesFromUserAsync(userId);
-        return roles.Any(r => 
-            r != null && 
-            (r.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase) || 
+        return roles.Any(r =>
+            r != null &&
+            (r.RoleName.Equals("Admin", StringComparison.OrdinalIgnoreCase) ||
              r.RoleName.Equals("Owner", StringComparison.OrdinalIgnoreCase)));
     }
 
@@ -307,6 +308,7 @@ public class ManipulateUserStateValuesService(
 
         return isAdmin;
     }
+
     public async Task<bool> PermissionOnlyAdminOrOwner()
     {
         var isAllowed = await IsAdminOrOwnerInRolesAsync(GetLoggedUserId());

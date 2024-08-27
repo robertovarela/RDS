@@ -11,7 +11,7 @@ public interface ICompanyHandler
     Task<Response<Company?>> DeleteAsync(DeleteCompanyRequest request);//  
     Task<Response<List<Company>>> GetAllAsync(GetAllCompaniesRequest request);
     Task<Response<List<Company>>> GetAllByUserIdAsync(GetAllCompaniesByUserIdRequest request);
-    Task<PagedResponse<List<AllCompaniesIdViewModel>>> GetAllCompanyIdByUserIdAsync(GetAllCompaniesByUserIdRequest request);
+    Task<PagedResponse<List<CompanyIdNameViewModel>>> GetAllCompanyIdNameByUserIdAsync(GetAllCompaniesByUserIdRequest request);
     Task<Response<Company?>> GetByIdAsync(GetCompanyByIdRequest request);
     
 }

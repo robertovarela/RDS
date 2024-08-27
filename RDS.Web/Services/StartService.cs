@@ -34,6 +34,7 @@ public abstract class StartService
     public static string GetSelectedUserName() => _manipulateUserStateValuesService.GetSelectedUserName();
     public static long GetSelectedAddressId() => _manipulateUserStateValuesService.GetSelectedAddressId();
     public static long GetSelectedCompanyId() => _manipulateUserStateValuesService.GetSelectedCompanyId();
+    public static List<CompanyIdNameViewModel> GetUserCompanies() => _manipulateUserStateValuesService.GetUserCompanies();
     public static long GetSelectedCategoryId() => _manipulateUserStateValuesService.GetSelectedCategoryId();
     public static long GetSelectedTransactionId() => _manipulateUserStateValuesService.GetSelectedTransactionId();
 
@@ -51,6 +52,9 @@ public abstract class StartService
 
     public static void SetSelectedCompanyId(long companyId)
         => _manipulateUserStateValuesService.SetSelectedCompanyId(companyId);
+    
+    public static void SetUserCompanies(List<CompanyIdNameViewModel> companies) 
+        => _manipulateUserStateValuesService.SetUserCompanies(companies);
 
     public static void SetSelectedCategoryId(long categoryId)
         => _manipulateUserStateValuesService.SetSelectedCategoryId(categoryId);
@@ -62,9 +66,6 @@ public abstract class StartService
         string destinationUrlLoggedIn = "")
         => await _manipulateUserStateValuesService.VerifyIfLoggedInAsync(destinationUrlNotLoggedIn,
             destinationUrlLoggedIn);
-
-    public static async Task<List<AllCompaniesIdViewModel>> GetAllCompanyIdByUserIdAsync(long userId)
-        => await _manipulateUserStateValuesService.GetAllCompanyIdByUserIdAsync(userId);
 
     public static async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long userId)
         => await _manipulateUserStateValuesService.GetRolesFromUserAsync(userId);

@@ -2,6 +2,29 @@
 @inherits ListApplicationUsersPage
 
 @* <UserState/> *@
+<AuthorizeView Roles="Owner">
+    <Authorized>
+        <MudSelect
+            T="long"
+            Label="Empresas"
+            @bind-Value="InputModel.CompanyId"
+            HelperText="Selecione a Empresa"
+            Placeholder="Favor selecionar"
+            AdornmentIcon="@Icons.Material.Filled.Commute"
+            AdornmentColor="Color.Primary"
+            AnchorOrigin="Origin.BottomCenter"
+            Variant="Variant.Outlined"
+            ToStringFunc="(companyId) => Companies.FirstOrDefault(c => c.CompanyId == companyId)?.CompanyName">
+
+        @foreach (var company in Companies)
+            {
+                <MudSelectItem T="long" Value="@company.CompanyId">
+                    @company.CompanyName
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </Authorized>
+</AuthorizeView>
 <AuthorizeView Roles="Admin, Owner">
     <Authorized>
         <div class="d-flex mt-2 mb-2">
@@ -62,13 +85,13 @@
                 @* </ToolBarContent> *@
                 <Columns>
                     <PropertyColumn Class="mud-data-grid"
-                                    CellClass="mud-data-grid mud-data-grid-cell" 
+                                    CellClass="mud-data-grid mud-data-grid-cell"
                                     Property="x => x.Id" Title="#"/>
                     <PropertyColumn Class="mud-data-grid"
-                                    CellClass="mud-data-grid mud-data-grid-cell" 
+                                    CellClass="mud-data-grid mud-data-grid-cell"
                                     Property="x => x.Name" Title="Nome"/>
                     <PropertyColumn Class="mud-data-grid"
-                                    CellClass="mud-data-grid mud-data-grid-cell" 
+                                    CellClass="mud-data-grid mud-data-grid-cell"
                                     Property="x => x.Email" Title="Email"/>
                     <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
                         <CellTemplate Context="cellContext">

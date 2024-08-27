@@ -1,4 +1,6 @@
-﻿namespace RDS.Core.Services
+﻿using RDS.Core.Models.ViewModels.company;
+
+namespace RDS.Core.Services
 {
     public class UserStateService
     {
@@ -10,6 +12,7 @@
         private string SelectedUserName { get; set; } = string.Empty;
         private long SelectedUserAddressId { get; set; }
         private long SelectedCompanyId { get; set; }
+        private List<CompanyIdNameViewModel> UserCompanies { get; set; } = [];
         private long SelectedCategoryId { get; set; }
         private long SelectedTransactionId { get; set; }
         
@@ -21,6 +24,7 @@
         public string GetSelectedUserName() => SelectedUserName;
         public long GetSelectedAddressId() => SelectedUserAddressId;
         public long GetSelectedCompanyId() => SelectedCompanyId;
+        public List<CompanyIdNameViewModel> GetUserCompanies() => UserCompanies;
         public long GetSelectedCategoryId() => SelectedCategoryId;
         public long GetSelectedTransactionId() => SelectedTransactionId;
 
@@ -32,6 +36,7 @@
         public void SetSelectedUserName(string userName) => SelectedUserName = userName;
         public void SetSelectedAddressId(long addressId) => SelectedUserAddressId = addressId;
         public void SetSelectedCompanyId(long companyId) => SelectedCompanyId = companyId;
+        public void SetUserCompanies(List<CompanyIdNameViewModel> companiesId) => UserCompanies = companiesId;
         public void SetSelectedCategoryId(long categoryId) => SelectedCategoryId = categoryId;
         public void SetSelectedTransactionId(long transactionId) => SelectedTransactionId = transactionId;
     }

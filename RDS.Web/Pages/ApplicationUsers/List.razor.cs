@@ -7,10 +7,12 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected bool IsBusy { get; private set; }
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
+        public GetAllCompaniesByUserIdRequest InputModel { get; set; } = new();
         private string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
         private long LoggedUserId { get; set; }
         private long CompanyId { get; set; }
+        protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
         private bool IsAdmin { get; set; }
         private bool IsOwner { get; set; }
         protected const string EditUrl = "/usuarios/editar";
@@ -18,6 +20,8 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
+
+       
 
         #endregion
 
@@ -38,9 +42,19 @@ namespace RDS.Web.Pages.ApplicationUsers
             await StartService.SetDefaultValues();
             if (!await StartService.PermissionOnlyAdminOrOwner()) return;
             LoggedUserId = StartService.GetLoggedUserId();
-            CompanyId = StartService.GetSelectedCompanyId();
             IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
             IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
+            if(IsOwner)
+            {
+                CompanyId = StartService.GetSelectedCompanyId();
+                Companies = StartService.GetUserCompanies();
+
+                if (Companies.Any())
+                {
+                    InputModel.CompanyId = Companies.First().CompanyId;
+                    InputModel.CompanyName = Companies.First().CompanyName;
+                }
+            }
         }
 
         #endregion
