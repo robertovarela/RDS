@@ -10,11 +10,13 @@
             @bind-Value="InputModel.CompanyId"
             HelperText="Selecione a Empresa"
             Placeholder="Favor selecionar"
-            AdornmentIcon="@Icons.Material.Filled.Commute"
+            AdornmentIcon="@Icons.Material.Filled.CorporateFare"
             AdornmentColor="Color.Primary"
             AnchorOrigin="Origin.BottomCenter"
             Variant="Variant.Outlined"
-            ToStringFunc="(companyId) => Companies.FirstOrDefault(c => c.CompanyId == companyId)?.CompanyName">
+            ToStringFunc="(companyId) 
+                => Companies.FirstOrDefault(c 
+                => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
 
         @foreach (var company in Companies)
             {

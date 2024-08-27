@@ -1,0 +1,12 @@
+INSERT INTO [RDSAgenda].[dbo].[IdentityUserRole] ([UserId], [RoleId])
+SELECT 
+    [Id] AS [UserId],
+    3 AS [RoleId]
+FROM 
+    [RDSAgenda].[dbo].[IdentityUser]
+WHERE 
+    NOT EXISTS (
+        SELECT 1 
+        FROM [RDSAgenda].[dbo].[IdentityUserRole] 
+        WHERE [UserId] = [IdentityUser].[Id] AND [RoleId] = 3
+    );

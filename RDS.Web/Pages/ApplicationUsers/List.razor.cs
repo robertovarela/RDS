@@ -106,6 +106,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected async void OnSearch()
         {
+            CompanyId = InputModel.CompanyId;
             await LoadUsers();
             StateHasChanged();
         }
