@@ -180,7 +180,7 @@ public class UserController(
     {
         try
         {
-            var notFoundMessage = "";
+            string notFoundMessage;
             long.TryParse(request.Filter, out long filterId);
             IQueryable<AllUsersViewModel> query;
 
@@ -210,9 +210,9 @@ public class UserController(
                         (string.IsNullOrEmpty(request.Filter) || u.Name.StartsWith(request.Filter)) ||
                         (string.IsNullOrEmpty(request.Filter) || u.Email == request.Filter))
                     .OrderBy(u => u.Id)
-                    .Select(u => new AllUsersViewModel { Id = u.Id, Name = u.Name!, Email = u.Email! });
+                    .Select(u => new AllUsersViewModel { Id = u.Id, Name = u.Name, Email = u.Email! });
 
-                notFoundMessage = request.Filter.Contains("@") ? "Email não localizado" : "Usuário não encontrado";
+                notFoundMessage = request.Filter.Contains('@') ? "Email não localizado" : "Usuário não encontrado";
             }
 
             var users = await query
@@ -238,7 +238,7 @@ public class UserController(
     {
         try
         {
-            var notFoundMessage = "";
+            string notFoundMessage;
             long.TryParse(request.Filter, out long filterId);
             IQueryable<AllUsersViewModel> query;
 
@@ -249,7 +249,7 @@ public class UserController(
                     query = from u in context.Users.AsNoTracking()
                         join cu in context.CompanyUsers.AsNoTracking()
                             on u.Id equals cu.UserId
-                        where u.Cpf == request.Filter && cu.CompanyId == request.CompanyId
+                        where cu.CompanyId == request.CompanyId && u.Cpf == request.Filter
                         select new AllUsersViewModel { Id = u.Id, Name = u.Name, Email = u.Email! };
 
                     notFoundMessage = "CPF não localizado";
@@ -259,7 +259,7 @@ public class UserController(
                     query = from u in context.Users.AsNoTracking()
                         join cu in context.CompanyUsers.AsNoTracking()
                             on u.Id equals cu.UserId
-                        where u.Id == filterId && cu.CompanyId == request.CompanyId
+                        where cu.CompanyId == request.CompanyId && u.Id == filterId
                         select new AllUsersViewModel { Id = u.Id, Name = u.Name, Email = u.Email! };
 
                     notFoundMessage = "Código não localizado";
@@ -279,23 +279,25 @@ public class UserController(
                 notFoundMessage = request.Filter.Contains("@") ? "Email não localizado" : "Usuário não encontrado";
             }
 
+            var count = await query.CountAsync();
+
+            if (count == 0)
+                return new PagedResponse<List<AllUsersViewModel>>(null, 404, notFoundMessage);
+
             var users = await query
+                .OrderBy(users => users.Name)
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .OrderBy(users => users.Name)
                 .ToListAsync();
 
-            var count = await query.CountAsync();
-            return count == 0
-                ? new PagedResponse<List<AllUsersViewModel>>(null, 404, notFoundMessage)
-                : new PagedResponse<List<AllUsersViewModel>>(users, count, request.PageNumber, request.PageSize);
+            return new PagedResponse<List<AllUsersViewModel>>(users, count, request.PageNumber, request.PageSize);
         }
         catch
         {
             return new PagedResponse<List<AllUsersViewModel>>(null, 500, "Não foi possível consultar os usuários");
         }
     }
-    
+
 
     [HttpPost("allusers2")]
     public async Task<PagedResponse<List<ApplicationUser>>> GetAll2Async(
