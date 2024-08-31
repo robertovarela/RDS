@@ -11,6 +11,12 @@ public class HomePage : ComponentBase
     #endregion
     //private string roles = "";
     
+    private long LoggedUserId { get; set; }
+    private long CompanyId { get; set; }
+    protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
+    private bool IsAdmin { get; set; }
+    private bool IsOwner { get; set; }
+    
     #region Overrides
 
     protected override async Task OnInitializedAsync()
@@ -18,6 +24,15 @@ public class HomePage : ComponentBase
         StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
         await StartService.ValidateAccesByTokenAsync(blockNavigation: false);
         await StartService.SetDefaultValues();
+        
+        LoggedUserId = StartService.GetLoggedUserId();
+        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
+        IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
+        if (IsOwner || IsAdmin)
+        {
+            CompanyId = StartService.GetSelectedCompanyId();
+            Companies = StartService.GetUserCompanies();
+        }
 
         //var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         //var user = authState.User;

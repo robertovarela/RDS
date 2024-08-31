@@ -11,7 +11,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         private string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
         private long LoggedUserId { get; set; }
-        private long CompanyId { get; set; }
+        //private long CompanyId { get; set; }
         protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
         private bool IsAdmin { get; set; }
         private bool IsOwner { get; set; }
@@ -37,16 +37,15 @@ namespace RDS.Web.Pages.ApplicationUsers
         {
             StartService.SetPageTitle("Usuários");
             await StartService.ValidateAccesByTokenAsync();
-            await StartService.SetDefaultValues();
+            //await StartService.SetDefaultValues();
             if (!await StartService.PermissionOnlyAdminOrOwner()) return;
             LoggedUserId = StartService.GetLoggedUserId();
             IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
             IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
             if (IsOwner || IsAdmin)
             {
-                CompanyId = StartService.GetSelectedCompanyId();
                 Companies = StartService.GetUserCompanies();
-
+                //CompanyId = StartService.GetSelectedCompanyId();
                 if (Companies.Any())
                 {
                     InputModel.CompanyId = Companies.First().CompanyId;
@@ -59,7 +58,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         #region Methods
 
-        private async Task LoadUsers()
+        private async Task LoadUsers(long companyIdFilter, string searchFilter)
         {
             IsBusy = true;
             try
@@ -67,8 +66,8 @@ namespace RDS.Web.Pages.ApplicationUsers
                 var result = await UserHandler.GetAllByCompanyIdAsync(
                     new GetAllApplicationUserRequest
                     {
-                        CompanyId = CompanyId,
-                        Filter = SearchFilter,
+                        CompanyId = companyIdFilter,
+                        Filter = searchFilter,
                         PageSize = _pageSize
                     });
                 PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
@@ -89,7 +88,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             }
         }
 
-        private async Task LoadUsersDiffAdminAndOwner()
+        private async Task LoadUsersDiffAdminAndOwner(long companyIdFilter, string searchFilter)
         {
             IsBusy = true;
             try
@@ -101,8 +100,8 @@ namespace RDS.Web.Pages.ApplicationUsers
                     false => await UserHandler.GetAllByCompanyIdAsync(
                         new GetAllApplicationUserRequest
                         {
-                            CompanyId = CompanyId,
-                            Filter = SearchFilter,
+                            CompanyId = companyIdFilter,
+                            Filter = searchFilter,
                             PageSize = _pageSize
                         })
                 };
@@ -134,8 +133,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected async void OnSearch()
         {
-            CompanyId = InputModel.CompanyId;
-            await LoadUsers();
+            await LoadUsers(InputModel.CompanyId, SearchFilter);
             StateHasChanged();
         }
 

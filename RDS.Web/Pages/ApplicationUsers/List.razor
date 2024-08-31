@@ -15,7 +15,8 @@
                 AdornmentColor="Color.Primary"
                 AnchorOrigin="Origin.BottomCenter"
                 Variant="Variant.Outlined"
-                ToStringFunc="(companyId) => Companies.FirstOrDefault(c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
+                ToStringFunc="(companyId) => Companies.FirstOrDefault(
+                c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
 
                 @foreach (var company in Companies)
                 {
