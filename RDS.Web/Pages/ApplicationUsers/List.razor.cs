@@ -21,8 +21,6 @@ namespace RDS.Web.Pages.ApplicationUsers
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
 
-       
-
         #endregion
 
         #region Services
@@ -44,7 +42,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             LoggedUserId = StartService.GetLoggedUserId();
             IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
             IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
-            if(IsOwner || IsAdmin)
+            if (IsOwner || IsAdmin)
             {
                 CompanyId = StartService.GetSelectedCompanyId();
                 Companies = StartService.GetUserCompanies();
@@ -62,6 +60,36 @@ namespace RDS.Web.Pages.ApplicationUsers
         #region Methods
 
         private async Task LoadUsers()
+        {
+            IsBusy = true;
+            try
+            {
+                var result = await UserHandler.GetAllByCompanyIdAsync(
+                    new GetAllApplicationUserRequest
+                    {
+                        CompanyId = CompanyId,
+                        Filter = SearchFilter,
+                        PageSize = _pageSize
+                    });
+                PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
+                    ? result.Data
+                        .Where(Filter)
+                        .Skip((_currentPage - 1) * _pageSize)
+                        .Take(_pageSize)
+                        .ToList()
+                    : [];
+            }
+            catch
+            {
+                Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        private async Task LoadUsersDiffAdminAndOwner()
         {
             IsBusy = true;
             try
