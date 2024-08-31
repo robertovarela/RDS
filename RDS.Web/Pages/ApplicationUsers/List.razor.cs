@@ -7,11 +7,10 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected bool IsBusy { get; private set; }
         protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
-        public GetAllCompaniesByUserIdRequest InputModel { get; set; } = new();
+        public GetAllCompaniesByUserIdRequest InputModel { get; } = new();
         private string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
         private long LoggedUserId { get; set; }
-        //private long CompanyId { get; set; }
         protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
         private bool IsAdmin { get; set; }
         private bool IsOwner { get; set; }
@@ -88,40 +87,40 @@ namespace RDS.Web.Pages.ApplicationUsers
             }
         }
 
-        private async Task LoadUsersDiffAdminAndOwner(long companyIdFilter, string searchFilter)
-        {
-            IsBusy = true;
-            try
-            {
-                var result = IsAdmin switch
-                {
-                    true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest
-                        { Filter = SearchFilter, PageSize = _pageSize }),
-                    false => await UserHandler.GetAllByCompanyIdAsync(
-                        new GetAllApplicationUserRequest
-                        {
-                            CompanyId = companyIdFilter,
-                            Filter = searchFilter,
-                            PageSize = _pageSize
-                        })
-                };
-                PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
-                    ? result.Data
-                        .Where(Filter)
-                        .Skip((_currentPage - 1) * _pageSize)
-                        .Take(_pageSize)
-                        .ToList()
-                    : [];
-            }
-            catch
-            {
-                Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
+        // private async Task LoadUsersDiffAdminAndOwner(long companyIdFilter, string searchFilter)
+        // {
+        //     IsBusy = true;
+        //     try
+        //     {
+        //         var result = IsAdmin switch
+        //         {
+        //             true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest
+        //                 { Filter = SearchFilter, PageSize = _pageSize }),
+        //             false => await UserHandler.GetAllByCompanyIdAsync(
+        //                 new GetAllApplicationUserRequest
+        //                 {
+        //                     CompanyId = companyIdFilter,
+        //                     Filter = searchFilter,
+        //                     PageSize = _pageSize
+        //                 })
+        //         };
+        //         PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
+        //             ? result.Data
+        //                 .Where(Filter)
+        //                 .Skip((_currentPage - 1) * _pageSize)
+        //                 .Take(_pageSize)
+        //                 .ToList()
+        //             : [];
+        //     }
+        //     catch
+        //     {
+        //         Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
+        //     }
+        //     finally
+        //     {
+        //         IsBusy = false;
+        //     }
+        // }
 
         protected void HandleKeyDown(KeyboardEventArgs e)
         {
