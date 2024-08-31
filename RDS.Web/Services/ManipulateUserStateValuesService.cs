@@ -320,8 +320,12 @@ public class ManipulateUserStateValuesService(
     public async Task<long> GetSelectedUserIdIfAdminAsync()
     {
         var loggedUserId = GetLoggedUserId();
-        var isAdmin = await IsAdminInRolesAsync(loggedUserId);
-        return isAdmin ? GetSelectedUserId() : loggedUserId;
+        if (!await IsAdminInRolesAsync(loggedUserId))
+        {
+            SetSelectedUserId(loggedUserId);
+        }
+
+        return GetSelectedUserId();
     }
 
     public async Task<bool> PermissionOnlyAdmin()
