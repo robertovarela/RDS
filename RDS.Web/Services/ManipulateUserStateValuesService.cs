@@ -16,18 +16,39 @@ public class ManipulateUserStateValuesService(
 
     public async Task SetDefaultValuesAsync()
     {
-        userState.SetSelectedUserId(userState.GetLoggedUserId());
-        userState.SetSelectedAddressId(0);
-        userState.SetSelectedCategoryId(0);
-        userState.SetSelectedTransactionId(0);
+        SetSelectedUserName("");
+        SetPageTitle("");
+        SetCurrentUrl("");
+        SetSourceUrl([]);
 
         long loggedUserId = GetLoggedUserId();
-        if (await IsOwnerInRolesAsync(loggedUserId))
+        SetSelectedUserId(loggedUserId);
+        SetSelectedAddressId(0);
+        SetSelectedCategoryId(0);
+        SetSelectedTransactionId(0);
+
+        if (loggedUserId != 0)
         {
-            var companies = await GetAllCompanyIdByUserIdAsync(loggedUserId);
+            var isOwner = await IsOwnerInRolesAsync(loggedUserId);
+            var isAdmin = await IsAdminInRolesAsync(loggedUserId);
+            var companies = new List<CompanyIdNameViewModel>();
+
+            if (isOwner)
+            {
+                companies = await GetAllCompanyIdByUserIdAsync(loggedUserId);
+            }
+            else if (isAdmin)
+            {
+                companies = await GetAllCompanyIdByAdminAsync(loggedUserId);
+            }
+
             SetUserCompanies(companies);
-            var first = companies.FirstOrDefault();
-            if (first != null) SetSelectedCompanyId(first.CompanyId);
+            SetSelectedCompanyId(companies.FirstOrDefault()?.CompanyId ?? 0);
+        }
+        else
+        {
+            SetSelectedCompanyId(0);
+            SetUserCompanies(new List<CompanyIdNameViewModel>());
         }
     }
 
@@ -131,9 +152,9 @@ public class ManipulateUserStateValuesService(
         long selectedUserId = userState.GetSelectedUserId();
         if (selectedUserId != 0) return selectedUserId;
 
-        SetSelectedUserId(userState.GetLoggedUserId());
+        SetSelectedUserId(GetLoggedUserId());
 
-        return userState.GetSelectedUserId();
+        return GetSelectedUserId();
     }
 
     public string GetSelectedUserName() => userState.GetSelectedUserName();
@@ -174,6 +195,23 @@ public class ManipulateUserStateValuesService(
         {
             NavigationService.NavigateTo(destinationUrlNotLoggedIn);
         }
+    }
+
+    private async Task<List<CompanyIdNameViewModel>> GetAllCompanyIdByAdminAsync(long userId)
+    {
+        try
+        {
+            var request = new GetAllCompaniesByUserIdRequest();
+            var result = await companyHandler.GetAllCompanyIdNameByAdminAsync(request);
+            if (result.IsSuccess)
+                CompanyIdsFromUser = result.Data ?? [];
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(ex.Message, Severity.Error);
+        }
+
+        return CompanyIdsFromUser;
     }
 
     private async Task<List<CompanyIdNameViewModel>> GetAllCompanyIdByUserIdAsync(long userId)

@@ -68,6 +68,18 @@ public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandl
         return await result.Content.ReadFromJsonAsync<PagedResponse<List<Company>>>()
                ?? new PagedResponse<List<Company>>(null, 400, "Não foi possível obter as empresas");    
     }
+
+    public async Task<PagedResponse<List<CompanyIdNameViewModel>>> GetAllCompanyIdNameByAdminAsync(GetAllCompaniesByUserIdRequest request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/companies/allcompanyidnamebyadmin")
+        {
+            Content = JsonContent.Create(request)
+        };
+        var httpClient = await GetHttpClientAsync();
+        var result = await httpClient.SendAsync(requestMessage);
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<CompanyIdNameViewModel>>>()
+               ?? new PagedResponse<List<CompanyIdNameViewModel>>(null, 400, "Não foi possível obter as empresas");    
+    }
     
     public async Task<PagedResponse<List<CompanyIdNameViewModel>>> GetAllCompanyIdNameByUserIdAsync(GetAllCompaniesByUserIdRequest request)
     {

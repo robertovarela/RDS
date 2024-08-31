@@ -44,7 +44,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             LoggedUserId = StartService.GetLoggedUserId();
             IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
             IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
-            if(IsOwner)
+            if(IsOwner || IsAdmin)
             {
                 CompanyId = StartService.GetSelectedCompanyId();
                 Companies = StartService.GetUserCompanies();
