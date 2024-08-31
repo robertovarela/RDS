@@ -7,19 +7,21 @@ public partial class EditApplicationUsersPage : ComponentBase
 
     protected bool IsBusy { get; set; }
     protected UpdateApplicationUserRequest InputModel { get; set; } = new();
-    protected MudDatePicker Picker = new ();
+    protected MudDatePicker Picker = new();
     protected DateTime MinDate = DateTime.Today.AddYears(-110);
     protected DateTime MaxDate = DateTime.Today.AddYears(-12);
     private long UserId { get; set; }
-    private string Email { get; set; } = string.Empty;
     private bool IsAdmin { get; set; }
+    private bool IsOwner { get; set; }
+    protected bool IsNotEdit { get; set; }
     protected const string UrlAddress = "/usuarios/enderecos";
     protected const string UrlPhone = "/usuarios/telefones";
     protected const string UrlOrigen = "/usuarios";
-    
+
     #endregion
 
     #region Services
+
     [Inject] protected IApplicationUserHandler UserHandler { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
 
@@ -31,7 +33,15 @@ public partial class EditApplicationUsersPage : ComponentBase
     {
         StartService.SetPageTitle("Editar Usuário");
         await StartService.ValidateAccesByTokenAsync();
-        UserId = await StartService.GetSelectedUserIdIfAdminAsync();
+        //UserId = await StartService.GetSelectedUserIdIfAdminAsync();
+        UserId = StartService.GetSelectedUserId();
+        IsAdmin = await StartService.IsAdminInRolesAsync(StartService.GetLoggedUserId());
+        if (!IsAdmin)
+        {
+            IsOwner = await StartService.IsOwnerInRolesAsync(UserId);
+            IsNotEdit = IsOwner && (StartService.GetLoggedUserId() != UserId);
+        }
+
         await LoadUser(UserId);
     }
 
@@ -42,10 +52,11 @@ public partial class EditApplicationUsersPage : ComponentBase
             Picker.GoToDate(MaxDate, false);
         }
     }
+
     #endregion
 
     #region Methods
-    
+
     private async Task LoadUser(long userId)
     {
         try
@@ -72,7 +83,7 @@ public partial class EditApplicationUsersPage : ComponentBase
             IsBusy = false;
         }
     }
-    
+
     protected async Task OnValidSubmitAsync()
     {
         IsBusy = true;
@@ -91,9 +102,10 @@ public partial class EditApplicationUsersPage : ComponentBase
             }
             else
             {
-                Snackbar.Add($"O usuário {InputModel.CompanyId}-{InputModel.Name} não foi encontrado", Severity.Warning);
+                Snackbar.Add($"O usuário {InputModel.CompanyId}-{InputModel.Name} não foi encontrado",
+                    Severity.Warning);
             }
-            
+
             StateHasChanged();
         }
         catch (Exception ex)

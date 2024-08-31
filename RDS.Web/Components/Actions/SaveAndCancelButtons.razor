@@ -1,21 +1,34 @@
 ﻿<MudPaper Class="pa-2">
     <div class="d-flex">
-        <MudButton ButtonType="ButtonType.Button"
-                   Variant="Variant.Filled"
-                   Color="Color.Secondary"
-                   OnClick="@(() => NavigationService.NavigateTo(CancelPage))">
-            @ButtonText1
-        </MudButton>
-        <MudSpacer />
-        <MudButton ButtonType="ButtonType.Submit"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary">
-            @ButtonText2
-        </MudButton>
+        @if (!Button1IsNotVisible)
+        {
+            <MudButton ButtonType="ButtonType.Button"
+                       Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       Disabled="Button1Disable"
+                       OnClick="@(() => NavigationService.NavigateTo(CancelPage))">
+                @ButtonText1
+            </MudButton>
+        }
+        <MudSpacer/>
+        @if (!Button2IsNotVisible)
+        {
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Disabled="Button2Disable">
+                @ButtonText2
+            </MudButton>
+        }
     </div>
 </MudPaper>
+
 @code {
     [Parameter] public string CancelPage { get; set; } = "/";
     [Parameter] public string ButtonText1 { get; set; } = "Cancelar";
     [Parameter] public string ButtonText2 { get; set; } = "Salvar";
+    [Parameter] public bool Button1IsNotVisible { get; set; }
+    [Parameter] public bool Button2IsNotVisible { get; set; }
+    [Parameter] public bool Button1Disable { get; set; }
+    [Parameter] public bool Button2Disable { get; set; }
 }

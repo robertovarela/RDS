@@ -32,19 +32,21 @@
                                   @bind-Value="InputModel.Email"
                                   For="@(() => InputModel.Email)"
                                   Variant="Variant.Outlined"
-                                  ReadOnly="true"
-                                  Disabled/>
+                                  Disabled="true"/>
 
                     <MudTextField Label="Nome"
                                   HelperText="Campo obrigatório"
                                   @bind-Value="InputModel.Name"
                                   For="@(() => InputModel.Name)"
-                                  Variant="Variant.Outlined" AutoFocus/>
+                                  Variant="Variant.Outlined"
+                                  Disabled="IsNotEdit"
+                                  AutoFocus/>
 
                     <MudTextField Label="CPF"
                                   HelperText="&nbsp;"
                                   @bind-Value="InputModel.Cpf"
                                   For="@(() => InputModel.Cpf)"
+                                  Disabled="IsNotEdit"
                                   Variant="Variant.Outlined"/>
 
                     <MudDatePicker Label="Data de Nascimento"
@@ -60,7 +62,8 @@
                                    Rounded="true"
                                    PickerVariant="PickerVariant.Dialog"
                                    Elevation="12"
-                                   Class="datepicker-custom"/>
+                                   Class="datepicker-custom"
+                                   Disabled="IsNotEdit"/>
 
                     <MudPaper Class="pa-2">
                         <div class="d-flex justify-content-between align-items-center mt-4">
@@ -85,7 +88,7 @@
                             <MudSpacer/>
                         </div>
                     </MudPaper>
-                    <SaveAndCancelButtons CancelPage="/" ButtonText1="Cancelar" ButtonText2="Atualizar"/>
+                    <SaveAndCancelButtons CancelPage="/" ButtonText1="Cancelar" ButtonText2="Atualizar" Button2Disable="IsNotEdit"/>
                 </EditForm>
             </MudPaper>
         }
