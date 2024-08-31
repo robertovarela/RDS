@@ -14,8 +14,8 @@ public class HomePage : ComponentBase
     private long LoggedUserId { get; set; }
     private long CompanyId { get; set; }
     protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
-    private bool IsAdmin { get; set; }
-    private bool IsOwner { get; set; }
+    protected bool IsAdmin { get; set; }
+    protected bool IsOwner { get; set; }
     
     #region Overrides
 

@@ -3,22 +3,27 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudPaper Class="pa-8 mt-4">
-            @foreach (var company in Companies)
-            {    <MudCard Outlined="true" Class="pa-4 ma-4">
-            <MudCardContent>
-                    <MudText>@company.CompanyName</MudText>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton Variant="Variant.Text"
-                               Color="Color.Primary"
-                               OnClick="() => SelectCompany(company.CompanyId)">
-                        Acessar
-                    </MudButton>
-                </MudCardActions>
-            </MudCard>
-            <MudSpacer/>}
-        </MudPaper>
+        @if(IsOwner || IsAdmin)
+        {
+            <MudPaper Class="pa-8 mt-4">
+                @foreach (var company in Companies)
+                {
+                    <MudCard Outlined="true" Class="pa-4 ma-4">
+                        <MudCardContent>
+                            <MudText>@company.CompanyName</MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text"
+                                       Color="Color.Primary"
+                                       OnClick="() => SelectCompany(company.CompanyId)">
+                                Acessar
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                    <MudSpacer/>
+                }
+            </MudPaper>
+        }
     </Authorized>
     <NotAuthorized>
         <MudPaper>
