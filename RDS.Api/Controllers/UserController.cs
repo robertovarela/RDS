@@ -5,9 +5,7 @@ namespace RDS.Api.Controllers;
 
 [ApiController]
 [Microsoft.AspNetCore.Mvc.Route("v1/users")]
-public class UserController(
-    IApplicationUserHandler applicationUserHandler)
-    : ControllerBase
+public class UserController(IApplicationUserHandler applicationUserHandler) : ControllerBase
 {
     [HttpPost("userlogin")]
     public async Task<Response<UserLogin>> LoginAsync([FromBody] LoginRequest? request)

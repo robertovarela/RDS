@@ -46,7 +46,7 @@ public class ApplicationUserAdressHandler(HttpClientService httpClientService) :
 
     public async Task<PagedResponse<List<ApplicationUserAddress>>> GetAllAsync(GetAllApplicationUserAddressRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/address/allusersaddress")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/address/alluseraddresses")
         {
             Content = JsonContent.Create(request)
         };

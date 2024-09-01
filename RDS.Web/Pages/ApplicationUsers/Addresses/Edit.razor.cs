@@ -6,6 +6,8 @@ public class EditApplicationUserAddressPage : ComponentBase
 
     protected bool IsBusy { get; private set; }
     public UpdateApplicationUserAddressRequest InputModel { get; set; } = new();
+    private long UserId { get; set; }
+    private long AddressId { get; set; }
 
     #endregion
 
@@ -34,18 +36,27 @@ public class EditApplicationUserAddressPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        StartService.SetPageTitle("Editar Endereço");
+        await StartService.ValidateAccesByTokenAsync();
+        UserId = StartService.GetSelectedUserId();
+        AddressId = StartService.GetSelectedAddressId();
+
+        await LoadUserAddressAsync();
+    }
+
+    #endregion
+
+    #region Methods
+
+    private async Task LoadUserAddressAsync()
+    {
         IsBusy = true;
         try
         {
-            StartService.SetPageTitle("Editar Endereço");
-            await StartService.ValidateAccesByTokenAsync();
-            var userId = StartService.GetSelectedUserId();
-            var id = StartService.GetSelectedAddressId();
- 
             var requestAddress = new GetApplicationUserAddressByIdRequest
             {
-                CompanyId = userId ,
-                Id = id
+                CompanyId = UserId,
+                Id = AddressId
             };
             var responseAddress = await AddressHandler.GetByIdAsync(requestAddress);
             if (responseAddress is { IsSuccess: true, Data: not null })
@@ -78,13 +89,9 @@ public class EditApplicationUserAddressPage : ComponentBase
         finally
         {
             IsBusy = false;
-        }
+        }    
     }
-
-    #endregion
-
-    #region Methods
-
+    
     public async Task OnValidSubmitAsync()
     {
         IsBusy = true;

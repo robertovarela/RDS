@@ -6,6 +6,7 @@ public class ListApplicationUserAdressesPage : ComponentBase
 
     protected bool IsBusy { get; private set; }
     protected List<ApplicationUserAddress> ApplicationUsersAddress { get; private set; } = [];
+    private long UserId { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string Url = "/usuarios/enderecos/editar";
     protected const string UrlOrigen = "/usuarios/enderecos";
@@ -26,12 +27,22 @@ public class ListApplicationUserAdressesPage : ComponentBase
     {
         StartService.SetPageTitle("Endereços");
         await StartService.ValidateAccesByTokenAsync();
-        var userId = StartService.GetSelectedUserId();
+        UserId = StartService.GetSelectedUserId();
+
+        await LoadAddressesAsync();
+    }
+
+    #endregion
+
+    #region Methods
+
+    private async Task LoadAddressesAsync()
+    {
         IsBusy = true; 
 
         try
         {
-            var request = new GetAllApplicationUserAddressRequest{CompanyId = userId};
+            var request = new GetAllApplicationUserAddressRequest{CompanyId = UserId};
             var result = await AddressHandler.GetAllAsync(request);
             if (result.IsSuccess)
                 ApplicationUsersAddress = result.Data ?? [];
@@ -46,11 +57,6 @@ public class ListApplicationUserAdressesPage : ComponentBase
             StateHasChanged();
         }
     }
-
-    #endregion
-
-    #region Methods
-
     public async void OnDeleteButtonClickedAsync(long userId, long id, string street)
     {
         var result = await DialogService.ShowMessageBox(
