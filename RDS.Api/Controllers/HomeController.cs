@@ -5,8 +5,7 @@ namespace RDS.Api.Controllers;
 public class HomeController : ControllerBase
 {
     [HttpGet("root")]
-    public IActionResult Get2(
-        [FromServices] IConfiguration config)
+    public IActionResult Get2([FromServices] IConfiguration config)
     {
         var env = config.GetValue<string>("Env");
         return Ok(new
@@ -14,12 +13,9 @@ public class HomeController : ControllerBase
             environment = env
         });
     }
-
     
     [HttpGet("")]
-
-    public Response<string> Get(
-        [FromServices] IConfiguration config)
+    public Response<string> Get([FromServices] IConfiguration config)
     {
         var env = config.GetValue<string>("Env");
 
@@ -36,18 +32,5 @@ public class HomeController : ControllerBase
     public Response<string> Version()
     {
         return new Response<string>("1.0.0");
-    }
-
-    [HttpGet("/home")]
-    public void GetHome(
-        [FromBody] UserStateService userState,
-        [FromServices] NavigationManager navigationManager)
-    {
-        var userId = userState.GetLoggedUserId();
-        if (userId == 0)
-        {
-            navigationManager.NavigateTo("/logout");
-        }
-        //return Ok();
     }
 }
