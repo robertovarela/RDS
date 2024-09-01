@@ -109,7 +109,7 @@ public class ApplicationUserHandler(
     {
         try
         {
-            var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
+            var user = await userManager.FindByIdAsync(request.UserId.ToString());
 
             if (user == null)
             {
@@ -292,7 +292,7 @@ public class ApplicationUserHandler(
     {
         try
         {
-            var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
+            var user = await userManager.FindByIdAsync(request.UserId.ToString());
 
             if (user == null)
             {

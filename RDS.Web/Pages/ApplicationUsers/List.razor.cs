@@ -193,8 +193,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             if (applicationUser.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (applicationUser.Email is not null &&
-                applicationUser.Email.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
+            if (applicationUser.Email.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
                 return true;
 
             // if (applicationUser.Cpf is not null &&

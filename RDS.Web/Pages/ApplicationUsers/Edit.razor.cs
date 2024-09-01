@@ -13,6 +13,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     private long UserId { get; set; }
     private bool IsAdmin { get; set; }
     private bool IsOwner { get; set; }
+    private string Email { get; set; } = null!;
     protected bool IsNotEdit { get; set; }
     protected const string UrlAddress = "/usuarios/enderecos";
     protected const string UrlPhone = "/usuarios/telefones";
@@ -42,7 +43,7 @@ public partial class EditApplicationUsersPage : ComponentBase
             IsNotEdit = IsOwner && (StartService.GetLoggedUserId() != UserId);
         }
 
-        await LoadUser(UserId);
+        await LoadUser();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -57,22 +58,25 @@ public partial class EditApplicationUsersPage : ComponentBase
 
     #region Methods
 
-    private async Task LoadUser(long userId)
+    private async Task LoadUser()
     {
         try
         {
             IsBusy = true;
-            var request = new GetApplicationUserByIdRequest { CompanyId = userId };
+            var request = new GetApplicationUserByIdRequest { UserId = UserId };
             var response = await UserHandler.GetByIdAsync(request);
             if (response is { IsSuccess: true, Data: not null })
+            {
+                Email = response.Data.Email!;
                 InputModel = new UpdateApplicationUserRequest
                 {
-                    CompanyId = response.Data.Id,
+                    UserId = response.Data.Id,
                     Name = response.Data.Name,
-                    Email = response.Data.Email ?? string.Empty,
+                    Email = Email,
                     Cpf = response.Data.Cpf ?? string.Empty,
                     BirthDate = response.Data.BirthDate
                 };
+            }
         }
         catch
         {
@@ -94,6 +98,7 @@ public partial class EditApplicationUsersPage : ComponentBase
 
         try
         {
+            InputModel.Email = Email;
             var result = await UserHandler.UpdateAsync(InputModel);
 
             if (result.IsSuccess && result.Data is not null)
