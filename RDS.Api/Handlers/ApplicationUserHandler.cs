@@ -7,10 +7,9 @@ public class ApplicationUserHandler(
     ILogger<ApplicationUserHandler> logger,
     AppDbContext context
     //RoleManager<IdentityRole<long>> roleManager
-    )
+)
     : IApplicationUserHandler
 {
-
     public async Task<Response<UserLogin>> LoginAsync(LoginRequest? request)
     {
         if (request is null)
@@ -223,17 +222,19 @@ public class ApplicationUserHandler(
         }
     }
 
-    public async Task<PagedResponse<List<AllUsersViewModel>>> GetAllByCompanyIdAsync(GetAllApplicationUserRequest request)
+    public async Task<PagedResponse<List<AllUsersViewModel>>> GetAllByCompanyIdAsync(
+        GetAllApplicationUserRequest request)
     {
-         try
+        try
         {
             string notFoundMessage;
             long.TryParse(request.Filter, out long filterId);
+            string filter = request.Filter ?? string.Empty;
             IQueryable<AllUsersViewModel> query;
 
             if (filterId != 0)
             {
-                if (request.Filter.Length == 11)
+                if (filter.Length == 11)
                 {
                     query = from u in context.Users.AsNoTracking()
                         join cu in context.CompanyUsers.AsNoTracking()
@@ -265,7 +266,7 @@ public class ApplicationUserHandler(
                     orderby u.Id
                     select new AllUsersViewModel { Id = u.Id, Name = u.Name!, Email = u.Email! };
 
-                notFoundMessage = request.Filter.Contains("@") ? "Email não localizado" : "Usuário não encontrado";
+                notFoundMessage = filter.Contains("@") ? "Email não localizado" : "Usuário não encontrado";
             }
 
             var count = await query.CountAsync();
@@ -357,7 +358,8 @@ public class ApplicationUserHandler(
         }
     }
 
-    public async Task<PagedResponse<List<ApplicationUser>>> GetByFullNameAsync(GetApplicationUserByFullNameRequest request)
+    public async Task<PagedResponse<List<ApplicationUser>>> GetByFullNameAsync(
+        GetApplicationUserByFullNameRequest request)
     {
         try
         {

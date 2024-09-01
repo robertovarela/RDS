@@ -2,7 +2,7 @@
 
 [ApiController]
 [Microsoft.AspNetCore.Mvc.Route("v1/users/address")]
-public class UserAdressController(AppDbContext context, IApplicationUserAddressHandler applicationUserAddressHandler) : ControllerBase
+public class UserAdressController(IApplicationUserAddressHandler applicationUserAddressHandler) : ControllerBase
 {
     [HttpPost("createuseraddress")]
     public async Task<Response<ApplicationUserAddress?>> CreateAsync(
