@@ -1,6 +1,5 @@
 ﻿/* add global usage directives for System namespaces here */
 
-
 global using System.IdentityModel.Tokens.Jwt;
 global using System.IO.Compression;
 global using System.Net;
@@ -25,6 +24,7 @@ global using Microsoft.IdentityModel.Tokens;
 
 global using RDS.Api.Common.Api;
 global using RDS.Api.Data;
+global using RDS.Api.Handlers;
 global using RDS.Api.Models;
 global using RDS.Api.Services;
 

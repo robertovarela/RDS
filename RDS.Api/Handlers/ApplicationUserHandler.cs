@@ -1,231 +1,118 @@
-﻿namespace RDS.Api.Handlers
+﻿namespace RDS.Api.Handlers;
+
+public class ApplicationUserHandler(
+    UserManager<User> userManager,
+    SignInManager<User> signInManager,
+    JwtTokenService jwtTokenService,
+    ILogger<ApplicationUserHandler> logger,
+    AppDbContext context)
+    : IApplicationUserHandler
 {
-    public class ApplicationUserHandler(UserManager<User> userManager, AppDbContext context) //: IApplicationUserHandler
+
+    public async Task<Response<UserLogin>> LoginAsync(LoginRequest? request)
     {
-        public async Task<Response<ApplicationUser?>> CreateAsync(CreateApplicationUserRequest request)
+        if (request is null)
         {
-            try
-            {
-                if (request.RepeatPassword != request.Password)
-                {
-                    return new Response<ApplicationUser?>(null, 400, "As senhas digitadas não são iguais");
-                }
-
-                var user = new User
-                {
-                    UserName = request.Email,
-                    Email = request.Email,
-                    Name = request.Name,
-                    CreateAt = DateTime.Now,
-                };
-
-                var result = await userManager.CreateAsync(user, request.Password);
-
-                if (!result.Succeeded)
-                {
-                    return new Response<ApplicationUser?>(null, 400, "Não foi possível criar o usuário");
-                }
-
-                return new Response<ApplicationUser?>(user, 201, "Usuário criado com sucesso!");
-            }
-            catch
-            {
-                return new Response<ApplicationUser?>(null, 500, "Não foi possível criar o usuário");
-            }
+            return new Response<UserLogin>(null, 400, "Dados inválidos");
         }
 
-        public async Task<Response<ApplicationUser?>> DeleteAsync(DeleteApplicationUserRequest request)
+        try
         {
-            try
+            var user = await userManager.FindByEmailAsync(request.Email);
+
+            if (user is null)
             {
-                var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
-
-                if (user == null)
-                {
-                    return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado");
-                }
-
-                var result = await userManager.DeleteAsync(user);
-
-                if (!result.Succeeded)
-                {
-                    return new Response<ApplicationUser?>(null, 400, "Não foi possível excluir o usuário");
-                }
-
-                return new Response<ApplicationUser?>(user, message: "Usuário excluído com sucesso!");
+                return new Response<UserLogin>(null, 401, "Usuário não encontrado");
             }
-            catch
+
+            var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+            logger.LogInformation("SignIn result: {Result}", result);
+
+            if (!result.Succeeded)
             {
-                return new Response<ApplicationUser?>(null, 500, "Não foi possível excluir o usuário");
+                return new Response<UserLogin>(null, 401, "Credenciais inválidas");
             }
+
+            var roles = await userManager.GetRolesAsync(user);
+            var token = jwtTokenService.GenerateToken(user, roles, request.FingerPrint);
+            var response = new UserLogin(request.Email, token);
+
+            return new Response<UserLogin>(response, 200, "Login realizado com sucesso");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred during the login process.");
+            return new Response<UserLogin>(null, 500, "Erro interno no servidor");
+        }
+    }
+
+    public async Task<Response<UserRefreshToken>> RefreshTokenAsync(RefreshTokenRequest? request)
+    {
+        if (request == null)
+        {
+            return new Response<UserRefreshToken>(null, 400, "Dados inválidos");
         }
 
-        public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(GetAllApplicationUserRequest request)
+        try
         {
-            try
-            {
-                var query = context
-                    .Users
-                    .AsNoTracking()
-                    //.Where(x => x.Id == request.UserId)
-                    .OrderBy(u => u.Name)
-                    .ThenBy(u => u.Id);
+            var refreshToken = await jwtTokenService.RenewTokenIfNecessary(request);
+            var response = new UserRefreshToken(refreshToken);
 
-                var users = await query
-                    .Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize)
-                    .Cast<ApplicationUser>()
-                    .ToListAsync();
-
-                var count = await query.CountAsync();
-
-                return count == 0
-                    ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado")
-                    : new PagedResponse<List<ApplicationUser>>(users, count, request.PageNumber, request.PageSize);
-            }
-            catch
-            {
-                return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível consultar os usuários");
-            }
+            return new Response<UserRefreshToken>(response, 200, "Refresh Token efetuado com sucesso");
         }
-
-        public async Task<Response<ApplicationUser?>> GetByCpfAsync(GetApplicationUserByCpfRequest request)
+        catch
         {
-            try
-            {
-                var user = await context.Users
-                    .FirstOrDefaultAsync(u => u.Cpf == request.Cpf);
-
-                return user == null
-                    ? new Response<ApplicationUser?>(null, 404, "Usuário não encontrado")
-                    : new Response<ApplicationUser?>(user);
-            }
-            catch
-            {
-                return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário");
-            }
+            return new Response<UserRefreshToken>(null, 500, "Erro interno no servidor");
         }
+    }
 
-        public async Task<Response<ApplicationUser?>> GetByIdAsync(GetApplicationUserByIdRequest request)
-        {
-            try
-            {
-                var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
+    public async Task<Response<ApplicationUser?>> CreateAsync(CreateApplicationUserRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-                return user == null
-                    ? new Response<ApplicationUser?>(null, 404, "Usuário não encontrado")
-                    : new Response<ApplicationUser?>(user);
-            }
-            catch
-            {
-                return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário");
-            }
-        }
+    public async Task<Response<ApplicationUser?>> UpdateAsync(UpdateApplicationUserRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public async Task<Response<ApplicationUser?>> GetActiveAsync(GetApplicationUserActiveRequest request)
-        {
-            try
-            {
-                var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
+    public async Task<Response<ApplicationUser?>> DeleteAsync(DeleteApplicationUserRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-                return user == null
-                    ? new Response<ApplicationUser?>(null, 404, "Usuário não encontrado")
-                    : new Response<ApplicationUser?>(user);
-            }
-            catch
-            {
-                return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário");
-            }
-        }
+    public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(GetAllApplicationUserRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public async Task<PagedResponse<List<ApplicationUser>>> GetByNameAsync(GetApplicationUserByNameRequest request)
-        {
-            try
-            {
-                var query = context
-                    .Users
-                    .AsNoTracking()
-                    .Where(u => EF.Functions.Like(u.UserName, $"%{request.UserName}%"))
-                    .OrderBy(u => u.Name)
-                    .Cast<ApplicationUser>();
+    public async Task<PagedResponse<List<ApplicationUser>>> GetAllByCompanyIdAsync(GetAllApplicationUserRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-                var users = await query
-                    .Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize)
-                    .ToListAsync();
+    public async Task<Response<ApplicationUser?>> GetByIdAsync(GetApplicationUserByIdRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-                var count = await query.CountAsync();
+    public async Task<Response<ApplicationUser?>> GetActiveAsync(GetApplicationUserActiveRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-                return count == 0
-                    ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado")
-                    : new PagedResponse<List<ApplicationUser>>(users, count, request.PageNumber, request.PageSize);
-            }
-            catch
-            {
-                return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar os usuários");
-            }
-        }
+    public async Task<Response<ApplicationUser?>> GetByCpfAsync(GetApplicationUserByCpfRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public async Task<PagedResponse<List<ApplicationUser>>> GetByFullNameAsync(GetApplicationUserByFullNameRequest request)
-        {
-            try
-            {
-                var query = context
-                    .Users
-                    .AsNoTracking()
-                    .Where(u => EF.Functions.Like(u.UserName, $"{request.UserName}%"))
-                    .OrderBy(u => u.Name)
-                    .Cast<ApplicationUser>();
+    public async Task<PagedResponse<List<ApplicationUser>>> GetByNameAsync(GetApplicationUserByNameRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-                var users = await query
-                    .Skip((request.PageNumber - 1) * request.PageSize)
-                    .Take(request.PageSize)
-                    .ToListAsync();
-
-                var count = await query.CountAsync();
-
-                return count == 0
-                    ? new PagedResponse<List<ApplicationUser>>(null, 404, "Usuário não encontrado")
-                    : new PagedResponse<List<ApplicationUser>>(users, count, request.PageNumber, request.PageSize);
-            }
-            catch
-            {
-                return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar o usuário");
-            }
-        }
-
-        public async Task<Response<ApplicationUser?>> UpdateAsync(UpdateApplicationUserRequest request)
-        {
-            try
-            {
-                var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
-
-                if (user == null)
-                {
-                    return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado");
-                }
-
-                user.Name = request.Name;
-                user.Email = request.Email.Trim().ToLower();
-                user.NormalizedEmail = user.Email.ToUpper();
-                user.UserName = user.Email;
-                user.NormalizedUserName = user.NormalizedEmail;
-                user.Cpf = request.Cpf;
-                user.BirthDate = request.BirthDate;
-
-                var result = await userManager.UpdateAsync(user);
-
-                if (!result.Succeeded)
-                {
-                    return new Response<ApplicationUser?>(null, 400, "Não foi possível atualizar o usuário");
-                }
-
-                return new Response<ApplicationUser?>(user, message: "Usuário atualizado com sucesso!");
-            }
-            catch
-            {
-                return new Response<ApplicationUser?>(null, 500, "Não foi possível atualizar o usuário");
-            }
-        }
+    public async Task<PagedResponse<List<ApplicationUser>>> GetByFullNameAsync(GetApplicationUserByFullNameRequest request)
+    {
+        throw new NotImplementedException();
     }
 }

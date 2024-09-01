@@ -1,6 +1,6 @@
 namespace RDS.Api.Handlers;
 
-public class ReportHandler(AppDbContext context) : IReportHandler
+public class ReportHandlerOld(AppDbContext context) : IReportHandler
 {
     public async Task<Response<List<IncomesAndExpenses>?>> GetIncomesAndExpensesReportAsync(
         GetIncomesAndExpensesRequest request)

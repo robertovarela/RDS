@@ -11,66 +11,20 @@ public class UserController(
     //RoleManager<IdentityRole<long>> roleManager,
     JwtTokenService jwtTokenService,
     ILogger<UserController> logger,
-    AppDbContext context)
+    AppDbContext context,
+    IApplicationUserHandler  applicationUserHandler)
     : ControllerBase
 {
     [HttpPost("userlogin")]
     public async Task<Response<UserLogin>> LoginAsync([FromBody] LoginRequest? request)
     {
-        if (request is null)
-        {
-            return new Response<UserLogin>(null, 400, "Dados inválidos");
-        }
-
-        try
-        {
-            var user = await userManager.FindByEmailAsync(request.Email);
-
-            if (user is null)
-            {
-                return new Response<UserLogin>(null, 401, "Usuário não encontrado");
-            }
-
-            var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-            logger.LogInformation("SignIn result: {Result}", result);
-
-            if (!result.Succeeded)
-            {
-                return new Response<UserLogin>(null, 401, "Credenciais inválidas");
-            }
-
-            var roles = await userManager.GetRolesAsync(user);
-            var token = jwtTokenService.GenerateToken(user, roles, request.FingerPrint);
-            var response = new UserLogin(request.Email, token);
-
-            return new Response<UserLogin>(response, 200, "Login realizado com sucesso");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "An error occurred during the login process.");
-            return new Response<UserLogin>(null, 500, "Erro interno no servidor");
-        }
+        return await applicationUserHandler.LoginAsync(request);
     }
 
     [HttpPost("refreshtoken")]
     public async Task<Response<UserRefreshToken>> RefreshTokenAsync([FromBody] RefreshTokenRequest? request)
     {
-        if (request == null)
-        {
-            return new Response<UserRefreshToken>(null, 400, "Dados inválidos");
-        }
-
-        try
-        {
-            var refreshToken = await jwtTokenService.RenewTokenIfNecessary(request);
-            var response = new UserRefreshToken(refreshToken);
-
-            return new Response<UserRefreshToken>(response, 200, "Refresh Token efetuado com sucesso");
-        }
-        catch
-        {
-            return new Response<UserRefreshToken>(null, 500, "Erro interno no servidor");
-        }
+        return await applicationUserHandler.RefreshTokenAsync(request);
     }
 
     [HttpPost("createuser")]

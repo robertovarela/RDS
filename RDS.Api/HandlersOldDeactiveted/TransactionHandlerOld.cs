@@ -2,7 +2,7 @@ using RDS.Core.Requests.Transactions;
 
 namespace RDS.Api.Handlers;
 
-public class TransactionHandler(AppDbContext context) : ITransactionHandler
+public class TransactionHandlerOld(AppDbContext context) : ITransactionHandler
 {
     public async Task<Response<Transaction?>> CreateAsync(CreateTransactionRequest request)
     {

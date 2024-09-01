@@ -2,7 +2,7 @@ using RDS.Core.Requests.Categories;
 
 namespace RDS.Api.Handlers;
 
-public class CategoryHandler(AppDbContext context) : ICategoryHandler
+public class CategoryHandlerOld(AppDbContext context) : ICategoryHandler
 {
     public async Task<Response<Category?>> CreateAsync(CreateCategoryRequest request)
     {

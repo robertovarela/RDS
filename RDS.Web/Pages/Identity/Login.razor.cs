@@ -7,7 +7,8 @@ public partial class LoginPage : ComponentBase
     
     [Inject] public DeviceService DeviceService { get; set; } = null!;
     [Inject] private ILogger<Login> Logger { get; set; } = null!;
-    [Inject] private AuthenticationService AuthenticationService { get; set; } = null!;
+    //[Inject] private AuthenticationService AuthenticationService { get; set; } = null!;
+    [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
@@ -48,8 +49,9 @@ public partial class LoginPage : ComponentBase
         {
             var fingerprint = await DeviceService.GetDeviceFingerprint();
             LoginModel.FingerPrint = fingerprint;
-            var result = await AuthenticationService.LoginAsync(LoginModel);
-            if (result)
+            //var result = await AuthenticationService.LoginAsync(LoginModel);
+            var result = await UserHandler.LoginAsync(LoginModel);
+            if (result.IsSuccess)
             {
                 Logger.LogInformation("Login successful, navigating to root");
                 NavigationService.NavigateTo("/");

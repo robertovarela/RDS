@@ -114,6 +114,8 @@ public static class BuilderExtension
     {
         builder.Services.AddTransient<JwtTokenService>();
         builder.Services.AddTransient<EmailService>();
+        builder.Services.AddScoped<IApplicationUserHandler, ApplicationUserHandler>();
+
     }
 
     public static void AddConfigurationsMvc(this WebApplicationBuilder builder)

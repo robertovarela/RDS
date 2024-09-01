@@ -2,6 +2,8 @@
 
 public interface IApplicationUserHandler
 {
+    Task<Response<UserLogin>> LoginAsync(LoginRequest? request);
+    Task<Response<UserRefreshToken>> RefreshTokenAsync(RefreshTokenRequest? request);
     Task<Response<ApplicationUser?>> CreateAsync(CreateApplicationUserRequest request);
     Task<Response<ApplicationUser?>> UpdateAsync(UpdateApplicationUserRequest request);
     Task<Response<ApplicationUser?>> DeleteAsync(DeleteApplicationUserRequest request);

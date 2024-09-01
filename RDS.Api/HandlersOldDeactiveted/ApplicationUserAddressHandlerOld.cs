@@ -1,6 +1,6 @@
 ﻿namespace RDS.Api.Handlers;
 
-public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationUserAddressHandler
+public class ApplicationUserAddressHandlerOld(AppDbContext context) : IApplicationUserAddressHandler
 {
     public async Task<Response<ApplicationUserAddress?>> CreateAsync(CreateApplicationUserAddressRequest request)
     {
