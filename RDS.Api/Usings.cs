@@ -36,6 +36,7 @@ global using RDS.Core.Models;
 global using RDS.Core.Models.Account;
 global using RDS.Core.Models.ApplicationUser;
 global using RDS.Core.Models.Reports;
+global using RDS.Core.Models.ViewModels.ApplicationUser;
 global using RDS.Core.Requests.Account;
 global using RDS.Core.Requests.ApplicationUsers;
 global using RDS.Core.Requests.ApplicationUsers.Address;

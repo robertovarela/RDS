@@ -6,7 +6,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         #region Properties
 
         protected bool IsBusy { get; private set; }
-        protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
+        protected List<AllUsersViewModel> PagedApplicationUsers { get; private set; } = [];
         public GetAllCompaniesByUserIdRequest InputModel { get; } = new();
         private string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
@@ -182,7 +182,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             }
         }
 
-        protected Func<ApplicationUser, bool> Filter => applicationUser =>
+        protected Func<AllUsersViewModel, bool> Filter => applicationUser =>
         {
             if (string.IsNullOrWhiteSpace(SearchTerm))
                 return true;
@@ -197,9 +197,9 @@ namespace RDS.Web.Pages.ApplicationUsers
                 applicationUser.Email.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (applicationUser.Cpf is not null &&
-                applicationUser.Cpf.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
-                return true;
+            // if (applicationUser.Cpf is not null &&
+            //     applicationUser.Cpf.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
+            //     return true;
 
             return false;
         };

@@ -5,7 +5,7 @@ public class ManipulateUserStateValuesService(
     ILocalStorageService localStorage,
     TokenService tokenService,
     AuthenticationService authenticationService,
-    IApplicationUserHandler UserHandler,
+    IApplicationUserHandler userHandler,
     IApplicationUserConfigurationHandler applicationUserConfigurationHandler,
     ICompanyHandler companyHandler,
     AuthenticationStateProvider authenticationStateProvider,
@@ -108,7 +108,7 @@ public class ManipulateUserStateValuesService(
         var fingerprint = await deviceService.GetDeviceFingerprint();
         var refreshTokenModel = new RefreshTokenRequest { Token = token, FingerPrint = fingerprint };
         //var result = await authenticationService.RefreshTokenAsync(refreshTokenModel);
-        var result = await UserHandler.RefreshTokenAsync(refreshTokenModel);
+        var result = await userHandler.RefreshTokenAsync(refreshTokenModel);
 
         if (!result.IsSuccess) return false;
         if (showMessage) snackbar.Add("Token atualizado com sucesso", Severity.Info);

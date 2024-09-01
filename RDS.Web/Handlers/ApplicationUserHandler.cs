@@ -72,7 +72,7 @@ public class ApplicationUserHandler(
 
             if (response.IsSuccessStatusCode)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
+                //var responseContent = await response.Content.ReadAsStringAsync();
 
                 var result = await response.Content.ReadFromJsonAsync<Response<UserRefreshToken>>();
                 var token = result?.Data?.Token;
@@ -132,20 +132,19 @@ public class ApplicationUserHandler(
                ?? new Response<ApplicationUser?>(null, 400, "Falha ao excluir o usuário");
     }
 
-    public async Task<PagedResponse<List<ApplicationUser>>> GetAllAsync(GetAllApplicationUserRequest request)
+    public async Task<PagedResponse<List<AllUsersViewModel>>> GetAllAsync(GetAllApplicationUserRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/allusers")
-            //$"v1/users/allusers?pageNumber={request.PageNumber}&pageSize={request.PageSize}")
             {
                 Content = JsonContent.Create(request)
             };
         var httpClient = await GetHttpClientAsync();
         var result = await httpClient.SendAsync(requestMessage);
-        return await result.Content.ReadFromJsonAsync<PagedResponse<List<ApplicationUser>>>()
-               ?? new PagedResponse<List<ApplicationUser>>(null, 400, "Não foi possível obter os usuários");
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<AllUsersViewModel>>>()
+               ?? new PagedResponse<List<AllUsersViewModel>>(null, 400, "Não foi possível obter os usuários");
     }
 
-    public async Task<PagedResponse<List<ApplicationUser>>> GetAllByCompanyIdAsync(GetAllApplicationUserRequest request)
+    public async Task<PagedResponse<List<AllUsersViewModel>>> GetAllByCompanyIdAsync(GetAllApplicationUserRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/users/allusersbycompanyid")
         {
@@ -153,8 +152,8 @@ public class ApplicationUserHandler(
         };
         var httpClient = await GetHttpClientAsync();
         var result = await httpClient.SendAsync(requestMessage);
-        return await result.Content.ReadFromJsonAsync<PagedResponse<List<ApplicationUser>>>()
-               ?? new PagedResponse<List<ApplicationUser>>(null, 400, "Não foi possível obter os usuários");
+        return await result.Content.ReadFromJsonAsync<PagedResponse<List<AllUsersViewModel>>>()
+               ?? new PagedResponse<List<AllUsersViewModel>>(null, 400, "Não foi possível obter os usuários");
     }
 
     public async Task<Response<ApplicationUser?>> GetByIdAsync(GetApplicationUserByIdRequest request)

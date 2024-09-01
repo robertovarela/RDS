@@ -6,8 +6,8 @@ public partial class ListAllUsersPage : ComponentBase
     #region Properties
 
     protected bool IsBusy { get; private set; }
-    private List<ApplicationUser> ApplicationUsers { get; set; } = [];
-    protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
+    private List<AllUsersViewModel> ApplicationUsers { get; set; } = [];
+    protected List<AllUsersViewModel> PagedApplicationUsers { get; private set; } = [];
     protected string SearchTerm { get; set; } = string.Empty;
     protected string SearchFilter { get; set; } = string.Empty;
     protected const string EditUrl = "/lista-usuarios/editar";
@@ -105,7 +105,7 @@ public partial class ListAllUsersPage : ComponentBase
         }
     }
 
-    public Func<ApplicationUser, bool> Filter => applicationUser =>
+    public Func<AllUsersViewModel, bool> Filter => applicationUser =>
     {
         if (string.IsNullOrWhiteSpace(SearchTerm))
             return true;
@@ -120,9 +120,9 @@ public partial class ListAllUsersPage : ComponentBase
             applicationUser.Email.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        if (applicationUser.Cpf is not null &&
-            applicationUser.Cpf.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
-            return true;
+        // if (applicationUser.Cpf is not null &&
+        //     applicationUser.Cpf.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
+        //     return true;
 
         return false;
     };
@@ -144,7 +144,7 @@ public partial class ListAllUsersPage : ComponentBase
         NavigationService.NavigateToRegister();
     }
 
-    private List<ApplicationUser> PaginateUsers(int currentPage, int pageSize)
+    private List<AllUsersViewModel> PaginateUsers(int currentPage, int pageSize)
     {
         return ApplicationUsers
             .Where(Filter)

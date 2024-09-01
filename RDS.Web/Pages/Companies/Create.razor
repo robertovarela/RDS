@@ -5,7 +5,7 @@
     <Authorized>
         @if (!OwnerSelected)
         {
-            <MudDataGrid T="ApplicationUser" Items="@FilteredUsers" Filterable="true" Hideable="true">
+            <MudDataGrid T="AllUsersViewModel" Items="@FilteredUsers" Filterable="true" Hideable="true">
                 <ToolBarContent>
                         <MudTextField @bind-Value="@SearchFilter"
                                       Class="mr-4"

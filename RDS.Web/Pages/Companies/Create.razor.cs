@@ -1,6 +1,4 @@
-﻿using RDS.Core.Requests.Companies;
-
-namespace RDS.Web.Pages.Companies;
+﻿namespace RDS.Web.Pages.Companies;
 
 public class CreateCompanyPage : ComponentBase
 {
@@ -9,8 +7,8 @@ public class CreateCompanyPage : ComponentBase
     protected bool IsBusy { get; private set; }
     protected bool OwnerSelected { get; set; }
     protected CreateCompanyRequest InputModel { get; set; } = new();
-    protected List<Company> Companies { get; set; } = [];
-    protected List<ApplicationUser> FilteredUsers { get; set; } = [];
+    //protected List<Company> Companies { get; set; } = [];
+    protected List<AllUsersViewModel> FilteredUsers { get; set; } = [];
     protected string SearchFilter { get; set; } = string.Empty;
     public string OwnerDisplayText { get; set; } = string.Empty;
 

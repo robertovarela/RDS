@@ -6,7 +6,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         #region Properties
 
         protected bool IsBusy { get; private set; }
-        protected List<ApplicationUser> PagedApplicationUsers { get; private set; } = [];
+        protected List<AllUsersViewModel> PagedApplicationUsers { get; private set; } = [];
         protected string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
         private long LoggedUserId { get; set; }
@@ -67,7 +67,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
 
                 PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
                     ? PaginateUsers(result.Data, _currentPage, _pageSize)
-                    : new List<ApplicationUser>();
+                    : new List<AllUsersViewModel>();
             }
             catch
             {
@@ -93,7 +93,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             StateHasChanged();
         }
 
-        public Func<ApplicationUser, bool> Filter => applicationUser =>
+        public Func<AllUsersViewModel, bool> Filter => applicationUser =>
         {
             if (string.IsNullOrWhiteSpace(SearchTerm))
                 return true;
@@ -109,14 +109,14 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
                 applicationUser.Email.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (applicationUser.Cpf is not null &&
-                applicationUser.Cpf.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
-                return true;
+            // if (applicationUser.Cpf is not null &&
+            //     applicationUser.Cpf.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
+            //     return true;
 
             return false;
         };
 
-        private List<ApplicationUser> PaginateUsers(List<ApplicationUser> users, int currentPage, int pageSize)
+        private List<AllUsersViewModel> PaginateUsers(List<AllUsersViewModel> users, int currentPage, int pageSize)
         {
             return users
                 .Where(Filter)
