@@ -5,7 +5,9 @@ public class ApplicationUserHandler(
     SignInManager<User> signInManager,
     JwtTokenService jwtTokenService,
     ILogger<ApplicationUserHandler> logger,
-    AppDbContext context)
+    AppDbContext context
+    //RoleManager<IdentityRole<long>> roleManager
+    )
     : IApplicationUserHandler
 {
 
