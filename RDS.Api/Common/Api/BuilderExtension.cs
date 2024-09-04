@@ -119,7 +119,7 @@ public static class BuilderExtension
         builder.Services.AddScoped<IApplicationUserConfigurationHandler, ApplicationUserConfigurationHandler>();
         builder.Services.AddScoped<ICompanyHandler, CompanyHandler>();
         builder.Services.AddScoped<ICategoryHandler, CategoryHandler>();
-
+        builder.Services.AddScoped<ITransactionHandler, TransactionHandler>();
     }
 
     public static void AddConfigurationsMvc(this WebApplicationBuilder builder)
