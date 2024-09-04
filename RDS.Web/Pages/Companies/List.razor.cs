@@ -69,7 +69,7 @@ public partial class ListCompaniesPage : ComponentBase
         IsBusy = true;
         try
         {
-            Func<Task<Response<List<Company>>>> getCompaniesTask = IsAdmin
+            Func<Task<PagedResponse<List<Company>>>> getCompaniesTask = IsAdmin
                 ? () => CompanyHandler.GetAllAsync(new GetAllCompaniesRequest())
                 : () => CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest { UserId = LoggedUserId });
 

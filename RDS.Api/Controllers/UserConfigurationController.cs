@@ -3,7 +3,7 @@
 [ApiController]
 [Microsoft.AspNetCore.Mvc.Route("v1/userconfiguration")]
 public class UserConfigurationController(
-        IApplicationUserConfigurationHandler applicationUserConfigurationHandler) : Controller
+        IApplicationUserConfigurationHandler applicationUserConfigurationHandler) : ControllerBase
 {
     [HttpPost("create-role")]
     public async Task<Response<ApplicationRole?>> CreateRole([FromBody] CreateApplicationRoleRequest request)

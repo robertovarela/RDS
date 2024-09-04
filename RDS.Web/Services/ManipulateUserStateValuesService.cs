@@ -203,7 +203,7 @@ public class ManipulateUserStateValuesService(
     {
         try
         {
-            var request = new GetAllCompaniesByUserIdRequest();
+            var request = new GetAllCompaniesByUserIdRequest { UserId = userId };
             var result = await companyHandler.GetAllCompanyIdNameByAdminAsync(request);
             if (result.IsSuccess)
                 CompanyIdsFromUser = result.Data ?? [];

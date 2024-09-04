@@ -117,6 +117,7 @@ public static class BuilderExtension
         builder.Services.AddScoped<IApplicationUserHandler, ApplicationUserHandler>();
         builder.Services.AddScoped<IApplicationUserAddressHandler, ApplicationUserAddressHandler>();
         builder.Services.AddScoped<IApplicationUserConfigurationHandler, ApplicationUserConfigurationHandler>();
+        builder.Services.AddScoped<ICompanyHandler, CompanyHandler>();
 
     }
 
