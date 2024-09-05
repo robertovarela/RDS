@@ -53,8 +53,8 @@ public class ManipulateUserStateValuesService(
         }
         else
         {
-            SetSelectedCompanyId(0);
             SetUserCompanies(new List<CompanyIdNameViewModel>());
+            SetSelectedCompanyId(0);
         }
     }
 
