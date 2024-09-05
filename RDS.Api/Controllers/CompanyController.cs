@@ -46,20 +46,6 @@ public class CompanyController(ICompanyHandler companyHandler) : ControllerBase
         return await companyHandler.GetAllByUserIdAsync(request);
     }
 
-    // [HttpPost("allcompanyidnamebyadmin")]
-    // public async Task<PagedResponse<List<CompanyIdNameViewModel>>> GetAllCompanyIdNameByAdminAsync(
-    //     [FromBody] GetAllCompaniesByUserIdRequest request)
-    // {
-    //     return await companyHandler.GetAllCompanyIdNameByAdminAsync(request);
-    // }
-    //
-    // [HttpPost("allcompanyidnamebyuserid")]
-    // public async Task<PagedResponse<List<CompanyIdNameViewModel>>> GetAllCompanyIdNameByUserIdAsync(
-    //     [FromBody] GetAllCompaniesByUserIdRequest request)
-    // {
-    //     return await companyHandler.GetAllCompanyIdNameByUserIdAsync(request);
-    // }
-
     [HttpPost("allcompanyidnamebyrole")]
     public async Task<PagedResponse<List<CompanyIdNameViewModel>>> GetAllCompanyIdNameByRoleAsync(
         [FromBody] GetAllCompaniesByUserIdRequest request)

@@ -36,7 +36,7 @@ public class ApplicationUserHandler(
 
             var roles = await userManager.GetRolesAsync(user);
             var token = jwtTokenService.GenerateToken(user, roles, request.FingerPrint);
-            var response = new UserLogin(request.Email, token);
+            var response = new UserLogin(user.Id, request.Email, token);
 
             return new Response<UserLogin>(response, 200, "Login realizado com sucesso");
         }

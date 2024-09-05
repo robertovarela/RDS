@@ -35,16 +35,16 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         var expiryDateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(expiryDateUnix).UtcDateTime;
         var currentUtcTime = DateTime.UtcNow;
 
-        var timeToExpiry = expiryDateTimeUtc - currentUtcTime;
-        if (timeToExpiry > TimeSpan.FromMinutes(ApiConfiguration.JwtMinutesToRefresh)) return string.Empty;
+        if (expiryDateTimeUtc - currentUtcTime > TimeSpan.FromMinutes(ApiConfiguration.JwtMinutesToRefresh))
+             return string.Empty;
 
         var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-
         if (string.IsNullOrEmpty(email))
             throw new SecurityTokenException("Invalid token: required claims missing");
 
-        var user = await userManager.FindByEmailAsync(email) ??
-                   throw new SecurityTokenException("Invalid token: user not found");
+        var user = await userManager.FindByEmailAsync(email)
+                   ?? throw new SecurityTokenException("Invalid token: user not found");
+
         var roles = await userManager.GetRolesAsync(user);
         return GenerateToken(user, roles, fingerPrint);
     }
@@ -98,17 +98,17 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
             ci.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, user.Email));
             ci.AddClaim(new Claim("FingerPrint", fingerPrint));
         }
-        
+
         foreach (var role in roles)
         {
             ci.AddClaim(new Claim($"custom_role_{role}", role));
         }
-        
+
         // foreach (var role in roles)
         // {
         //     ci.AddClaim(new Claim(ClaimTypes.Role, role));
         // }
- 
+
         return ci;
     }
 

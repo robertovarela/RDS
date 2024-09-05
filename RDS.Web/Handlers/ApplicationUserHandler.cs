@@ -44,7 +44,7 @@ public class ApplicationUserHandler(
                 await localStorageService.SetItemAsync("authToken", token);
                 ((CustomAuthenticationStateProvider)authenticationStateProvider).NotifyUserAuthentication(token);
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                return new Response<UserLogin>(null, 200, "Success");
+                return new Response<UserLogin>(result!.Data, 200, "Success");
             }
             else
             {

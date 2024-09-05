@@ -2,34 +2,35 @@ namespace RDS.Web.Pages;
 
 public class HomePage : ComponentBase
 {
-    protected long Company  { get; set; } 
+    #region Properties
+    private long LoggedUserId { get; set; }
+    private long CompanyId { get; set; }
+    protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
+    protected bool IsAdmin { get; private set; }
+    protected bool IsOwner { get; private set; }
+    
+    #endregion
+    
     #region Services
 
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
     
     #endregion
-    //private string roles = "";
-    
-    private long LoggedUserId { get; set; }
-    private long CompanyId { get; set; }
-    protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
-    protected bool IsAdmin { get; set; }
-    protected bool IsOwner { get; set; }
-    
+   
     #region Overrides
 
     protected override async Task OnInitializedAsync()
     {
         StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
         await StartService.ValidateAccesByTokenAsync(blockNavigation: false);
-        await StartService.SetDefaultValues();
         
         LoggedUserId = StartService.GetLoggedUserId();
         IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
         IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
         if (IsOwner || IsAdmin)
         {
+            await StartService.SetDefaultValues();
             CompanyId = StartService.GetSelectedCompanyId();
             Companies = StartService.GetUserCompanies();
         }

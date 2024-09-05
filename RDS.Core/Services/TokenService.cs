@@ -23,8 +23,9 @@ public class TokenService(string jwtKey, string issuer, string audience)
             
             return tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var mensaje = ex.Message;
             return null;
         }
     }

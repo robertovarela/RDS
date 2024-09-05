@@ -3,31 +3,26 @@ namespace RDS.Web.Pages.Identity;
 // ReSharper disable once PartialTypeWithSinglePart
 public partial class LoginPage : ComponentBase
 {
-    #region Services
-    
-    [Inject] public DeviceService DeviceService { get; set; } = null!;
-    [Inject] private ILogger<Login> Logger { get; set; } = null!;
-    //[Inject] private AuthenticationService AuthenticationService { get; set; } = null!;
-    [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
-    [Inject] private ISnackbar Snackbar { get; set; } = null!;
-
-    #endregion
 
     #region Properties
 
     protected bool IsBusy { get; set; }
     private bool IsShow { get; set; }
-    public LoginRequest LoginModel { get; set; } = new();
-
-    #endregion
-
-    #region Parameters
-
-    [Parameter] public InputType PasswordInput { get; set; } = InputType.Password;
-    [Parameter] public string PasswordInputIcon { get; set; } = Icons.Material.Filled.VisibilityOff;
+    protected LoginRequest LoginModel { get; set; } = new();
+    protected InputType PasswordInput { get; set; } = InputType.Password;
+    protected string PasswordInputIcon { get; set; } = Icons.Material.Filled.VisibilityOff;
 
     #endregion
     
+    #region Services
+
+    [Inject] public DeviceService DeviceService { get; set; } = null!;
+    [Inject] private ILogger<Login> Logger { get; set; } = null!;
+    [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+
+    #endregion
+
     #region Overrides
 
     protected override async Task OnInitializedAsync()
@@ -38,7 +33,7 @@ public partial class LoginPage : ComponentBase
     #endregion
 
     #region Methods
-    
+
     public async Task OnValidSubmitAsync()
     {
         Logger.LogInformation("Starting HandleLogin");
@@ -52,6 +47,8 @@ public partial class LoginPage : ComponentBase
             if (result.IsSuccess)
             {
                 Logger.LogInformation("Login successful, navigating to root");
+                StartService.SetLoggedId(result.Data!.UserId);
+                await StartService.SetDefaultValues();
                 NavigationService.NavigateToHome();
             }
             else
@@ -72,7 +69,7 @@ public partial class LoginPage : ComponentBase
 
     public void ButtonVisibilityPassword()
     {
-        if(IsShow)
+        if (IsShow)
         {
             IsShow = false;
             PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
@@ -85,6 +82,6 @@ public partial class LoginPage : ComponentBase
             PasswordInput = InputType.Text;
         }
     }
-    
+
     #endregion
 }
