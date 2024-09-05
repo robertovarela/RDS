@@ -17,13 +17,18 @@
         public static void NavigateToLogin()
         {
             _navigationManager?.NavigateTo("/sair");
-            _navigationManager?.NavigateTo("/login");
         }
         
         public static void NavigateToRegister()
         {
             _navigationManager?.NavigateTo("/sair");
             _navigationManager?.NavigateTo("/registrar");
+        }
+        
+        public static void NavigateToHome()
+        {
+            StartService.SetSourceUrl([]);
+            _navigationManager?.NavigateTo("/");
         }
         
         public static async Task NavigateToAccessNotAllowedAsync()

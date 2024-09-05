@@ -4,7 +4,6 @@ public class ManipulateUserStateValuesService(
     UserStateService userState,
     ILocalStorageService localStorage,
     TokenService tokenService,
-    AuthenticationService authenticationService,
     IApplicationUserHandler userHandler,
     IApplicationUserConfigurationHandler applicationUserConfigurationHandler,
     ICompanyHandler companyHandler,
@@ -15,14 +14,19 @@ public class ManipulateUserStateValuesService(
     private List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
     private List<CompanyIdNameViewModel> CompanyIdsFromUser { get; set; } = [];
 
+    public void SetNotLoggedUserId()
+    {
+        SetLoggedUserId(0);
+    }
     public async Task SetDefaultValuesAsync()
     {
+        long loggedUserId = GetLoggedUserId();
+
         SetSelectedUserName("");
         SetPageTitle("");
         SetCurrentUrl("");
         SetSourceUrl([]);
 
-        long loggedUserId = GetLoggedUserId();
         SetSelectedUserId(loggedUserId);
         SetSelectedAddressId(0);
         SetSelectedCategoryId(0);
@@ -36,11 +40,11 @@ public class ManipulateUserStateValuesService(
 
             if (isOwner)
             {
-                companies = await GetAllCompanyIdByUserIdAsync(loggedUserId);
+                companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, role: "Owner");
             }
             else if (isAdmin)
             {
-                companies = await GetAllCompanyIdByAdminAsync(loggedUserId);
+                companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, role: "Admin");
             }
 
             SetUserCompanies(companies);
@@ -199,12 +203,50 @@ public class ManipulateUserStateValuesService(
         }
     }
 
-    private async Task<List<CompanyIdNameViewModel>> GetAllCompanyIdByAdminAsync(long userId)
+    // private async Task<List<CompanyIdNameViewModel>> GetAllCompanyIdByAdminAsync(long userId)
+    // {
+    //     try
+    //     {
+    //         var request = new GetAllCompaniesByUserIdRequest { UserId = userId };
+    //         var result = await companyHandler.GetAllCompanyIdNameByAdminAsync(request);
+    //         if (result.IsSuccess)
+    //             CompanyIdsFromUser = result.Data ?? [];
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         snackbar.Add(ex.Message, Severity.Error);
+    //     }
+    //
+    //     return CompanyIdsFromUser;
+    // }
+    //
+    // private async Task<List<CompanyIdNameViewModel>> GetAllCompanyIdByUserIdAsync(long userId)
+    // {
+    //     try
+    //     {
+    //         var request = new GetAllCompaniesByUserIdRequest { UserId = userId };
+    //         var result = await companyHandler.GetAllCompanyIdNameByUserIdAsync(request);
+    //         if (result.IsSuccess)
+    //             CompanyIdsFromUser = result.Data ?? [];
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         snackbar.Add(ex.Message, Severity.Error);
+    //     }
+    //
+    //     return CompanyIdsFromUser;
+    // }
+
+    private async Task<List<CompanyIdNameViewModel>> GetAllCompanyIdNameByRoleAsync(long userId, string role)
     {
         try
         {
-            var request = new GetAllCompaniesByUserIdRequest { UserId = userId };
-            var result = await companyHandler.GetAllCompanyIdNameByAdminAsync(request);
+            var request = new GetAllCompaniesByUserIdRequest
+            {
+                UserId = userId, 
+                Role = role
+            };
+            var result = await companyHandler.GetAllCompanyIdNameByRoleAsync(request);
             if (result.IsSuccess)
                 CompanyIdsFromUser = result.Data ?? [];
         }
@@ -215,24 +257,7 @@ public class ManipulateUserStateValuesService(
 
         return CompanyIdsFromUser;
     }
-
-    private async Task<List<CompanyIdNameViewModel>> GetAllCompanyIdByUserIdAsync(long userId)
-    {
-        try
-        {
-            var request = new GetAllCompaniesByUserIdRequest { UserId = userId };
-            var result = await companyHandler.GetAllCompanyIdNameByUserIdAsync(request);
-            if (result.IsSuccess)
-                CompanyIdsFromUser = result.Data ?? [];
-        }
-        catch (Exception ex)
-        {
-            snackbar.Add(ex.Message, Severity.Error);
-        }
-
-        return CompanyIdsFromUser;
-    }
-
+    
     public async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long userId)
     {
         try

@@ -13,8 +13,9 @@ public class LogoutPage : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         await AuthenticationService.LogoutAsync();
-        await base.OnInitializedAsync();
+        StartService.SetNotLoggedUserId();
         await StartService.SetDefaultValues();
+        await base.OnInitializedAsync();
         await NavigateToLoginAsync();
     }
 

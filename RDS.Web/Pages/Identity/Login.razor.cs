@@ -32,7 +32,6 @@ public partial class LoginPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        await StartService.SetDefaultValues();
         await StartService.VerifyIfLoggedInAsync();
     }
 
@@ -49,12 +48,11 @@ public partial class LoginPage : ComponentBase
         {
             var fingerprint = await DeviceService.GetDeviceFingerprint();
             LoginModel.FingerPrint = fingerprint;
-            //var result = await AuthenticationService.LoginAsync(LoginModel);
             var result = await UserHandler.LoginAsync(LoginModel);
             if (result.IsSuccess)
             {
                 Logger.LogInformation("Login successful, navigating to root");
-                NavigationService.NavigateTo("/");
+                NavigationService.NavigateToHome();
             }
             else
             {
