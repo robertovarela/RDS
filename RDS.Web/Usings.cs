@@ -11,6 +11,7 @@ global using System.Text.Json;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.AspNetCore.Components.Authorization;
+global using Microsoft.JSInterop;
 
 /* add global usage directives for Comanda namespaces here */
 
