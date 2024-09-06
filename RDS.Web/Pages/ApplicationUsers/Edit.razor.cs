@@ -11,7 +11,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     protected DateTime MinDate = DateTime.Today.AddYears(-110);
     protected DateTime MaxDate = DateTime.Today.AddYears(-12);
     private long LoggedUserId { get; set; }
-    private long UserId { get; set; }
+    protected long UserId { get; set; }
     private bool IsAdmin { get; set; }
     private bool IsOwner { get; set; }
     private string Email { get; set; } = null!;

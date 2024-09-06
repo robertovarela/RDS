@@ -68,21 +68,21 @@
                     <MudPaper Class="pa-2">
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <MudSpacer/>
-                            <MudPaper Class="pa-4 bg-appbarbackground" Style="margin-right: 8px;">
-                                <MudButton Class="pa-8" ButtonType="ButtonType.Button"
+                            <MudPaper Class="pa-2 bg-appbarbackground" Style="margin-right: 8px;">
+                                <MudButton Class="pa-4" ButtonType="ButtonType.Button"
                                            Variant="Variant.Outlined"
-                                           Color="Color.Primary"
-                                           OnClick="@(() => StartService.LinkToUrlUser(UrlAddress, StartService.GetSelectedUserId()))">
-                                    Endereço
+                                           Color="Color.Surface"
+                                           OnClick="@(() => StartService.LinkToUrlUser(UrlAddress, UserId))">
+                                    Endereços
                                 </MudButton>
                             </MudPaper>
                             <MudSpacer/>
-                            <MudPaper Class="pa-4 bg-appbarbackground" Style="margin-left: 8px;">
-                                <MudButton Class="pa-8" ButtonType="ButtonType.Button"
+                            <MudPaper Class="pa-2 bg-appbarbackground" Style="margin-left: 8px;">
+                                <MudButton Class="pa-4" ButtonType="ButtonType.Button"
                                            Variant="Variant.Outlined"
-                                           Color="Color.Primary"
+                                           Color="Color.Surface"
                                            OnClick="@(() => NavigationService.NavigateTo(UrlPhone))">
-                                    Telefone
+                                    Telefones
                                 </MudButton>
                             </MudPaper>
                             <MudSpacer/>

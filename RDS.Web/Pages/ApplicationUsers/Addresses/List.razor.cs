@@ -1,6 +1,7 @@
 namespace RDS.Web.Pages.ApplicationUsers.Addresses;
 
-public class ListApplicationUserAdressesPage : ComponentBase
+// ReSharper disable once PartialTypeWithSinglePart
+public partial class ListApplicationUserAdressesPage : ComponentBase
 {
     #region Properties
 
@@ -15,9 +16,9 @@ public class ListApplicationUserAdressesPage : ComponentBase
 
     #region Services
 
-    [Inject] public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
-    [Inject] public IDialogService DialogService { get; set; } = null!;
+    [Inject] protected IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
+    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+    [Inject] protected IDialogService DialogService { get; set; } = null!;
 
     #endregion
 
@@ -57,7 +58,15 @@ public class ListApplicationUserAdressesPage : ComponentBase
             StateHasChanged();
         }
     }
-    public async void OnDeleteButtonClickedAsync(long userId, long id, string street)
+    
+    protected void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key != "Escape") return;
+        SearchTerm = string.Empty;
+        StateHasChanged();
+    }
+    
+    protected async void OnDeleteButtonClickedAsync(long userId, long id, string street)
     {
         var result = await DialogService.ShowMessageBox(
             "ATENÇÃO",
@@ -66,12 +75,12 @@ public class ListApplicationUserAdressesPage : ComponentBase
             cancelText: "Cancelar");
 
         if (result is true)
-            await OnDeleteAsync(userId, id, street);
+            await OnDeleteAsync(userId, id);
 
         StateHasChanged();
     }
 
-    public async Task OnDeleteAsync(long userId, long id, string title)
+    private async Task OnDeleteAsync(long userId, long id)
     {
         try
         {
@@ -82,14 +91,7 @@ public class ListApplicationUserAdressesPage : ComponentBase
             };
             var result = await AddressHandler.DeleteAsync(request);
             ApplicationUsersAddress.RemoveAll(x => x.UserId == userId && x.Id == id);
-            if(result.Data != null)
-            {
-                Snackbar.Add(result.Message, Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add(result.Message, Severity.Warning);
-            }
+            Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
         {
@@ -97,7 +99,7 @@ public class ListApplicationUserAdressesPage : ComponentBase
         }
     }
 
-    public Func<ApplicationUserAddress, bool> Filter => applicationUserAddress =>
+    protected Func<ApplicationUserAddress, bool> Filter => applicationUserAddress =>
     {
         if (string.IsNullOrWhiteSpace(SearchTerm))
             return true;

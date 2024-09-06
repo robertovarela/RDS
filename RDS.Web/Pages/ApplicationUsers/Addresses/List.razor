@@ -33,7 +33,10 @@
                         AdornmentIcon="@Icons.Material.Filled.Search"
                         Immediate="true"
                         IconSize="Size.Medium"
-                        Class="mt-0">
+                        Class="mt-0"
+                        OnKeyDown="@((KeyboardEventArgs e) => HandleKeyDown(e))">
+                    Clearable="true"
+                        AutoFocus>
                     </MudTextField>
                 </ToolBarContent>
                 <Columns>
