@@ -107,6 +107,7 @@ public class ApplicationUserHandler(
 
     public async Task<Response<ApplicationUser?>> UpdateAsync(UpdateApplicationUserRequest request)
     {
+        var validateCpf = new CpfAttribute();
         try
         {
             var user = await userManager.FindByIdAsync(request.UserId.ToString());
@@ -114,6 +115,11 @@ public class ApplicationUserHandler(
             if (user == null)
             {
                 return new Response<ApplicationUser?>(null, 404, "Usuário não encontrado");
+            }
+
+            if (!string.IsNullOrEmpty(request.Cpf) && !validateCpf.IsValid(request.Cpf))
+            {
+                return new Response<ApplicationUser?>(null, 400, "CPF inválido");
             }
 
             user.Name = request.Name;
@@ -126,10 +132,9 @@ public class ApplicationUserHandler(
 
             var result = await userManager.UpdateAsync(user);
 
-            if (result.Succeeded)
-                return new Response<ApplicationUser?>(user, message: "Usuário atualizado com sucesso!");
-
-            return new Response<ApplicationUser?>(null, 400, "Não foi possível atualizar o usuário");
+            return result.Succeeded
+                ? new Response<ApplicationUser?>(user, message: "Usuário atualizado com sucesso!")
+                : new Response<ApplicationUser?>(null, 400, "Não foi possível atualizar o usuário");
         }
         catch (Exception ex)
         {
@@ -218,7 +223,8 @@ public class ApplicationUserHandler(
         }
         catch
         {
-            return new PagedResponse<List<AllUsersViewModel>>(null, 500, "Não foi possível consultar os usuários");
+            return new PagedResponse<List<AllUsersViewModel>>(
+                null, 500, "Não foi possível consultar os usuários");
         }
     }
 
@@ -284,7 +290,8 @@ public class ApplicationUserHandler(
         }
         catch
         {
-            return new PagedResponse<List<AllUsersViewModel>>(null, 500, "Não foi possível consultar os usuários");
+            return new PagedResponse<List<AllUsersViewModel>>(
+                null, 500, "Não foi possível consultar os usuários");
         }
     }
 
@@ -354,7 +361,8 @@ public class ApplicationUserHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "An error occurred while getting the user.");
-            return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar o usuário");
+            return new PagedResponse<List<ApplicationUser>>(
+                null, 500, "Não foi possível recuperar o usuário");
         }
     }
 
@@ -384,7 +392,8 @@ public class ApplicationUserHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "An error occurred while getting the user.");
-            return new PagedResponse<List<ApplicationUser>>(null, 500, "Não foi possível recuperar o usuário");
+            return new PagedResponse<List<ApplicationUser>>(
+                null, 500, "Não foi possível recuperar o usuário");
         }
     }
 }

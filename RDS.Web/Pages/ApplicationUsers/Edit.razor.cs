@@ -5,11 +5,12 @@ public partial class EditApplicationUsersPage : ComponentBase
 {
     #region Properties
 
-    protected bool IsBusy { get; set; }
+    protected bool IsBusy { get; private set; }
     protected UpdateApplicationUserRequest InputModel { get; set; } = new();
     protected MudDatePicker Picker = new();
     protected DateTime MinDate = DateTime.Today.AddYears(-110);
     protected DateTime MaxDate = DateTime.Today.AddYears(-12);
+    private long LoggedUserId { get; set; }
     private long UserId { get; set; }
     private bool IsAdmin { get; set; }
     private bool IsOwner { get; set; }
@@ -34,13 +35,13 @@ public partial class EditApplicationUsersPage : ComponentBase
     {
         StartService.SetPageTitle("Editar Usuário");
         await StartService.ValidateAccesByTokenAsync();
-        //UserId = await StartService.GetSelectedUserIdIfAdminAsync();
+        LoggedUserId = StartService.GetLoggedUserId();
         UserId = StartService.GetSelectedUserId();
-        IsAdmin = await StartService.IsAdminInRolesAsync(StartService.GetLoggedUserId());
+        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
         if (!IsAdmin)
         {
             IsOwner = await StartService.IsOwnerInRolesAsync(UserId);
-            IsNotEdit = IsOwner && (StartService.GetLoggedUserId() != UserId);
+            IsNotEdit = IsOwner && (LoggedUserId != UserId);
         }
 
         await LoadUser();
@@ -91,17 +92,17 @@ public partial class EditApplicationUsersPage : ComponentBase
     protected async Task OnValidSubmitAsync()
     {
         IsBusy = true;
-        if (InputModel.Cpf == string.Empty)
+        if (string.IsNullOrWhiteSpace(InputModel.Cpf))
         {
             InputModel.Cpf = null;
         }
-
+        
+        InputModel.Email = Email;
         try
         {
-            InputModel.Email = Email;
             var result = await UserHandler.UpdateAsync(InputModel);
 
-            if (result.IsSuccess && result.Data is not null)
+            if (result is { IsSuccess: true, Data: not null })
             {
                 Snackbar.Add("Usuário atualizado", Severity.Success);
             }

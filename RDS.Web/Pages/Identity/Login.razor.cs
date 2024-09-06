@@ -47,8 +47,8 @@ public partial class LoginPage : ComponentBase
             if (result.IsSuccess)
             {
                 Logger.LogInformation("Login successful, navigating to root");
-                StartService.SetLoggedId(result.Data!.UserId);
-                await StartService.SetDefaultValues();
+                // StartService.SetLoggedId(result.Data!.UserId);
+                // await StartService.SetDefaultValues();
                 NavigationService.NavigateToHome();
             }
             else
