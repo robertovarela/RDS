@@ -31,7 +31,7 @@ public partial class ListCompaniesPage : ComponentBase
         StartService.SetPageTitle("Empresas");
         await StartService.ValidateAccesByTokenAsync();
         LoggedUserId = StartService.GetLoggedUserId();
-        StartService.SetSelectedUserId(0);
+        //StartService.SetSelectedUserId(0);
         IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
 
         await LoadCompaniesAsync();

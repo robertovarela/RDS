@@ -6,7 +6,7 @@
                        Variant="Variant.Filled"
                        Color="Color.Secondary"
                        Disabled="Button1Disable"
-                       OnClick="@(() => NavigationService.NavigateTo(CancelPage))">
+                       OnClick="@(() => NavigationService.NavigateTo(CancelOrBackPage))">
                 @Button1Text
             </MudButton>
         }
@@ -24,7 +24,7 @@
 </MudPaper>
 
 @code {
-    [Parameter] public string CancelPage { get; set; } = "/";
+    [Parameter] public string CancelOrBackPage { get; set; } = "/";
     [Parameter] public string Button1Text { get; set; } = "Cancelar";
     [Parameter] public string Button2Text { get; set; } = "Salvar";
     [Parameter] public bool Button1IsNotVisible { get; set; }
