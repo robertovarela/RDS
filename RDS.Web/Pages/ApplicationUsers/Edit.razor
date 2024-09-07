@@ -17,13 +17,13 @@
         else
         {
             <MudPaper Class="mud-data-grid pa-8 mt-4">
-                <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="editContext">
+                <EditForm Model="@InputModel" OnValidSubmit="OnUpdateButtonClickedAsync" Context="editContext">
                     <DataAnnotationsValidator/>
 
                     <MudTextField Label="Código"
                                   HelperText="&nbsp;"
-                                  @bind-Value="InputModel.CompanyId"
-                                  For="@(() => InputModel.CompanyId)"
+                                  @bind-Value="InputModel.UserId"
+                                  For="@(() => InputModel.UserId)"
                                   Variant="Variant.Outlined"
                                   Disabled/>
 
@@ -72,7 +72,7 @@
                                 <MudButton Class="pa-4" ButtonType="ButtonType.Button"
                                            Variant="Variant.Outlined"
                                            Color="Color.Surface"
-                                           OnClick="@(() => StartService.LinkToUrlUser(UrlAddress, UserId))">
+                                           OnClick="@(() => StartService.LinkToUrlUser(UserAddressUrl, UserId))">
                                     Endereços
                                 </MudButton>
                             </MudPaper>
@@ -81,7 +81,7 @@
                                 <MudButton Class="pa-4" ButtonType="ButtonType.Button"
                                            Variant="Variant.Outlined"
                                            Color="Color.Surface"
-                                           OnClick="@(() => NavigationService.NavigateTo(UrlPhone))">
+                                           OnClick="@(() => NavigationService.NavigateTo(UserPhoneUrl))">
                                     Telefones
                                 </MudButton>
                             </MudPaper>

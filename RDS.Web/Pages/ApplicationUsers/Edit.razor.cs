@@ -11,14 +11,14 @@ public partial class EditApplicationUsersPage : ComponentBase
     protected DateTime MinDate = DateTime.Today.AddYears(-110);
     protected DateTime MaxDate = DateTime.Today.AddYears(-12);
     private long LoggedUserId { get; set; }
-    protected long UserId { get; set; }
+    protected long UserId { get; private set; }
     private bool IsAdmin { get; set; }
     private bool IsOwner { get; set; }
     private string Email { get; set; } = null!;
     protected bool IsNotEdit { get; set; }
-    protected const string UrlAddress = "/usuarios/enderecos";
-    protected const string UrlPhone = "/usuarios/telefones";
-    protected const string UrlOrigen = "/usuarios";
+    protected const string UserAddressUrl = "/usuarios/enderecos";
+    protected const string UserPhoneUrl = "/usuarios/telefones";
+    protected const string OrigenUrl = "/usuarios";
 
     #endregion
 
@@ -26,6 +26,7 @@ public partial class EditApplicationUsersPage : ComponentBase
 
     [Inject] protected IApplicationUserHandler UserHandler { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+    [Inject] protected IDialogService DialogService { get; set; } = null!;
 
     #endregion
 
@@ -89,7 +90,20 @@ public partial class EditApplicationUsersPage : ComponentBase
         }
     }
 
-    protected async Task OnValidSubmitAsync()
+    protected async void OnUpdateButtonClickedAsync()
+    {
+        var result = await DialogService.ShowMessageBox(
+            "ATENÇÃO",
+            $"Ao prosseguir o cadastro será atualizado. Deseja continuar?",
+            yesText: "ALTERAR",
+            cancelText: "Cancelar");
+
+        if (result is true)
+            await OnValidSubmitAsync();
+
+        StateHasChanged();
+    }
+    private async Task OnValidSubmitAsync()
     {
         IsBusy = true;
         if (string.IsNullOrWhiteSpace(InputModel.Cpf))
