@@ -22,8 +22,8 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
 
     #region Services
 
-    [Inject] protected IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
-    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
     [Inject] private IDialogService DialogService { get; set; } = null!;
 
     #endregion
@@ -56,7 +56,7 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
 
         try
         {
-            var request = new GetAllApplicationUserAddressRequest{CompanyId = UserId};
+            var request = new GetAllApplicationUserAddressRequest{UserId = UserId};
             var result = await AddressHandler.GetAllAsync(request);
             if (result.IsSuccess)
                 ApplicationUsersAddress = result.Data ?? [];

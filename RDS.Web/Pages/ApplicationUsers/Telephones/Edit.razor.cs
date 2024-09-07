@@ -37,7 +37,7 @@ public partial class EditApplicationUserTelephonesPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        StartService.SetPageTitle("Editar Endereço");
+        StartService.SetPageTitle("Editar Telefone");
         await StartService.ValidateAccesByTokenAsync();
         LoggedUserId = StartService.GetLoggedUserId();
         UserId = StartService.GetSelectedUserId();
@@ -74,8 +74,10 @@ public partial class EditApplicationUserTelephonesPage : ComponentBase
             {
                 InputModel = new UpdateApplicationUserTelephoneRequest
                 {
+                    Id = responseTelephone.Data.Id,
                     Number = responseTelephone.Data.Number,
                     Type = responseTelephone.Data.Type,
+                    UserId = responseTelephone.Data.UserId
                 };
             }
             else
@@ -114,8 +116,6 @@ public partial class EditApplicationUserTelephonesPage : ComponentBase
 
         try
         {
-            InputModel.Id = TelephoneId;
-            InputModel.UserId = UserId;
             var result = await TelephoneHandler.UpdateAsync(InputModel);
 
             if (result.IsSuccess && result.Data is not null)

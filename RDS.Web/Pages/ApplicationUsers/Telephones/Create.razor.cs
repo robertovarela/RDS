@@ -27,7 +27,7 @@ public partial class CreateApplicationUserTelephonePage : ComponentBase
     
     protected override async Task OnInitializedAsync()
     {
-        StartService.SetPageTitle("Novo Endereço");
+        StartService.SetPageTitle("Novo Telefone");
         await StartService.ValidateAccesByTokenAsync();
         InputModel.Type = ETypeOfPhone.Celular;
     }

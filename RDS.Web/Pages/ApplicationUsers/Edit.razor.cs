@@ -25,8 +25,8 @@ public partial class EditApplicationUsersPage : ComponentBase
 
     #region Services
 
-    [Inject] protected IApplicationUserHandler UserHandler { get; set; } = null!;
-    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private IApplicationUserHandler UserHandler { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
     [Inject] private IDialogService DialogService { get; set; } = null!;
 
     #endregion
@@ -121,7 +121,6 @@ public partial class EditApplicationUsersPage : ComponentBase
             InputModel.Cpf = null;
         }
         
-        InputModel.Email = Email;
         try
         {
             var result = await UserHandler.UpdateAsync(InputModel);

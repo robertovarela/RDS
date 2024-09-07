@@ -6,6 +6,8 @@ public partial class CreateApplicationUserAddressPage : ComponentBase
     #region Properties
 
     public CreateApplicationUserAddressRequest InputModel { get; set; } = new();
+    private long UserId { get; set; }
+    private const string OrigenUrl = "/usuarios/enderecos";
 
     #endregion
 
@@ -23,9 +25,9 @@ public partial class CreateApplicationUserAddressPage : ComponentBase
 
     #region Services
 
-    [Inject] public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
+    [Inject] private IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
 
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
 
@@ -35,6 +37,11 @@ public partial class CreateApplicationUserAddressPage : ComponentBase
     {
         StartService.SetPageTitle("Novo Endereço");
         await StartService.ValidateAccesByTokenAsync();
+        UserId = StartService.GetSelectedUserId();
+        if (UserId == 0)
+        {
+            NavigationService.NavigateTo(OrigenUrl);
+        }
     }
     
     #endregion

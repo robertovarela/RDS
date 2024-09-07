@@ -32,7 +32,7 @@ public partial class ListApplicationUserTelephonesPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        StartService.SetPageTitle("Endereços");
+        StartService.SetPageTitle("Telefones");
         await StartService.ValidateAccesByTokenAsync();
         LoggedUserId = StartService.GetLoggedUserId();
         UserId = StartService.GetSelectedUserId();
