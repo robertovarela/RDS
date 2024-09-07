@@ -153,6 +153,8 @@ public class ManipulateUserStateValuesService(
     public string GetPageTitle() => userState.GetPageTitle();
     public List<string> GetSourceUrl() => userState.GetSourceUrl();
     public string GetCurrentUrl() => userState.GetCurrentUrl();
+    public bool GetIsAdmin() => userState.GetIsAdmin();
+    public bool GetIsOwner() => userState.GetIsOwner();
     public long GetLoggedUserId() => userState.GetLoggedUserId();
 
     public long GetSelectedUserId()
@@ -177,6 +179,8 @@ public class ManipulateUserStateValuesService(
     public void SetPageTitle(string title) => userState.SetPageTitle(title);
     public void SetSourceUrl(List<string> urlList) => userState.SetSourceUrl(urlList);
     public void SetCurrentUrl(string url) => userState.SetCurrentUrl(url);
+    public void SetIsAdmin(bool isAdmin) => userState.SetIsAdmin(isAdmin);
+    public void SetIsOwner(bool isOwner) => userState.SetIsOwner(isOwner);
     public void SetLoggedUserId(long userId)
     {
         if (GetLoggedUserId() == 0 || userId == 0)

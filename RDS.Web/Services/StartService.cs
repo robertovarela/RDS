@@ -29,6 +29,8 @@ public abstract class StartService
     public static string GetPageTitle() => _manipulateUserStateValuesService.GetPageTitle();
     public static List<string> GetSourceUrl() => _manipulateUserStateValuesService.GetSourceUrl();
     public static string GetCurrentUrl() => _manipulateUserStateValuesService.GetCurrentUrl();
+    public static bool GetIsAdmin() => _manipulateUserStateValuesService.GetIsAdmin();
+    public static bool GetIsOwner() => _manipulateUserStateValuesService.GetIsOwner();
     public static long GetLoggedUserId() => _manipulateUserStateValuesService.GetLoggedUserId();
     public static long GetSelectedUserId() => _manipulateUserStateValuesService.GetSelectedUserId();
     public static string GetSelectedUserName() => _manipulateUserStateValuesService.GetSelectedUserName();
@@ -39,6 +41,8 @@ public abstract class StartService
     public static long GetSelectedCategoryId() => _manipulateUserStateValuesService.GetSelectedCategoryId();
     public static long GetSelectedTransactionId() => _manipulateUserStateValuesService.GetSelectedTransactionId();
 
+    public static void SetIsAdmin(bool isAdmin) => _manipulateUserStateValuesService.SetIsAdmin(isAdmin);
+    public static void SetIsOwner(bool isOwner) => _manipulateUserStateValuesService.SetIsOwner(isOwner);
     public static void SetNotLoggedUserId() => _manipulateUserStateValuesService.SetNotLoggedUserId();
     public static void SetLoggedId(long userId) => _manipulateUserStateValuesService.SetLoggedUserId(userId);
     public static async Task SetDefaultValues() => await _manipulateUserStateValuesService.SetDefaultValuesAsync();

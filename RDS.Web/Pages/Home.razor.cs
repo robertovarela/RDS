@@ -28,6 +28,10 @@ public class HomePage : ComponentBase
         LoggedUserId = StartService.GetLoggedUserId();
         IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
         IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
+        
+        StartService.SetIsAdmin(IsAdmin);
+        StartService.SetIsOwner(IsOwner);
+        
         if (IsOwner || IsAdmin)
         {
             await StartService.SetDefaultValues();

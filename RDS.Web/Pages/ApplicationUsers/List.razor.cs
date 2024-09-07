@@ -11,9 +11,6 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected GetAllCompaniesByUserIdRequest InputModel { get; } = new();
         private string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
-        private long LoggedUserId { get; set; }
-        private bool IsAdmin { get; set; }
-        private bool IsOwner { get; set; }
         
         protected const string EditUrl = "/usuarios/editar";
         protected const string SourceUrl = "/usuarios";
@@ -37,20 +34,17 @@ namespace RDS.Web.Pages.ApplicationUsers
             StartService.SetPageTitle("Usuários");
             await StartService.ValidateAccesByTokenAsync();
             if (!await StartService.PermissionOnlyAdminOrOwner()) return;
-            await LoadStartValues();
+            LoadStartValues();
         }
 
         #endregion
 
         #region Methods
 
-        private async Task LoadStartValues()
+        private void LoadStartValues()
         {
-            LoggedUserId = StartService.GetLoggedUserId();
-            StartService.SetSelectedUserId(0);
-            IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
-            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
-            if (IsOwner || IsAdmin)
+            //StartService.SetSelectedUserId(0);
+            if (StartService.GetIsOwner() || StartService.GetIsAdmin())
             {
                 Companies = StartService.GetUserCompanies();
                 if (Companies.Any())
@@ -60,7 +54,8 @@ namespace RDS.Web.Pages.ApplicationUsers
                 }
             }
         }
-        private async Task LoadUsers(long companyIdFilter, string searchFilter)
+        
+        private async Task LoadUsersAsync(long companyIdFilter, string searchFilter)
         {
             IsBusy = true;
             try
@@ -140,7 +135,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected async void OnSearch()
         {
-            await LoadUsers(InputModel.CompanyId, SearchFilter);
+            await LoadUsersAsync(InputModel.CompanyId, SearchFilter);
             StateHasChanged();
         }
 
