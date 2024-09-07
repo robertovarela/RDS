@@ -19,7 +19,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     protected const string UserAddressUrl = "/usuarios/enderecos";
     protected const string UserPhoneUrl = "/usuarios/telefones";
     protected string CancelUrl = "/";
-    protected const string OrigenUrl = "/usuarios";
+    private const string OrigenUrl = "/usuarios";
 
     #endregion
 
@@ -39,6 +39,10 @@ public partial class EditApplicationUsersPage : ComponentBase
         await StartService.ValidateAccesByTokenAsync();
         LoggedUserId = StartService.GetLoggedUserId();
         UserId = StartService.GetSelectedUserId();
+        if (UserId == 0)
+        {
+            NavigationService.NavigateTo(OrigenUrl);
+        }
         IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
         if (!IsAdmin)
         {

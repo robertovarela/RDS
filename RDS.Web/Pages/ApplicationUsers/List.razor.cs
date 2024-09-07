@@ -47,6 +47,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         private async Task LoadStartValues()
         {
             LoggedUserId = StartService.GetLoggedUserId();
+            StartService.SetSelectedUserId(0);
             IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
             IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
             if (IsOwner || IsAdmin)
