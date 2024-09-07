@@ -1,10 +1,8 @@
-@page "/usuarios/enderecos"
-@inherits ListApplicationUserAddressesPage
+﻿@page "/usuarios/telefones"
+@inherits ListApplicationUserTelephonesPage
 
 <AuthorizeView>
     <Authorized>
-        @* <TitleBarWithButtons Title="" LeftButtonUrl="@BackUrl" RightButtonUrl="@AddUrl"/> *@
-
         @if (IsBusy)
         {
             <MudPaper Class="pa-8 mt-4">
@@ -19,7 +17,7 @@
         {
             <MudDataGrid
                 Class="mud-data-grid mt-4"
-                Items="@ApplicationUsersAddress"
+                Items="@ApplicationUsersTelephone"
                 Filterable="true"
                 QuickFilter="Filter"
                 Hideable="true">
@@ -62,16 +60,16 @@
                                     Property="x => x.Id" Title="#"/>
                     <PropertyColumn Class="mud-data-grid"
                                     CellClass="mud-data-grid mud-data-grid-cell"
-                                    Property=@(x => x.Street + ", " + x.Number) Title="Logradouro"/>
+                                    Property=@(x => x.Number) Title="Número"/>
                     <PropertyColumn Class="mud-data-grid"
-                                    CellClass="mud-data-grid mud-data-grid-cell" Property="x => x.PostalCode" Title="CEP"/>
+                                    CellClass="mud-data-grid mud-data-grid-cell" Property="x => x.Type" Title="Tipo"/>
                     <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
                         <CellTemplate Context="cellContext">
                             <MudStack Row>
                                 <MudIconButton
                                     Icon="@Icons.Material.Filled.Edit"
                                     Color="Color.Primary"
-                                    OnClick="@(() => StartService.LinkToUrlAddress(EditUrl, OrigenUrl, cellContext.Item.UserId, cellContext.Item.Id))">
+                                    OnClick="@(() => StartService.LinkToUrlTelephone(EditUrl, OrigenUrl, cellContext.Item.UserId, cellContext.Item.Id))">
                                 </MudIconButton>
                                 @if (!IsNotEdit)
                                 {
@@ -80,7 +78,7 @@
                                         Color="Color.Error"
                                         aria-label="Excluir"
                                         Disabled="IsNotEdit"
-                                        OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.UserId, cellContext.Item.Id, cellContext.Item.Street)">
+                                        OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.UserId, cellContext.Item.Id, cellContext.Item.Number)">
                                     </MudIconButton>
                                 }
                             </MudStack>

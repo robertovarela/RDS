@@ -116,6 +116,7 @@ public static class BuilderExtension
         builder.Services.AddTransient<EmailService>();
         builder.Services.AddScoped<IApplicationUserHandler, ApplicationUserHandler>();
         builder.Services.AddScoped<IApplicationUserAddressHandler, ApplicationUserAddressHandler>();
+        builder.Services.AddScoped<IApplicationUserTelephoneHandler, ApplicationUserTelephoneHandler>();
         builder.Services.AddScoped<IApplicationUserConfigurationHandler, ApplicationUserConfigurationHandler>();
         builder.Services.AddScoped<ICompanyHandler, CompanyHandler>();
         builder.Services.AddScoped<ICategoryHandler, CategoryHandler>();

@@ -1,12 +1,14 @@
-namespace RDS.Web.Pages.ApplicationUsers.Addresses;
+﻿using RDS.Core.Requests.ApplicationUsers.Telephone;
+
+namespace RDS.Web.Pages.ApplicationUsers.Telephones;
 
 // ReSharper disable once PartialTypeWithSinglePart
-public partial class ListApplicationUserAddressesPage : ComponentBase
+public partial class ListApplicationUserTelephonesPage : ComponentBase
 {
     #region Properties
 
     protected bool IsBusy { get; private set; }
-    protected List<ApplicationUserAddress> ApplicationUsersAddress { get; private set; } = [];
+    protected List<ApplicationUserTelephone> ApplicationUsersTelephone { get; private set; } = [];
     private long LoggedUserId { get; set; }
     private long UserId { get; set; }
     private bool IsAdmin { get; set; }
@@ -14,15 +16,15 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
     protected bool IsNotEdit { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string BackUrl = "/usuarios/editar";
-    protected const string AddUrl = "/usuarios/enderecos/adicionar";
-    protected const string EditUrl = "/usuarios/enderecos/editar";
-    protected const string OrigenUrl = "/usuarios/enderecos";
+    protected const string AddUrl = "/usuarios/telefones/adicionar";
+    protected const string EditUrl = "/usuarios/telefones/editar";
+    protected const string OrigenUrl = "/usuarios/telefones";
 
     #endregion
 
     #region Services
 
-    [Inject] protected IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
+    [Inject] protected IApplicationUserTelephoneHandler TelephoneHandler { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     [Inject] protected IDialogService DialogService { get; set; } = null!;
 
@@ -56,10 +58,10 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
 
         try
         {
-            var request = new GetAllApplicationUserAddressRequest{CompanyId = UserId};
-            var result = await AddressHandler.GetAllAsync(request);
+            var request = new GetAllApplicationUserTelephoneRequest(){UserId = UserId};
+            var result = await TelephoneHandler.GetAllAsync(request);
             if (result.IsSuccess)
-                ApplicationUsersAddress = result.Data ?? [];
+                ApplicationUsersTelephone = result.Data ?? [];
         }
         catch (Exception)
         {
@@ -79,11 +81,11 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
         StateHasChanged();
     }
     
-    protected async void OnDeleteButtonClickedAsync(long userId, long id, string street)
+    protected async void OnDeleteButtonClickedAsync(long userId, long id, string telephone)
     {
         var result = await DialogService.ShowMessageBox(
             "ATENÇÃO",
-            $"Ao prosseguir o endereço ( {id} - {street} ) será excluído. Esta é uma ação irreversível! Deseja continuar?",
+            $"Ao prosseguir o endereço ( {id} - {telephone} ) será excluído. Esta é uma ação irreversível! Deseja continuar?",
             yesText: "EXCLUIR",
             cancelText: "Cancelar");
 
@@ -97,13 +99,13 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
     {
         try
         {
-            var request = new DeleteApplicationUserAddressRequest 
+            var request = new DeleteApplicationUserTelephoneRequest()
             { 
-                CompanyId = userId,  
+                UserId = userId,  
                 Id = id
             };
-            var result = await AddressHandler.DeleteAsync(request);
-            ApplicationUsersAddress.RemoveAll(x => x.UserId == userId && x.Id == id);
+            var result = await TelephoneHandler.DeleteAsync(request);
+            ApplicationUsersTelephone.RemoveAll(x => x.UserId == userId && x.Id == id);
             Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
@@ -112,22 +114,9 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
         }
     }
 
-    protected Func<ApplicationUserAddress, bool> Filter => applicationUserAddress =>
-    {
-        if (string.IsNullOrWhiteSpace(SearchTerm))
-            return true;
-
-        if (applicationUserAddress.Id.ToString().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (applicationUserAddress.PostalCode.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        if (applicationUserAddress.Street.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        return false;
-    };
+    protected Func<ApplicationUserTelephone, bool> Filter => applicationUserTelephone 
+        => string.IsNullOrWhiteSpace(SearchTerm) 
+           || applicationUserTelephone.Number.ToString().Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
 
     #endregion
 }

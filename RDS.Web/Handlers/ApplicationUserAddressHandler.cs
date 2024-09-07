@@ -1,6 +1,6 @@
 ﻿namespace RDS.Web.Handlers;
 
-public class ApplicationUserAdressHandler(HttpClientService httpClientService) : IApplicationUserAddressHandler
+public class ApplicationUserAddressHandler(HttpClientService httpClientService) : IApplicationUserAddressHandler
 {
     private readonly Lazy<Task<HttpClient>> _httpClient = new(httpClientService.GetHttpClientAsync);
     private async Task<HttpClient> GetHttpClientAsync()

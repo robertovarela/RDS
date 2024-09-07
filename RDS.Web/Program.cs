@@ -48,7 +48,8 @@ builder.Services.AddScoped<TokenService>(sp =>
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(ConfigurationWeb.BackendUrl) });
 
 builder.Services.AddTransient<IApplicationUserHandler, ApplicationUserHandler>();
-builder.Services.AddTransient<IApplicationUserAddressHandler, ApplicationUserAdressHandler>();
+builder.Services.AddTransient<IApplicationUserAddressHandler, ApplicationUserAddressHandler>();
+builder.Services.AddTransient<IApplicationUserTelephoneHandler, ApplicationUserTelephoneHandler>();
 builder.Services.AddTransient<IApplicationUserConfigurationHandler, ApplicationUserConfigurationHandler>();
 builder.Services.AddTransient<ICompanyHandler, CompanyHandler>();
 builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();

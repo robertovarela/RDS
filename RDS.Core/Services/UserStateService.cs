@@ -11,6 +11,7 @@ namespace RDS.Core.Services
         private long SelectedUserId { get; set; }
         private string SelectedUserName { get; set; } = string.Empty;
         private long SelectedUserAddressId { get; set; }
+        private long SelectedUserTelephoneId { get; set; }
         private long SelectedCompanyId { get; set; }
         private List<CompanyIdNameViewModel> UserCompanies { get; set; } = [];
         private long SelectedCategoryId { get; set; }
@@ -23,6 +24,7 @@ namespace RDS.Core.Services
         public long GetSelectedUserId() => SelectedUserId;
         public string GetSelectedUserName() => SelectedUserName;
         public long GetSelectedAddressId() => SelectedUserAddressId;
+        public long GetSelectedTelephoneId() => SelectedUserTelephoneId;
         public long GetSelectedCompanyId() => SelectedCompanyId;
         public List<CompanyIdNameViewModel> GetUserCompanies() => UserCompanies;
         public long GetSelectedCategoryId() => SelectedCategoryId;
@@ -35,6 +37,7 @@ namespace RDS.Core.Services
         public void SetSelectedUserId(long userId) => SelectedUserId = userId;
         public void SetSelectedUserName(string userName) => SelectedUserName = userName;
         public void SetSelectedAddressId(long addressId) => SelectedUserAddressId = addressId;
+        public void SetSelectedTelephoneId(long telephoneId) => SelectedUserTelephoneId = telephoneId;
         public void SetSelectedCompanyId(long companyId) => SelectedCompanyId = companyId;
         public void SetUserCompanies(List<CompanyIdNameViewModel> companiesId) => UserCompanies = companiesId;
         public void SetSelectedCategoryId(long categoryId) => SelectedCategoryId = categoryId;

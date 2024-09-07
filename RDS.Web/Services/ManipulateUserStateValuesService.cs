@@ -30,6 +30,7 @@ public class ManipulateUserStateValuesService(
 
         SetSelectedUserId(loggedUserId);
         SetSelectedAddressId(0);
+        SetSelectedTelephoneId(0);
         SetSelectedCategoryId(0);
         SetSelectedTransactionId(0);
 
@@ -167,6 +168,7 @@ public class ManipulateUserStateValuesService(
 
     public string GetSelectedUserName() => userState.GetSelectedUserName();
     public long GetSelectedAddressId() => userState.GetSelectedAddressId();
+    public long GetSelectedTelephoneId() => userState.GetSelectedTelephoneId();
     public long GetSelectedCompanyId() => userState.GetSelectedCompanyId();
     public List<CompanyIdNameViewModel> GetUserCompanies() => userState.GetUserCompanies();
     public long GetSelectedCategoryId() => userState.GetSelectedCategoryId();
@@ -183,6 +185,7 @@ public class ManipulateUserStateValuesService(
     public void SetSelectedUserId(long userId) => userState.SetSelectedUserId(userId);
     public void SetSelectedUserName(string userName) => userState.SetSelectedUserName(userName);
     public void SetSelectedAddressId(long addressId) => userState.SetSelectedAddressId(addressId);
+    public void SetSelectedTelephoneId(long telephoneId) => userState.SetSelectedTelephoneId(telephoneId);
     public void SetSelectedCompanyId(long companyId) => userState.SetSelectedCompanyId(companyId);
     public void SetUserCompanies(List<CompanyIdNameViewModel> companies) => userState.SetUserCompanies(companies);
     public void SetSelectedCategoryId(long categoryId) => userState.SetSelectedCategoryId(categoryId);

@@ -33,6 +33,7 @@ public abstract class StartService
     public static long GetSelectedUserId() => _manipulateUserStateValuesService.GetSelectedUserId();
     public static string GetSelectedUserName() => _manipulateUserStateValuesService.GetSelectedUserName();
     public static long GetSelectedAddressId() => _manipulateUserStateValuesService.GetSelectedAddressId();
+    public static long GetSelectedTelephoneId() => _manipulateUserStateValuesService.GetSelectedTelephoneId();
     public static long GetSelectedCompanyId() => _manipulateUserStateValuesService.GetSelectedCompanyId();
     public static List<CompanyIdNameViewModel> GetUserCompanies() => _manipulateUserStateValuesService.GetUserCompanies();
     public static long GetSelectedCategoryId() => _manipulateUserStateValuesService.GetSelectedCategoryId();
@@ -52,6 +53,9 @@ public abstract class StartService
     public static void SetSelectedAddressId(long addressId)
         => _manipulateUserStateValuesService.SetSelectedAddressId(addressId);
 
+    public static void SetSelectedTelephoneId(long telephoneId)
+        => _manipulateUserStateValuesService.SetSelectedTelephoneId(telephoneId);
+    
     public static void SetSelectedCompanyId(long companyId)
         => _manipulateUserStateValuesService.SetSelectedCompanyId(companyId);
     
@@ -119,6 +123,13 @@ public abstract class StartService
         NavigationService.NavigateTo(url);
     }
 
+    public static void LinkToUrlTelephone(string url = "", string urlOrigen = "", long userId = 0, long telephoneId = 0)
+    {
+        SetSelectedUserId(userId);
+        SetSelectedTelephoneId(telephoneId);
+        NavigationService.NavigateTo(url);
+    }
+    
     public static void LinkToUrlCompany(string url = "", long companyId = 0)
     {
         SetSelectedCompanyId(companyId);

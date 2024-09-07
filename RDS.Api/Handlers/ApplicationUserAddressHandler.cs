@@ -38,7 +38,7 @@ public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationU
         {
             var address = await context
                 .Addresses
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.CompanyId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
 
             if (address is null)
                 return new Response<ApplicationUserAddress?>(null, 404, "Endereço não encontrado");
@@ -71,7 +71,7 @@ public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationU
         {
             var address = await context
                 .Addresses
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.CompanyId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
 
             if (address is null)
                 return new Response<ApplicationUserAddress?>(null, 404, "Endereço não encontrado");
@@ -96,7 +96,7 @@ public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationU
             var query = context
                 .Addresses
                 .AsNoTracking()
-                .Where(x => x.UserId == request.CompanyId)
+                .Where(x => x.UserId == request.UserId)
                 .OrderBy(x => x.TypeOfAddress)
                 .ThenBy(x => x.Id);
 
