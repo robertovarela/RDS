@@ -18,6 +18,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     protected bool IsNotEdit { get; set; }
     protected const string UserAddressUrl = "/usuarios/enderecos";
     protected const string UserPhoneUrl = "/usuarios/telefones";
+    protected string CancelUrl = "/";
     protected const string OrigenUrl = "/usuarios";
 
     #endregion
@@ -41,10 +42,15 @@ public partial class EditApplicationUsersPage : ComponentBase
         IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
         if (!IsAdmin)
         {
-            IsOwner = await StartService.IsOwnerInRolesAsync(UserId);
+            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
             IsNotEdit = IsOwner && (LoggedUserId != UserId);
         }
 
+        if (IsAdmin || IsOwner)
+        {
+            CancelUrl = "/usuarios";
+        }
+        
         await LoadUser();
     }
 

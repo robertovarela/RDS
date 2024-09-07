@@ -7,7 +7,11 @@ public partial class ListApplicationUserAdressesPage : ComponentBase
 
     protected bool IsBusy { get; private set; }
     protected List<ApplicationUserAddress> ApplicationUsersAddress { get; private set; } = [];
+    private long LoggedUserId { get; set; }
     private long UserId { get; set; }
+    private bool IsAdmin { get; set; }
+    private bool IsOwner { get; set; }
+    protected bool IsNotEdit { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string BackUrl = "/usuarios/editar";
     protected const string AddUrl = "/usuarios/enderecos/adicionar";
@@ -30,8 +34,15 @@ public partial class ListApplicationUserAdressesPage : ComponentBase
     {
         StartService.SetPageTitle("Endereços");
         await StartService.ValidateAccesByTokenAsync();
+        LoggedUserId = StartService.GetLoggedUserId();
         UserId = StartService.GetSelectedUserId();
-
+        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
+        if (!IsAdmin)
+        {
+            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
+            IsNotEdit = IsOwner && (LoggedUserId != UserId);
+        }
+        
         await LoadAddressesAsync();
     }
 

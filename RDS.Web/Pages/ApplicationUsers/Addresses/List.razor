@@ -45,12 +45,16 @@
                         AutoFocus>
                     </MudTextField>
                     <MudSpacer/>
-                    <MudButton ButtonType="ButtonType.Button"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               OnClick="@(() => NavigationService.NavigateTo(AddUrl))">
-                        ADICIONAR
-                    </MudButton>
+                    @if (!IsNotEdit)
+                    {
+                        <MudButton ButtonType="ButtonType.Button"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Disabled="IsNotEdit"
+                                   OnClick="@(() => NavigationService.NavigateTo(AddUrl))">
+                            ADICIONAR
+                        </MudButton>
+                    }
                 </ToolBarContent>
                 <Columns>
                     <PropertyColumn Class="mud-data-grid"
@@ -69,13 +73,16 @@
                                     Color="Color.Primary"
                                     OnClick="@(() => StartService.LinkToUrlAddress(EditUrl, OrigenUrl, cellContext.Item.UserId, cellContext.Item.Id))">
                                 </MudIconButton>
-
-                                <MudIconButton
-                                    Icon="@Icons.Material.Filled.Delete"
-                                    Color="Color.Error"
-                                    aria-label="Excluir"
-                                    OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.UserId, cellContext.Item.Id, cellContext.Item.Street)">
-                                </MudIconButton>
+                                @if (!IsNotEdit)
+                                {
+                                    <MudIconButton
+                                        Icon="@Icons.Material.Filled.Delete"
+                                        Color="Color.Error"
+                                        aria-label="Excluir"
+                                        Disabled="IsNotEdit"
+                                        OnClick="() => OnDeleteButtonClickedAsync(cellContext.Item.UserId, cellContext.Item.Id, cellContext.Item.Street)">
+                                    </MudIconButton>
+                                }
                             </MudStack>
                         </CellTemplate>
                     </TemplateColumn>
