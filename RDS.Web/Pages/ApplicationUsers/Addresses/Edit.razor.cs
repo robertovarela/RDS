@@ -8,10 +8,15 @@ public class EditApplicationUserAddressPage : ComponentBase
 
     protected bool IsBusy { get; private set; }
     protected UpdateApplicationUserAddressRequest InputModel { get; set; } = new();
+    private long LoggedUserId { get; set; }
     private long UserId { get; set; }
+    private bool IsAdmin { get; set; }
+    private bool IsOwner { get; set; }
     private long AddressId { get; set; }
+    protected bool IsNotEdit { get; set; }
     protected const string BackUrl = "/usuarios/enderecos";
-
+    protected string CancelUrl = "/usuarios/enderecos";
+    private const string OrigenUrl = "/usuarios/enderecos";
 
     #endregion
 
@@ -43,6 +48,18 @@ public class EditApplicationUserAddressPage : ComponentBase
         await StartService.ValidateAccesByTokenAsync();
         UserId = StartService.GetSelectedUserId();
         AddressId = StartService.GetSelectedAddressId();
+        LoggedUserId = StartService.GetLoggedUserId();
+        UserId = StartService.GetSelectedUserId();
+        if (UserId == 0)
+        {
+            NavigationService.NavigateTo(OrigenUrl);
+        }
+        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
+        if (!IsAdmin)
+        {
+            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
+            IsNotEdit = IsOwner && (LoggedUserId != UserId);
+        }
 
         await LoadUserAddressAsync();
     }
