@@ -125,7 +125,7 @@ public class ApplicationUserAddressHandler(AppDbContext context) : IApplicationU
             var address = await context
                 .Addresses
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.CompanyId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
 
             return address is null
                 ? new Response<ApplicationUserAddress?>(null, 404, "Endereço não encontrado")

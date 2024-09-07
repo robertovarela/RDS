@@ -7,7 +7,14 @@
                   @bind-IsDarkMode="_isDarkMode"
                   Theme="ConfigurationWeb.Theme"/>
 <MudSnackbarProvider/>
-<MudDialogProvider/>
+<MudDialogProvider
+    FullWidth="true"
+    MaxWidth="MaxWidth.ExtraSmall"
+    CloseButton="true"
+    BackdropClick="false"
+    NoHeader="true"
+    Position="DialogPosition.Center"
+    CloseOnEscapeKey="true"/>
 
         <MudLayout>
             <MudAppBar>

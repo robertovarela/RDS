@@ -21,7 +21,6 @@ public partial class ListApplicationUserAdressesPage : ComponentBase
     [Inject] protected IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
     [Inject] protected IDialogService DialogService { get; set; } = null!;
-    [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
 
     #endregion
 
@@ -62,14 +61,11 @@ public partial class ListApplicationUserAdressesPage : ComponentBase
         }
     }
     
-    protected async Task HandleKeyDown(KeyboardEventArgs e)
+    protected void HandleKeyDown(KeyboardEventArgs e)
     {
-        if (e.Key == "Escape" || e.CtrlKey)
-        {
-            SearchTerm = string.Empty;
-            StateHasChanged();
-        }
-        await JsRuntime.InvokeVoidAsync("triggerEnterOnElement", "myInputFieldId");
+        if (e.Key != "Escape" && !e.CtrlKey) return;
+        SearchTerm = string.Empty;
+        StateHasChanged();
     }
     
     protected async void OnDeleteButtonClickedAsync(long userId, long id, string street)

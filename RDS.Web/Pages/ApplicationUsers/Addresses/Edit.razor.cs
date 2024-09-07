@@ -1,21 +1,23 @@
-﻿namespace RDS.Web.Pages.ApplicationUsers.Addresses;
+﻿using RDS.Web.Components.Informations;
+
+namespace RDS.Web.Pages.ApplicationUsers.Addresses;
 
 public class EditApplicationUserAddressPage : ComponentBase
 {
     #region Properties
 
     protected bool IsBusy { get; private set; }
-    public UpdateApplicationUserAddressRequest InputModel { get; set; } = new();
+    protected UpdateApplicationUserAddressRequest InputModel { get; set; } = new();
     private long UserId { get; set; }
     private long AddressId { get; set; }
+    protected const string BackUrl = "/usuarios/enderecos";
+
 
     #endregion
 
     #region Parameters
 
-    [Parameter]
-    public IMask BrazilPostalCode { get; set; } = new PatternMask("00000-000");
-    
+    [Parameter] public IMask BrazilPostalCode { get; set; } = new PatternMask("00000-000");
     [Parameter] public List<string> Estados { get; set; } = new List<string>
     {
         "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
@@ -27,8 +29,9 @@ public class EditApplicationUserAddressPage : ComponentBase
 
     #region Services
 
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
-    [Inject] public IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
+    [Inject] protected IDialogService DialogService { get; set; } = null!;
 
     #endregion
 
@@ -55,7 +58,6 @@ public class EditApplicationUserAddressPage : ComponentBase
         {
             var requestAddress = new GetApplicationUserAddressByIdRequest
             {
-                CompanyId = UserId,
                 Id = AddressId
             };
             var responseAddress = await AddressHandler.GetByIdAsync(requestAddress);
@@ -79,7 +81,7 @@ public class EditApplicationUserAddressPage : ComponentBase
             else
             {
                 Snackbar.Add("Endereço não encontrado", Severity.Warning);
-                NavigationService.NavigateTo("/usuarios/enderecos");
+                NavigationService.NavigateTo(BackUrl);
             }
         }
         catch (Exception ex)
@@ -92,7 +94,21 @@ public class EditApplicationUserAddressPage : ComponentBase
         }    
     }
     
-    public async Task OnValidSubmitAsync()
+    protected async void OnUpdateButtonClickedAsync()
+    {
+        var result = await DialogService.ShowMessageBox(
+            "ATENÇÃO",
+            $"Ao prosseguir o endereço será atualizado. Deseja continuar?",
+            yesText: "ALTERAR",
+            cancelText: "Cancelar");
+
+        if (result is true)
+            await OnValidSubmitAsync();
+
+        StateHasChanged();
+    }
+    
+    private async Task OnValidSubmitAsync()
     {
         IsBusy = true;
 
@@ -110,7 +126,7 @@ public class EditApplicationUserAddressPage : ComponentBase
 
             }
 
-            NavigationService.NavigateTo("/usuarios/enderecos");
+            NavigationService.NavigateTo(BackUrl);
         }
         catch (Exception ex)
         {
