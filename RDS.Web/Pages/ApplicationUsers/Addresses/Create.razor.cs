@@ -1,5 +1,6 @@
 ﻿namespace RDS.Web.Pages.ApplicationUsers.Addresses;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class CreateApplicationUserAddressPage : ComponentBase
 {
     #region Properties

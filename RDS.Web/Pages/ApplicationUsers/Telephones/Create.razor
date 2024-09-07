@@ -1,0 +1,44 @@
+﻿@page "/usuarios/telefones/adicionar"
+@inherits CreateApplicationUserTelephonePage
+
+<AuthorizeView>
+    <Authorized>
+        <MudPaper Class="pa-8 mt-4">
+            <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
+                <DataAnnotationsValidator/>
+
+                <MudTextField Label="Número"
+                              @bind-Value="InputModel.Number"
+                              For="@(() => InputModel.Number)"
+                              Mask="@BrazilPhoneNumberMask"
+                              ShrinkLabel
+                              Immediate="true"
+                              MaxLength="11"
+                              T="string"
+                              HelperText="Campo obrigatório"
+                              HelperTextOnFocus="true"
+                              InputType="InputType.Text"
+                              Variant="Variant.Outlined"
+                              Clearable
+                              AutoFocus/>
+
+                <MudSelect Label="Tipo"
+                           @bind-Value="InputModel.Type"
+                           AnchorOrigin="Origin.BottomCenter"
+                           T="ETypeOfPhone"
+                           ShrinkLabel
+                           HelperText="&nbsp;"
+                           Variant="Variant.Outlined">
+                    <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.Celular">Celular</MudSelectItem>
+                    <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.WhatsApp">WhatsApp</MudSelectItem>
+                    <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.Fixo">Fixo</MudSelectItem>
+                </MudSelect>
+
+                <SaveAndCancelButtons CancelPage="/usuarios/telefones"/>
+            </EditForm>
+        </MudPaper>
+    </Authorized>
+    <NotAuthorized>
+        @(async () => await NavigationService.NavigateToAccessNotAllowedAsync())
+    </NotAuthorized>
+</AuthorizeView>

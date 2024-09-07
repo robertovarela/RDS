@@ -2,7 +2,7 @@
 
 public enum ETypeOfPhone
 {
-    CellPhone = 1,
-    Telephone = 2,
-    WhatsApp = 3
+    Celular = 1,
+    WhatsApp = 2,
+    Fixo = 3
 }
