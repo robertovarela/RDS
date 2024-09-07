@@ -19,7 +19,7 @@ public partial class ListCompaniesPage : ComponentBase
     #region Services
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
-    [Inject] public IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
     [Inject] public ICompanyHandler CompanyHandler { get; set; } = null!;
 
     #endregion

@@ -8,4 +8,5 @@ public interface IApplicationUserTelephoneHandler
     Task<Response<ApplicationUserTelephone?>> UpdateAsync(UpdateApplicationUserTelephoneRequest request);
     Task<Response<ApplicationUserTelephone?>> DeleteAsync(DeleteApplicationUserTelephoneRequest request);
     Task<PagedResponse<List<ApplicationUserTelephone>>> GetAllAsync(GetAllApplicationUserTelephoneRequest request);
+    Task<Response<ApplicationUserTelephone?>> GetByIdAsync(GetApplicationUserTelephoneByIdRequest request);
 }

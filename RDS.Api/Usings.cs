@@ -40,6 +40,7 @@ global using RDS.Core.Models.ViewModels.ApplicationUser;
 global using RDS.Core.Requests.Account;
 global using RDS.Core.Requests.ApplicationUsers;
 global using RDS.Core.Requests.ApplicationUsers.Address;
+global using RDS.Core.Requests.ApplicationUsers.Telephone;
 global using RDS.Core.Requests.Categories;
 global using RDS.Core.Requests.Reports;
 global using RDS.Core.Responses;

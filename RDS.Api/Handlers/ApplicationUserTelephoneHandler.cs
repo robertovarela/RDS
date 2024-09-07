@@ -1,6 +1,4 @@
-﻿using RDS.Core.Requests.ApplicationUsers.Telephone;
-
-namespace RDS.Api.Handlers;
+﻿namespace RDS.Api.Handlers;
 
 public class ApplicationUserTelephoneHandler(AppDbContext context) : IApplicationUserTelephoneHandler
 {
@@ -102,6 +100,26 @@ public class ApplicationUserTelephoneHandler(AppDbContext context) : IApplicatio
         {
             return new PagedResponse<List<ApplicationUserTelephone>>(
                 null, 500, "Não foi possível consultar os usuários");
+        }
+    }
+
+    public async Task<Response<ApplicationUserTelephone?>> GetByIdAsync(GetApplicationUserTelephoneByIdRequest request)
+    {
+        try
+        {
+            var telephone = await context
+                .Telephones
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
+
+            return telephone is null
+                ? new Response<ApplicationUserTelephone?>(null, 404, "Telefone não encontrado")
+                : new Response<ApplicationUserTelephone?>(telephone);
+        }
+        catch
+        {
+            return new Response<ApplicationUserTelephone?>(
+                null, 500, "Não foi possível recuperar o telefone");
         }
     }
 }

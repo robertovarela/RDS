@@ -1,7 +1,4 @@
-﻿using RDS.Core.Enums;
-using RDS.Core.Requests.ApplicationUsers.Telephone;
-
-namespace RDS.Web.Pages.ApplicationUsers.Telephones;
+﻿namespace RDS.Web.Pages.ApplicationUsers.Telephones;
 
 // ReSharper disable once PartialTypeWithSinglePart
 public partial class CreateApplicationUserTelephonePage : ComponentBase

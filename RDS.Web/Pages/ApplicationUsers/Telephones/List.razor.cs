@@ -1,6 +1,4 @@
-﻿using RDS.Core.Requests.ApplicationUsers.Telephone;
-
-namespace RDS.Web.Pages.ApplicationUsers.Telephones;
+﻿namespace RDS.Web.Pages.ApplicationUsers.Telephones;
 
 // ReSharper disable once PartialTypeWithSinglePart
 public partial class ListApplicationUserTelephonesPage : ComponentBase
@@ -26,7 +24,7 @@ public partial class ListApplicationUserTelephonesPage : ComponentBase
 
     [Inject] protected IApplicationUserTelephoneHandler TelephoneHandler { get; set; } = null!;
     [Inject] protected ISnackbar Snackbar { get; set; } = null!;
-    [Inject] protected IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
 
     #endregion
 

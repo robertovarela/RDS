@@ -1,9 +1,7 @@
-﻿using RDS.Core.Requests.ApplicationUsers.Telephone;
-
-namespace RDS.Api.Controllers;
+﻿namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("v1/users/telefone")]
+[Microsoft.AspNetCore.Mvc.Route("v1/users/telephones")]
 public class UserTelephoneController(IApplicationUserTelephoneHandler applicationUserTelephoneHandler) : ControllerBase
 {
     [HttpPost("createusertelephone")]
@@ -32,5 +30,12 @@ public class UserTelephoneController(IApplicationUserTelephoneHandler applicatio
         [FromBody] GetAllApplicationUserTelephoneRequest request)
     {
         return await applicationUserTelephoneHandler.GetAllAsync(request);
+    }
+    
+    [HttpPost("usertelephonebyid")]
+    public async Task<Response<ApplicationUserTelephone>> GetByIdAsync(
+        [FromBody] GetApplicationUserTelephoneByIdRequest request)
+    {
+        return await applicationUserTelephoneHandler.GetByIdAsync(request);
     }
 }

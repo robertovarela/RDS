@@ -22,7 +22,7 @@ public partial class ListAllUsersPage : ComponentBase
 
     [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
-    [Inject] public IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
 
     #endregion
 

@@ -14,7 +14,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
 
     public async Task<Response<ApplicationRole?>> CreateRoleAsync(CreateApplicationRoleRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfiguration/create-role")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfigurations/create-role")
         {
             Content = JsonContent.Create(request)
         };
@@ -26,7 +26,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
 
     public async Task<Response<ApplicationRole?>> DeleteRoleAsync(DeleteApplicationRoleRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"v1/userconfiguration/delete-role")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"v1/userconfigurations/delete-role")
         {
             Content = JsonContent.Create(request)
         };
@@ -38,7 +38,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
 
     public async Task<PagedResponse<List<ApplicationRole?>>> ListRoleAsync()
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfiguration/list-roles")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfigurations/list-roles")
         {
             Content = JsonContent.Create(new { })
         };
@@ -50,7 +50,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
     
     public async Task<Response<ApplicationUserRole?>> CreateUserRoleAsync(CreateApplicationUserRoleRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfiguration/create-role-to-user")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfigurations/create-role-to-user")
         {
             Content = JsonContent.Create(request)
         };
@@ -62,7 +62,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
 
     public async Task<Response<ApplicationUserRole?>> DeleteUserRoleAsync(DeleteApplicationUserRoleRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"v1/userconfiguration/delete-role-to-user")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"v1/userconfigurations/delete-role-to-user")
         {
             Content = JsonContent.Create(request)
         };
@@ -75,7 +75,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
 
     public async Task<PagedResponse<List<ApplicationUserRole?>>> ListUserRoleAsync(GetAllApplicationUserRoleRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfiguration/list-roles-for-user")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfigurations/list-roles-for-user")
         {
             Content = JsonContent.Create(request)
         };
@@ -87,7 +87,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
 
     public async Task<PagedResponse<List<ApplicationUserRole?>>> ListRoleToAddUserAsync(GetAllApplicationUserRoleRequest request)
     {
-        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfiguration/list-roles-not-for-user")
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfigurations/list-roles-not-for-user")
         {
             Content = JsonContent.Create(request)
         };

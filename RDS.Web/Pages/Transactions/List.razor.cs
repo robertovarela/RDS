@@ -20,7 +20,7 @@ public partial class ListTransactionsPage : ComponentBase
     #region Services
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
-    [Inject] public IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
     [Inject] public ITransactionHandler Handler { get; set; } = null!;
 
     #endregion

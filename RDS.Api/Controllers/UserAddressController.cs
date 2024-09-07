@@ -1,7 +1,7 @@
 ﻿namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("v1/users/address")]
+[Microsoft.AspNetCore.Mvc.Route("v1/users/addresses")]
 public class UserAddressController(IApplicationUserAddressHandler applicationUserAddressHandler) : ControllerBase
 {
     [HttpPost("createuseraddress")]

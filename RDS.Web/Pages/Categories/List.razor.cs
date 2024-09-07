@@ -18,7 +18,7 @@ public partial class ListCategoriesPage : ComponentBase
     #region Services
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
-    [Inject] public IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
     [Inject] public ICategoryHandler CategoryHandler { get; set; } = null!;
 
     #endregion

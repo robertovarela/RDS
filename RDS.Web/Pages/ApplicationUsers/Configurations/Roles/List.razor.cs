@@ -15,7 +15,7 @@ public partial class ListRolesPage : ComponentBase
     #region Services
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
-    [Inject] public IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
     [Inject] public IApplicationUserConfigurationHandler Handler { get; set; } = null!;
 
     #endregion

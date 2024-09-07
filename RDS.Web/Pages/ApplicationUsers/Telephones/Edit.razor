@@ -1,6 +1,58 @@
-﻿@page "/Edit"
-<h3>Edit</h3>
+﻿@page "/usuarios/telefones/editar"
+@inherits EditApplicationUserTelephonesPage
 
-@code {
-    
-}
+<AuthorizeView>
+    <Authorized>
+        @if (IsBusy)
+        {
+            <MudPaper Class="pa-8 mt-4">
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="55px"/>
+            </MudPaper>
+        }
+        else
+        {
+            <MudPaper Class="pa-8 mt-4">
+                <EditForm Model="@InputModel" OnValidSubmit="OnUpdateButtonClickedAsync" Context="editContext">
+                    <DataAnnotationsValidator/>
+
+                    <MudTextField Label="Número"
+                                  @bind-Value="InputModel.Number"
+                                  For="@(() => InputModel.Number)"
+                                  Mask="@BrazilPhoneNumberMask"
+                                  ShrinkLabel
+                                  Immediate="true"
+                                  MaxLength="11"
+                                  T="string"
+                                  HelperText="Campo obrigatório"
+                                  HelperTextOnFocus="true"
+                                  InputType="InputType.Text"
+                                  Variant="Variant.Outlined"
+                                  Clearable
+                                  AutoFocus/>
+
+                    <MudSelect Label="Tipo"
+                               @bind-Value="InputModel.Type"
+                               AnchorOrigin="Origin.BottomCenter"
+                               T="ETypeOfPhone"
+                               ShrinkLabel
+                               HelperText="&nbsp;"
+                               Variant="Variant.Outlined">
+                        <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.Celular">Celular</MudSelectItem>
+                        <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.WhatsApp">WhatsApp</MudSelectItem>
+                        <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.Fixo">Fixo</MudSelectItem>
+                    </MudSelect>
+
+                    <SaveAndCancelButtons CancelPage="@CancelUrl" Button1Text="Cancelar" Button2Text="Atualizar" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
+
+                </EditForm>
+            </MudPaper>
+        }
+    </Authorized>
+    <NotAuthorized>
+        @(async () => await NavigationService.NavigateToAccessNotAllowedAsync())
+    </NotAuthorized>
+</AuthorizeView>

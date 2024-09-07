@@ -1,7 +1,7 @@
 ﻿namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("v1/userconfiguration")]
+[Microsoft.AspNetCore.Mvc.Route("v1/userconfigurations")]
 public class UserConfigurationController(
         IApplicationUserConfigurationHandler applicationUserConfigurationHandler) : ControllerBase
 {

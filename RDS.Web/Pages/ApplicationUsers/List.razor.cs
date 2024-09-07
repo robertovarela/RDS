@@ -26,7 +26,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         [Inject] protected IApplicationUserHandler UserHandler { get; set; } = null!;
         [Inject] protected ISnackbar Snackbar { get; set; } = null!;
-        [Inject] protected IDialogService DialogService { get; set; } = null!;
+        [Inject] private IDialogService DialogService { get; set; } = null!;
 
         #endregion
 

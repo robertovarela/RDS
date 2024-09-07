@@ -17,6 +17,7 @@ global using Microsoft.JSInterop;
 
 global using RDS.Core;
 global using RDS.Core.Common.Extensions;
+global using RDS.Core.Enums;
 global using RDS.Core.Handlers;
 global using RDS.Core.Models;
 global using RDS.Core.Models.Account;
@@ -28,6 +29,7 @@ global using RDS.Core.Models.ViewModels.ApplicationUser;
 global using RDS.Core.Requests.Account;
 global using RDS.Core.Requests.ApplicationUsers;
 global using RDS.Core.Requests.ApplicationUsers.Address;
+global using RDS.Core.Requests.ApplicationUsers.Telephone;
 global using RDS.Core.Requests.Categories;
 global using RDS.Core.Requests.Companies;
 global using RDS.Core.Requests.Orders;
