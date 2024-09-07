@@ -9,8 +9,10 @@ public partial class ListApplicationUserAdressesPage : ComponentBase
     protected List<ApplicationUserAddress> ApplicationUsersAddress { get; private set; } = [];
     private long UserId { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
-    protected const string Url = "/usuarios/enderecos/editar";
-    protected const string UrlOrigen = "/usuarios/enderecos";
+    protected const string BackUrl = "/usuarios/editar";
+    protected const string AddUrl = "/usuarios/enderecos/adicionar";
+    protected const string EditUrl = "/usuarios/enderecos/editar";
+    protected const string OrigenUrl = "/usuarios/enderecos";
 
     #endregion
 

@@ -3,7 +3,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <TitleBarWithButtons Title="" LeftButton="/usuarios/editar" RightButton="/usuarios/enderecos/adicionar"/>
+        @* <TitleBarWithButtons Title="" LeftButtonUrl="@BackUrl" RightButtonUrl="@AddUrl"/> *@
 
         @if (IsBusy)
         {
@@ -24,10 +24,14 @@
                 QuickFilter="Filter"
                 Hideable="true">
                 <ToolBarContent>
-                    <MudText Typo="Typo.h6">Endereços</MudText>
+                    <MudButton ButtonType="ButtonType.Button"
+                               Variant="Variant.Filled"
+                               Color="Color.Secondary"
+                               OnClick="@(() => NavigationService.NavigateTo(BackUrl))">
+                        VOLTAR
+                    </MudButton>
                     <MudSpacer/>
                     <MudTextField
-                        Attributes="@(new Dictionary<string, object> { { "id", "myInputFieldId" } })"
                         @bind-Value="@SearchTerm"
                         Placeholder="Filtrar..."
                         Adornment="Adornment.Start"
@@ -36,9 +40,17 @@
                         IconSize="Size.Medium"
                         Class="mt-0"
                         OnKeyDown="@((KeyboardEventArgs e) => HandleKeyDown(e))"
+                        Variant="Variant.Outlined"
                         Clearable="true"
                         AutoFocus>
                     </MudTextField>
+                    <MudSpacer/>
+                    <MudButton ButtonType="ButtonType.Button"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               OnClick="@(() => NavigationService.NavigateTo(AddUrl))">
+                        ADICIONAR
+                    </MudButton>
                 </ToolBarContent>
                 <Columns>
                     <PropertyColumn Class="mud-data-grid"
@@ -55,7 +67,7 @@
                                 <MudIconButton
                                     Icon="@Icons.Material.Filled.Edit"
                                     Color="Color.Primary"
-                                    OnClick="@(() => StartService.LinkToUrlAddress(Url, UrlOrigen, cellContext.Item.UserId, cellContext.Item.Id))">
+                                    OnClick="@(() => StartService.LinkToUrlAddress(EditUrl, OrigenUrl, cellContext.Item.UserId, cellContext.Item.Id))">
                                 </MudIconButton>
 
                                 <MudIconButton

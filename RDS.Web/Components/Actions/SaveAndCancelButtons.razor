@@ -7,7 +7,7 @@
                        Color="Color.Secondary"
                        Disabled="Button1Disable"
                        OnClick="@(() => NavigationService.NavigateTo(CancelPage))">
-                @ButtonText1
+                @Button1Text
             </MudButton>
         }
         <MudSpacer/>
@@ -17,7 +17,7 @@
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        Disabled="Button2Disable">
-                @ButtonText2
+                @Button2Text
             </MudButton>
         }
     </div>
@@ -25,8 +25,8 @@
 
 @code {
     [Parameter] public string CancelPage { get; set; } = "/";
-    [Parameter] public string ButtonText1 { get; set; } = "Cancelar";
-    [Parameter] public string ButtonText2 { get; set; } = "Salvar";
+    [Parameter] public string Button1Text { get; set; } = "Cancelar";
+    [Parameter] public string Button2Text { get; set; } = "Salvar";
     [Parameter] public bool Button1IsNotVisible { get; set; }
     [Parameter] public bool Button2IsNotVisible { get; set; }
     [Parameter] public bool Button1Disable { get; set; }
