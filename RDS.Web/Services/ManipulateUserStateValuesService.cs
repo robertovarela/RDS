@@ -43,14 +43,14 @@ public class ManipulateUserStateValuesService(
             SetIsOwner(isOwner);
 
             var roleDefault = isAdmin ? "Admin" : "Owner";
-            var companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, role: roleDefault);
+            var companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, roleDefault);
 
             SetUserCompanies(companies);
             SetSelectedCompanyId(companies.FirstOrDefault()?.CompanyId ?? 0);
         }
         else
         {
-            SetUserCompanies(new List<CompanyIdNameViewModel>());
+            SetUserCompanies([]);
             SetSelectedCompanyId(0);
         }
     }
@@ -109,11 +109,12 @@ public class ManipulateUserStateValuesService(
     {
         var fingerprint = await deviceService.GetDeviceFingerprint();
         var refreshTokenModel = new RefreshTokenRequest { Token = token, FingerPrint = fingerprint };
-        //var result = await authenticationService.RefreshTokenAsync(refreshTokenModel);
         var result = await userHandler.RefreshTokenAsync(refreshTokenModel);
+        if (!result.IsSuccess)
+            return false;
 
-        if (!result.IsSuccess) return false;
-        if (showMessage) snackbar.Add("Token atualizado com sucesso", Severity.Info);
+        if (showMessage)
+            snackbar.Add("Token atualizado com sucesso", Severity.Info);
 
         return true;
     }
