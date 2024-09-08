@@ -38,6 +38,25 @@ public partial class EditApplicationUsersPage : ComponentBase
     {
         StartService.SetPageTitle("Editar Usuário");
         await StartService.ValidateAccesByTokenAsync();
+
+        await LoadStartValues();
+        await LoadUser();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (string.IsNullOrEmpty(InputModel.BirthDate.ToString()))
+        {
+            Picker.GoToDate(MaxDate, false);
+        }
+    }
+
+    #endregion
+
+    #region Methods
+
+    private async Task LoadStartValues()
+    {
         LoggedUserId = StartService.GetLoggedUserId();
         UserId = StartService.GetSelectedUserId();
         if (UserId == 0)
@@ -60,22 +79,7 @@ public partial class EditApplicationUsersPage : ComponentBase
             CancelUrl = "/usuarios";
             OrigenUrl = "/usuarios";
         }
-  
-        await LoadUser();
     }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (string.IsNullOrEmpty(InputModel.BirthDate.ToString()))
-        {
-            Picker.GoToDate(MaxDate, false);
-        }
-    }
-
-    #endregion
-
-    #region Methods
-
     private async Task LoadUser()
     {
         try

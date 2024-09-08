@@ -15,6 +15,7 @@
                 AdornmentColor="Color.Primary"
                 AnchorOrigin="Origin.BottomCenter"
                 Variant="Variant.Outlined"
+                OnClose="OnSelectedCompany"
                 ToStringFunc="(companyId) => Companies.FirstOrDefault(
                 c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
 

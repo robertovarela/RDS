@@ -21,8 +21,8 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         #region Services
 
-        [Inject] protected IApplicationUserHandler UserHandler { get; set; } = null!;
-        [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+        [Inject] private IApplicationUserHandler UserHandler { get; set; } = null!;
+        [Inject] private ISnackbar Snackbar { get; set; } = null!;
         [Inject] private IDialogService DialogService { get; set; } = null!;
 
         #endregion
@@ -120,16 +120,19 @@ namespace RDS.Web.Pages.ApplicationUsers
         //     }
         // }
 
+        protected void OnSelectedCompany()
+        {
+            PagedApplicationUsers = [];
+        }
         protected void HandleKeyDown(KeyboardEventArgs e)
         {
-            switch (e.Key)
+            if (e.Key == "Enter")
             {
-                case "Enter":
-                    OnSearch();
-                    break;
-                case "Escape":
-                    SearchFilter = string.Empty;
-                    break;
+                OnSearch();
+            }
+            else if (e.Key == "Escape" || e.CtrlKey)
+            {
+                SearchFilter = string.Empty;
             }
         }
 
