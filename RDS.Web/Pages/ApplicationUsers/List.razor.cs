@@ -9,12 +9,13 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
         protected List<AllUsersViewModel> PagedApplicationUsers { get; private set; } = [];
         protected GetAllCompaniesByUserIdRequest InputModel { get; } = new();
+        private bool IsAdmin { get; } = StartService.GetIsAdmin();
+        private bool IsOwner { get; } = StartService.GetIsOwner();
         private string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
-        
+
         protected const string EditUrl = "/usuarios/editar";
         protected const string BackUrl = "/";
-        private const string CurrentUrl = "/usuarios";
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
 
@@ -44,18 +45,24 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         private void LoadStartValues()
         {
-            StartService.SetSourceUrl([CurrentUrl]);
-            if (StartService.GetIsOwner() || StartService.GetIsAdmin())
-            {
-                Companies = StartService.GetUserCompanies();
-                if (Companies.Any())
-                {
-                    InputModel.CompanyId = Companies.First().CompanyId;
-                    InputModel.CompanyName = Companies.First().CompanyName;
-                }
-            }
+            if (!IsOwner && !IsAdmin)
+                return;
+
+            Companies = StartService.GetUserCompanies();
+            if (!Companies.Any())
+                return;
+
+            var selectedCompany = IsAdmin
+                ? Companies.OrderBy(x => x.CompanyId).FirstOrDefault()
+                : Companies.FirstOrDefault();
+
+            if (selectedCompany == null)
+                return;
+
+            InputModel.CompanyId = selectedCompany.CompanyId;
+            InputModel.CompanyName = selectedCompany.CompanyName;
         }
-        
+
         private async Task LoadUsersAsync(long companyIdFilter, string searchFilter)
         {
             IsBusy = true;
@@ -125,6 +132,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         {
             PagedApplicationUsers = [];
         }
+
         protected void HandleKeyDown(KeyboardEventArgs e)
         {
             if (e.Key == "Enter")
