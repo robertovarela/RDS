@@ -15,10 +15,9 @@
         }
         else
         {
-            <MudPaper Class="pa-8 mt-4">
-                <EditForm Model="@InputModel" OnValidSubmit="OnUpdateButtonClickedAsync" Context="editContext">
-                    <DataAnnotationsValidator/>
-
+            <EditForm Model="@InputModel" OnValidSubmit="OnUpdateButtonClickedAsync" Context="editContext">
+                <DataAnnotationsValidator/>
+                <MudPaper Class="pa-8 mt-4">
                     <MudTextField Label="Número"
                                   @bind-Value="InputModel.Number"
                                   For="@(() => InputModel.Number)"
@@ -32,6 +31,7 @@
                                   InputType="InputType.Text"
                                   Variant="Variant.Outlined"
                                   Clearable
+                                  ReadOnly="IsNotEdit"
                                   AutoFocus/>
 
                     <MudSelect Label="Tipo"
@@ -40,16 +40,16 @@
                                T="ETypeOfPhone"
                                ShrinkLabel
                                HelperText="&nbsp;"
-                               Variant="Variant.Outlined">
+                               Variant="Variant.Outlined"
+                               ReadOnly="IsNotEdit">
                         <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.Celular">Celular</MudSelectItem>
                         <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.WhatsApp">WhatsApp</MudSelectItem>
                         <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.Fixo">Fixo</MudSelectItem>
                     </MudSelect>
-
-                    <SaveAndCancelButtons CancelOrBackPage="@CancelUrl" Button1Text="Cancelar" Button2Text="Atualizar" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
-
-                </EditForm>
-            </MudPaper>
+                </MudPaper>
+                <MudSpacer/>
+                <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="@CancelOrBackButtonText" Button2Text="Atualizar" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
+            </EditForm>
         }
     </Authorized>
     <NotAuthorized>

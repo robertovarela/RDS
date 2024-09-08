@@ -13,7 +13,9 @@ public partial class EditApplicationUserAddressPage : ComponentBase
     private bool IsOwner { get; } = StartService.GetIsOwner();
     private long AddressId { get; } = StartService.GetSelectedAddressId();
     protected bool IsNotEdit { get; set; }
+    
     protected const string BackUrl = "/usuarios/enderecos";
+    protected string CancelOrBackButtonText = "Cancelar";
 
     #endregion
 
@@ -58,9 +60,9 @@ public partial class EditApplicationUserAddressPage : ComponentBase
         {
             NavigationService.NavigateTo(BackUrl);
         }
-        if (!IsAdmin)
+        if (!IsAdmin && IsOwner && LoggedUserId != UserId)
         {
-            IsNotEdit = IsOwner && (LoggedUserId != UserId);
+            IsNotEdit = true;
         }
     }
     private async Task LoadUserAddressAsync()

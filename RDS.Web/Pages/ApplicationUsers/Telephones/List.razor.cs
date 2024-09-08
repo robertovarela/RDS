@@ -7,23 +7,22 @@ public partial class ListApplicationUserTelephonesPage : ComponentBase
 
     protected bool IsBusy { get; private set; }
     protected List<ApplicationUserTelephone> ApplicationUsersTelephone { get; private set; } = [];
-    private long LoggedUserId { get; set; }
-    private long UserId { get; set; }
-    private bool IsAdmin { get; set; }
-    private bool IsOwner { get; set; }
+    private long LoggedUserId { get; } = StartService.GetLoggedUserId();
+    private long UserId { get; } = StartService.GetSelectedUserId();
+    private bool IsAdmin { get; } = StartService.GetIsAdmin();
+    private bool IsOwner { get; } = StartService.GetIsOwner();
     protected bool IsNotEdit { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
-    protected const string BackUrl = "/usuarios/editar";
     protected const string AddUrl = "/usuarios/telefones/adicionar";
     protected const string EditUrl = "/usuarios/telefones/editar";
-    protected const string OrigenUrl = "/usuarios/telefones";
+    protected const string BackUrl = "/usuarios/editar";
 
     #endregion
 
     #region Services
 
-    [Inject] protected IApplicationUserTelephoneHandler TelephoneHandler { get; set; } = null!;
-    [Inject] protected ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private IApplicationUserTelephoneHandler TelephoneHandler { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
     [Inject] private IDialogService DialogService { get; set; } = null!;
 
     #endregion
@@ -34,15 +33,8 @@ public partial class ListApplicationUserTelephonesPage : ComponentBase
     {
         StartService.SetPageTitle("Telefones");
         await StartService.ValidateAccesByTokenAsync();
-        LoggedUserId = StartService.GetLoggedUserId();
-        UserId = StartService.GetSelectedUserId();
-        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
-        if (!IsAdmin)
-        {
-            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
-            IsNotEdit = IsOwner && (LoggedUserId != UserId);
-        }
-        
+
+        LoadStartValues();
         await LoadAddressesAsync();
     }
 
@@ -50,6 +42,13 @@ public partial class ListApplicationUserTelephonesPage : ComponentBase
 
     #region Methods
 
+    private void LoadStartValues()
+    {
+        if (!IsAdmin && IsOwner && LoggedUserId != UserId)
+        {
+            IsNotEdit = true;
+        }
+    }
     private async Task LoadAddressesAsync()
     {
         IsBusy = true; 

@@ -120,14 +120,14 @@ public abstract class StartService
         NavigationService.NavigateTo(url);
     }
 
-    public static void LinkToUrlAddress(string url = "", string urlOrigen = "", long userId = 0, long addressId = 0)
+    public static void LinkToUrlAddress(string url = "", long userId = 0, long addressId = 0)
     {
         SetSelectedUserId(userId);
         SetSelectedAddressId(addressId);
         NavigationService.NavigateTo(url);
     }
 
-    public static void LinkToUrlTelephone(string url = "", string urlOrigen = "", long userId = 0, long telephoneId = 0)
+    public static void LinkToUrlTelephone(string url = "", long userId = 0, long telephoneId = 0)
     {
         SetSelectedUserId(userId);
         SetSelectedTelephoneId(telephoneId);

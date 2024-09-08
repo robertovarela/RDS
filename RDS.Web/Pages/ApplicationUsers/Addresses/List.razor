@@ -64,7 +64,7 @@
                                 <MudIconButton
                                     Icon="@Icons.Material.Filled.Edit"
                                     Color="Color.Primary"
-                                    OnClick="@(() => StartService.LinkToUrlAddress(EditUrl, SourceUrl, cellContext.Item.UserId, cellContext.Item.Id))">
+                                    OnClick="@(() => StartService.LinkToUrlAddress(EditUrl, cellContext.Item.UserId, cellContext.Item.Id))">
                                 </MudIconButton>
                                 @if (!IsNotEdit)
                                 {

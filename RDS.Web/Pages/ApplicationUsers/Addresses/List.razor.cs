@@ -16,7 +16,6 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
     protected const string BackUrl = "/usuarios/editar";
     protected const string AddUrl = "/usuarios/enderecos/adicionar";
     protected const string EditUrl = "/usuarios/enderecos/editar";
-    protected const string SourceUrl = "/usuarios/enderecos";
 
     #endregion
 

@@ -22,13 +22,6 @@
                 QuickFilter="Filter"
                 Hideable="true">
                 <ToolBarContent>
-                    <MudButton ButtonType="ButtonType.Button"
-                               Variant="Variant.Filled"
-                               Color="Color.Secondary"
-                               OnClick="@(() => NavigationService.NavigateTo(BackUrl))">
-                        VOLTAR
-                    </MudButton>
-                    <MudSpacer/>
                     <MudTextField
                         @bind-Value="@SearchTerm"
                         Placeholder="Filtrar..."
@@ -69,7 +62,7 @@
                                 <MudIconButton
                                     Icon="@Icons.Material.Filled.Edit"
                                     Color="Color.Primary"
-                                    OnClick="@(() => StartService.LinkToUrlTelephone(EditUrl, OrigenUrl, cellContext.Item.UserId, cellContext.Item.Id))">
+                                    OnClick="@(() => StartService.LinkToUrlTelephone(EditUrl, cellContext.Item.UserId, cellContext.Item.Id))">
                                 </MudIconButton>
                                 @if (!IsNotEdit)
                                 {
@@ -93,6 +86,8 @@
                                       PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
                 </PagerContent>
             </MudDataGrid>
+            <MudSpacer/>
+            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" Button2Text="Atualizar" Button2Disable="true" Button2IsNotVisible="true"/>
         }
     </Authorized>
     <NotAuthorized>

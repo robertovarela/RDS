@@ -7,15 +7,16 @@ public partial class EditApplicationUserTelephonesPage : ComponentBase
 
     protected bool IsBusy { get; private set; }
     protected UpdateApplicationUserTelephoneRequest InputModel { get; set; } = new();
-    private long LoggedUserId { get; set; }
-    private long UserId { get; set; }
-    private bool IsAdmin { get; set; }
-    private bool IsOwner { get; set; }
-    private long TelephoneId { get; set; }
+    private long LoggedUserId { get; } = StartService.GetLoggedUserId();
+    private long UserId { get; } = StartService.GetSelectedUserId();
+    private bool IsAdmin { get; } = StartService.GetIsAdmin();
+    private bool IsOwner { get; } = StartService.GetIsOwner();
+    private long TelephoneId { get; set; } = StartService.GetSelectedTelephoneId();
     protected bool IsNotEdit { get; set; }
-    private const string BackUrl = "/usuarios/telefones";
-    protected const string CancelUrl = "/usuarios/telefones";
-    private const string OrigenUrl = "/usuarios/telefones";
+
+    protected const string BackUrl = "/usuarios/telefones";
+    private const string SourceUrl = "/usuarios/telefones";
+    protected string CancelOrBackButtonText = "Cancelar";
 
     #endregion
 
@@ -39,26 +40,28 @@ public partial class EditApplicationUserTelephonesPage : ComponentBase
     {
         StartService.SetPageTitle("Editar Telefone");
         await StartService.ValidateAccesByTokenAsync();
-        LoggedUserId = StartService.GetLoggedUserId();
-        UserId = StartService.GetSelectedUserId();
-        TelephoneId = StartService.GetSelectedTelephoneId();
-        if (UserId == 0)
-        {
-            NavigationService.NavigateTo(OrigenUrl);
-        }
-        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
-        if (!IsAdmin)
-        {
-            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
-            IsNotEdit = IsOwner && (LoggedUserId != UserId);
-        }
 
+        LoadStartValues();
         await LoadUserAddressAsync();
     }
 
     #endregion
 
     #region Methods
+
+    private void LoadStartValues()
+    {
+        if (UserId == 0 || TelephoneId == 0)
+        {
+            NavigationService.NavigateTo(SourceUrl);
+        }
+        
+        if (!IsAdmin && IsOwner && LoggedUserId != UserId)
+        {
+            IsNotEdit = true;
+            CancelOrBackButtonText = "Voltar";
+        }
+    }
 
     private async Task LoadUserAddressAsync()
     {
@@ -93,9 +96,9 @@ public partial class EditApplicationUserTelephonesPage : ComponentBase
         finally
         {
             IsBusy = false;
-        }    
+        }
     }
-    
+
     protected async void OnUpdateButtonClickedAsync()
     {
         var result = await DialogService.ShowMessageBox(
@@ -109,7 +112,7 @@ public partial class EditApplicationUserTelephonesPage : ComponentBase
 
         StateHasChanged();
     }
-    
+
     private async Task OnValidSubmitAsync()
     {
         IsBusy = true;
@@ -125,7 +128,6 @@ public partial class EditApplicationUserTelephonesPage : ComponentBase
             else
             {
                 Snackbar.Add($"O telefone {InputModel.Number} não foi encontrado", Severity.Warning);
-
             }
 
             NavigationService.NavigateTo(BackUrl);

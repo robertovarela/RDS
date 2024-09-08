@@ -15,6 +15,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     private bool IsAdmin { get; } = StartService.GetIsAdmin();
     private bool IsOwner { get; } = StartService.GetIsOwner();
     protected bool IsNotEdit { get; set; }
+    
     protected const string UserAddressUrl = "/usuarios/enderecos";
     protected const string UserPhoneUrl = "/usuarios/telefones";
     protected string BackUrl = "/";
