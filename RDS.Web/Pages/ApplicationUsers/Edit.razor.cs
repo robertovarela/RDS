@@ -10,16 +10,14 @@ public partial class EditApplicationUsersPage : ComponentBase
     protected MudDatePicker Picker = new();
     protected DateTime MinDate = DateTime.Today.AddYears(-110);
     protected DateTime MaxDate = DateTime.Today.AddYears(-12);
-    private long LoggedUserId { get; set; }
-    protected long UserId { get; private set; }
-    private bool IsAdmin { get; set; }
-    private bool IsOwner { get; set; }
-    private string Email { get; set; } = null!;
+    private long LoggedUserId { get; } = StartService.GetLoggedUserId();
+    protected long UserId { get; } = StartService.GetSelectedUserId();
+    private bool IsAdmin { get; } = StartService.GetIsAdmin();
+    private bool IsOwner { get; } = StartService.GetIsOwner();
     protected bool IsNotEdit { get; set; }
     protected const string UserAddressUrl = "/usuarios/enderecos";
     protected const string UserPhoneUrl = "/usuarios/telefones";
     protected string CancelUrl = "/";
-    protected string OrigenUrl = "/";
     protected string CancelOrBackButtonText = "Cancelar";
 
     #endregion
@@ -39,7 +37,7 @@ public partial class EditApplicationUsersPage : ComponentBase
         StartService.SetPageTitle("Editar Usuário");
         await StartService.ValidateAccesByTokenAsync();
 
-        await LoadStartValues();
+        LoadStartValues();
         await LoadUser();
     }
 
@@ -55,31 +53,25 @@ public partial class EditApplicationUsersPage : ComponentBase
 
     #region Methods
 
-    private async Task LoadStartValues()
+    private void LoadStartValues()
     {
-        LoggedUserId = StartService.GetLoggedUserId();
-        UserId = StartService.GetSelectedUserId();
         if (UserId == 0)
         {
-            NavigationService.NavigateTo(OrigenUrl);
+            NavigationService.NavigateTo(CancelUrl);
         }
-        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
-        if (!IsAdmin)
+
+        if (!IsAdmin && IsOwner && LoggedUserId != UserId)
         {
-            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
-            if(IsOwner && LoggedUserId != UserId)
-            {
-                IsNotEdit = true;
-                CancelOrBackButtonText = "Voltar";
-            }
+            IsNotEdit = true;
+            CancelOrBackButtonText = "Voltar";
         }
 
         if (IsAdmin || IsOwner)
         {
             CancelUrl = "/usuarios";
-            OrigenUrl = "/usuarios";
         }
     }
+
     private async Task LoadUser()
     {
         try
@@ -89,12 +81,11 @@ public partial class EditApplicationUsersPage : ComponentBase
             var response = await UserHandler.GetByIdAsync(request);
             if (response is { IsSuccess: true, Data: not null })
             {
-                Email = response.Data.Email!;
                 InputModel = new UpdateApplicationUserRequest
                 {
                     UserId = response.Data.Id,
                     Name = response.Data.Name,
-                    Email = Email,
+                    Email = response.Data.Email!,
                     Cpf = response.Data.Cpf ?? string.Empty,
                     BirthDate = response.Data.BirthDate
                 };
@@ -123,6 +114,7 @@ public partial class EditApplicationUsersPage : ComponentBase
 
         StateHasChanged();
     }
+
     private async Task OnValidSubmitAsync()
     {
         IsBusy = true;
@@ -130,7 +122,7 @@ public partial class EditApplicationUsersPage : ComponentBase
         {
             InputModel.Cpf = null;
         }
-        
+
         try
         {
             var result = await UserHandler.UpdateAsync(InputModel);

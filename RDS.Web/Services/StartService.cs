@@ -41,14 +41,14 @@ public abstract class StartService
     public static long GetSelectedCategoryId() => _manipulateUserStateValuesService.GetSelectedCategoryId();
     public static long GetSelectedTransactionId() => _manipulateUserStateValuesService.GetSelectedTransactionId();
 
+    public static void SetPageTitle(string title) => _manipulateUserStateValuesService.SetPageTitle(title);
+    public static void SetSourceUrl(List<string> urlList) => _manipulateUserStateValuesService.SetSourceUrl(urlList);
+    public static void SetCurrentUrl(string url) => _manipulateUserStateValuesService.SetCurrentUrl(url);
     public static void SetIsAdmin(bool isAdmin) => _manipulateUserStateValuesService.SetIsAdmin(isAdmin);
     public static void SetIsOwner(bool isOwner) => _manipulateUserStateValuesService.SetIsOwner(isOwner);
     public static void SetNotLoggedUserId() => _manipulateUserStateValuesService.SetNotLoggedUserId();
     public static void SetLoggedId(long userId) => _manipulateUserStateValuesService.SetLoggedUserId(userId);
     public static async Task SetDefaultValues() => await _manipulateUserStateValuesService.SetDefaultValuesAsync();
-    public static void SetPageTitle(string title) => _manipulateUserStateValuesService.SetPageTitle(title);
-    public static void SetSourceUrl(List<string> urlList) => _manipulateUserStateValuesService.SetSourceUrl(urlList);
-    public static void SetCurrentUrl(string url) => _manipulateUserStateValuesService.SetCurrentUrl(url);
     public static void SetSelectedUserId(long userId) => _manipulateUserStateValuesService.SetSelectedUserId(userId);
 
     public static void SetSelectedUserName(string userName)

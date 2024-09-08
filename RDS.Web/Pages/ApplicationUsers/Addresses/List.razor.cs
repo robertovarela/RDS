@@ -7,16 +7,16 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
 
     protected bool IsBusy { get; private set; }
     protected List<ApplicationUserAddress> ApplicationUsersAddress { get; private set; } = [];
-    private long LoggedUserId { get; set; }
-    private long UserId { get; set; }
-    private bool IsAdmin { get; set; }
-    private bool IsOwner { get; set; }
+    private long LoggedUserId { get; } = StartService.GetLoggedUserId();
+    private long UserId { get; } = StartService.GetSelectedUserId();
+    private bool IsAdmin { get; } = StartService.GetIsAdmin();
+    private bool IsOwner { get; } = StartService.GetIsOwner();
     protected bool IsNotEdit { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string BackUrl = "/usuarios/editar";
     protected const string AddUrl = "/usuarios/enderecos/adicionar";
     protected const string EditUrl = "/usuarios/enderecos/editar";
-    protected const string OrigenUrl = "/usuarios/enderecos";
+    protected const string SourceUrl = "/usuarios/enderecos";
 
     #endregion
 
@@ -34,12 +34,8 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
     {
         StartService.SetPageTitle("Endereços");
         await StartService.ValidateAccesByTokenAsync();
-        LoggedUserId = StartService.GetLoggedUserId();
-        UserId = StartService.GetSelectedUserId();
-        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
         if (!IsAdmin)
         {
-            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
             IsNotEdit = IsOwner && (LoggedUserId != UserId);
         }
         

@@ -13,7 +13,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected string SearchFilter { get; set; } = string.Empty;
         
         protected const string EditUrl = "/usuarios/editar";
-        protected const string SourceUrl = "/usuarios";
+        private const string CurrentUrl = "/usuarios";
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
 
@@ -43,7 +43,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         private void LoadStartValues()
         {
-            //StartService.SetSelectedUserId(0);
+            StartService.SetSourceUrl([CurrentUrl]);
             if (StartService.GetIsOwner() || StartService.GetIsAdmin())
             {
                 Companies = StartService.GetUserCompanies();
