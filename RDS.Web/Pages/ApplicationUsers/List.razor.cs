@@ -56,11 +56,11 @@ namespace RDS.Web.Pages.ApplicationUsers
                 ? Companies.OrderBy(x => x.CompanyId).FirstOrDefault()
                 : Companies.FirstOrDefault();
 
-            if (selectedCompany == null)
-                return;
-
-            InputModel.CompanyId = selectedCompany.CompanyId;
-            InputModel.CompanyName = selectedCompany.CompanyName;
+            if (selectedCompany != null)
+            {
+                InputModel.CompanyId = selectedCompany.CompanyId;
+                InputModel.CompanyName = selectedCompany.CompanyName;
+            }
         }
 
         private async Task LoadUsersAsync(long companyIdFilter, string searchFilter)
