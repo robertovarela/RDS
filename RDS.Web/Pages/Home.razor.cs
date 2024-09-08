@@ -1,6 +1,7 @@
 namespace RDS.Web.Pages;
 
-public class HomePage : ComponentBase
+// ReSharper disable once PartialTypeWithSinglePart
+public partial class HomePage : ComponentBase
 {
     #region Properties
     private long LoggedUserId { get; set; }
@@ -13,7 +14,7 @@ public class HomePage : ComponentBase
     
     #region Services
 
-    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
     
     #endregion
