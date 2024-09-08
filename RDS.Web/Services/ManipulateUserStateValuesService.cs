@@ -36,18 +36,14 @@ public class ManipulateUserStateValuesService(
 
         if (loggedUserId != 0)
         {
-            var isOwner = await IsOwnerInRolesAsync(loggedUserId);
             var isAdmin = await IsAdminInRolesAsync(loggedUserId);
-            var companies = new List<CompanyIdNameViewModel>();
+            var isOwner = await IsOwnerInRolesAsync(loggedUserId);
 
-            if (isOwner)
-            {
-                companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, role: "Owner");
-            }
-            else if (isAdmin)
-            {
-                companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, role: "Admin");
-            }
+            SetIsAdmin(isAdmin);
+            SetIsOwner(isOwner);
+
+            var roleDefault = isAdmin ? "Admin" : "Owner";
+            var companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, role: roleDefault);
 
             SetUserCompanies(companies);
             SetSelectedCompanyId(companies.FirstOrDefault()?.CompanyId ?? 0);
@@ -181,11 +177,13 @@ public class ManipulateUserStateValuesService(
     public void SetCurrentUrl(string url) => userState.SetCurrentUrl(url);
     public void SetIsAdmin(bool isAdmin) => userState.SetIsAdmin(isAdmin);
     public void SetIsOwner(bool isOwner) => userState.SetIsOwner(isOwner);
+
     public void SetLoggedUserId(long userId)
     {
         if (GetLoggedUserId() == 0 || userId == 0)
             userState.SetLoggedUserId(userId);
     }
+
     public void SetSelectedUserId(long userId) => userState.SetSelectedUserId(userId);
     public void SetSelectedUserName(string userName) => userState.SetSelectedUserName(userName);
     public void SetSelectedAddressId(long addressId) => userState.SetSelectedAddressId(addressId);

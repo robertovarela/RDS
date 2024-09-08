@@ -4,7 +4,6 @@ namespace RDS.Web.Pages;
 public partial class HomePage : ComponentBase
 {
     #region Properties
-    private long LoggedUserId { get; set; }
     private long CompanyId { get; set; }
     protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
     protected bool IsAdmin { get; private set; }
@@ -25,54 +24,25 @@ public partial class HomePage : ComponentBase
     {
         StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
         await StartService.ValidateAccesByTokenAsync(blockNavigation: false);
-        
-        LoggedUserId = StartService.GetLoggedUserId();
-        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
-        IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
-        
-        StartService.SetIsAdmin(IsAdmin);
-        StartService.SetIsOwner(IsOwner);
-        
-        if (IsOwner || IsAdmin)
-        {
-            await StartService.SetDefaultValues();
-            CompanyId = StartService.GetSelectedCompanyId();
-            Companies = StartService.GetUserCompanies();
-        }
-
-        //var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        //var user = authState.User;
-
-        // if (user.Identity != null && user.Identity.IsAuthenticated)
-        // {
-        //     var rolesList = user.Claims
-        //         .Where(c => c.Type == ClaimTypes.Role)
-        //         .Select(c => c.Value)
-        //         .ToList();
-        //     roles = string.Join(", ", rolesList);
-        //
-        //     Console.WriteLine($"Roles do usuário autenticado: {roles}");
-        // }
-        // else
-        // {
-        //     roles = "Usuário não autenticado";
-        //     Console.WriteLine(roles);
-        // }
-        //
-        // if (user.Identity != null && user.Identity.IsAuthenticated)
-        // {
-        //     var roles = user.Claims
-        //         .Where(c => c.Type.StartsWith("custom_role_"))
-        //         .Select(c => c.Value)
-        //         .ToList();
-        //
-        //     Console.WriteLine($"Roles do usuário autenticado: {string.Join(", ", roles)}");
-        // }
+        await StartService.SetDefaultValues();
+        LoadStartValues();
     }
 
     #endregion
     
     #region Public Methods
+
+    private void LoadStartValues()
+    {
+        IsAdmin = StartService.GetIsAdmin();
+        IsOwner = StartService.GetIsOwner();
+        
+        if (IsOwner || IsAdmin)
+        {
+            CompanyId = StartService.GetSelectedCompanyId();
+            Companies = StartService.GetUserCompanies();
+        }
+    }
     
     public void SelectCompany(long companyId)
     {
