@@ -4,33 +4,6 @@
 @* <UserState/> *@
 <AuthorizeView Roles="Admin, Owner">
     <Authorized>
-        <MudPaper Class="pa-2">
-            <MudSelect
-                T="long"
-                Label="Empresas"
-                @bind-Value="InputModel.CompanyId"
-                HelperText="Selecione a Empresa"
-                Placeholder="Favor selecionar"
-                AdornmentIcon="@Icons.Material.Filled.CorporateFare"
-                AdornmentColor="Color.Primary"
-                AnchorOrigin="Origin.BottomCenter"
-                Variant="Variant.Outlined"
-                OnClose="OnSelectedCompany"
-                ToStringFunc="(companyId) => Companies.FirstOrDefault(
-                c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
-
-                @foreach (var company in Companies)
-                {
-                    <MudSelectItem T="long" Value="@company.CompanyId">
-                        @company.CompanyName
-                    </MudSelectItem>
-                }
-            </MudSelect>
-        </MudPaper>
-    </Authorized>
-</AuthorizeView>
-<AuthorizeView Roles="Admin, Owner">
-    <Authorized>
         <div class="d-flex mt-2 mb-2">
             <MudTextField @bind-Value="@SearchFilter"
                           Class="mr-4"
@@ -60,6 +33,31 @@
                 </MudButton>
             </div>
         </div>
+
+        <MudPaper Class="pa-2">
+            <MudSelect
+                T="long"
+                Label="Empresas"
+                @bind-Value="InputModel.CompanyId"
+                HelperText="Selecione a Empresa"
+                Placeholder="Favor selecionar"
+                AdornmentIcon="@Icons.Material.Filled.CorporateFare"
+                AdornmentColor="Color.Primary"
+                AnchorOrigin="Origin.BottomCenter"
+                Variant="Variant.Outlined"
+                OnClose="OnSelectedCompany"
+                ToStringFunc="(companyId) => Companies.FirstOrDefault(
+                c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
+
+                @foreach (var company in Companies)
+                {
+                <MudSelectItem T="long" Value="@company.CompanyId">
+                    @company.CompanyName
+                </MudSelectItem>
+                }
+            </MudSelect>
+        </MudPaper>
+        <MudSpacer/>
         @if (IsBusy)
         {
             <MudPaper Class="mud-data-grid pa-8 mt-4">
@@ -123,6 +121,8 @@
                                       PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
                 </PagerContent>
             </MudDataGrid>
+            <MudSpacer/>
+            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" Button2Text="Atualizar" Button2Disable="true" Button2IsNotVisible="true"/>
         }
     </Authorized>
     <NotAuthorized>

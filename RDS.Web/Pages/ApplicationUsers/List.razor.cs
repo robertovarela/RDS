@@ -13,6 +13,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected string SearchFilter { get; set; } = string.Empty;
         
         protected const string EditUrl = "/usuarios/editar";
+        protected const string BackUrl = "/";
         private const string CurrentUrl = "/usuarios";
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;

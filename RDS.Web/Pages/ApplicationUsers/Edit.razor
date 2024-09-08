@@ -16,10 +16,9 @@
         }
         else
         {
-            <MudPaper Class="mud-data-grid pa-8 mt-4">
-                <EditForm Model="@InputModel" OnValidSubmit="OnUpdateButtonClickedAsync" Context="editContext">
-                    <DataAnnotationsValidator/>
-
+            <EditForm Model="@InputModel" OnValidSubmit="OnUpdateButtonClickedAsync" Context="editContext">
+                <DataAnnotationsValidator/>
+                <MudPaper Class="mud-data-grid pa-8 mt-4">
                     <MudTextField Label="Código"
                                   HelperText="&nbsp;"
                                   @bind-Value="InputModel.UserId"
@@ -64,33 +63,29 @@
                                    Elevation="12"
                                    Class="datepicker-custom"
                                    Disabled="IsNotEdit"/>
-
-                    <MudPaper Class="pa-2">
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <MudSpacer/>
-                            <MudPaper Class="pa-2 bg-appbarbackground" Style="margin-right: 8px;">
-                                <MudButton Class="pa-4" ButtonType="ButtonType.Button"
-                                           Variant="Variant.Outlined"
-                                           Color="Color.Surface"
-                                           OnClick="@(() => StartService.LinkToUrlUser(UserAddressUrl, UserId))">
-                                    Endereços
-                                </MudButton>
-                            </MudPaper>
-                            <MudSpacer/>
-                            <MudPaper Class="pa-2 bg-appbarbackground" Style="margin-left: 8px;">
-                                <MudButton Class="pa-4" ButtonType="ButtonType.Button"
-                                           Variant="Variant.Outlined"
-                                           Color="Color.Surface"
-                                           OnClick="@(() => NavigationService.NavigateTo(UserPhoneUrl))">
-                                    Telefones
-                                </MudButton>
-                            </MudPaper>
-                            <MudSpacer/>
-                        </div>
-                    </MudPaper>
-                    <SaveAndCancelButtons CancelOrBackPage="@CancelUrl" Button1Text="@CancelOrBackButtonText" Button2Text="Atualizar" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
-                </EditForm>
-            </MudPaper>
+                </MudPaper>
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <MudSpacer/>
+                        <MudPaper Class="pa-2 bg-appbarbackground" Style="margin-right: 8px;">
+                            <MudButton Class="pa-4" ButtonType="ButtonType.Button"
+                                       Variant="Variant.Outlined"
+                                       Color="Color.Surface"
+                                       OnClick="@(() => StartService.LinkToUrlUser(UserAddressUrl, UserId))">
+                                Endereços
+                            </MudButton>
+                        </MudPaper>
+                        <MudPaper Class="pa-2 bg-appbarbackground" Style="margin-left: 8px;">
+                            <MudButton Class="pa-4" ButtonType="ButtonType.Button"
+                                       Variant="Variant.Outlined"
+                                       Color="Color.Surface"
+                                       OnClick="@(() => NavigationService.NavigateTo(UserPhoneUrl))">
+                                Telefones
+                            </MudButton>
+                        </MudPaper>
+                        <MudSpacer/>
+                    </div>
+                <SaveAndCancelButtons CancelOrBackPage="@CancelUrl" Button1Text="@CancelOrBackButtonText" Button2Text="Atualizar" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
+            </EditForm>
         }
     </Authorized>
     <NotAuthorized>

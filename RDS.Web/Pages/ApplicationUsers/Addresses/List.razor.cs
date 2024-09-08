@@ -34,17 +34,26 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
     {
         StartService.SetPageTitle("Endereços");
         await StartService.ValidateAccesByTokenAsync();
-        if (!IsAdmin)
-        {
-            IsNotEdit = IsOwner && (LoggedUserId != UserId);
-        }
-        
+
+        LoadStartValues();
         await LoadAddressesAsync();
     }
 
     #endregion
 
     #region Methods
+
+    private void LoadStartValues()
+    {
+        if (UserId == 0)
+        {
+            NavigationService.NavigateTo(BackUrl);
+        }
+        if (!IsAdmin)
+        {
+            IsNotEdit = IsOwner && (LoggedUserId != UserId);
+        }
+    }
 
     private async Task LoadAddressesAsync()
     {

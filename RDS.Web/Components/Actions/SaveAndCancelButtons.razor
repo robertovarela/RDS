@@ -1,5 +1,5 @@
-﻿<MudPaper Class="pa-2">
-    <div class="d-flex">
+﻿@* <MudPaper Class="pa-2 mt-2"> *@
+    <div class="d-flex pa-2 mt-2">
         @if (!Button1IsNotVisible)
         {
             <MudButton ButtonType="ButtonType.Button"
@@ -21,7 +21,7 @@
             </MudButton>
         }
     </div>
-</MudPaper>
+@* </MudPaper> *@
 
 @code {
     [Parameter] public string CancelOrBackPage { get; set; } = "/";
