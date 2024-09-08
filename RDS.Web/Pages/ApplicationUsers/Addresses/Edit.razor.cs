@@ -7,15 +7,13 @@ public partial class EditApplicationUserAddressPage : ComponentBase
 
     protected bool IsBusy { get; private set; }
     protected UpdateApplicationUserAddressRequest InputModel { get; set; } = new();
-    private long LoggedUserId { get; set; }
-    private long UserId { get; set; }
-    private bool IsAdmin { get; set; }
-    private bool IsOwner { get; set; }
-    private long AddressId { get; set; }
+    private long LoggedUserId { get; } = StartService.GetLoggedUserId();
+    protected long UserId { get; } = StartService.GetSelectedUserId();
+    private bool IsAdmin { get; } = StartService.GetIsAdmin();
+    private bool IsOwner { get; } = StartService.GetIsOwner();
+    private long AddressId { get; } = StartService.GetSelectedAddressId();
     protected bool IsNotEdit { get; set; }
     protected const string BackUrl = "/usuarios/enderecos";
-    protected string CancelUrl = "/usuarios/enderecos";
-    private const string OrigenUrl = "/usuarios/enderecos";
 
     #endregion
 
@@ -35,7 +33,7 @@ public partial class EditApplicationUserAddressPage : ComponentBase
 
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
     [Inject] private IApplicationUserAddressHandler AddressHandler { get; set; } = null!;
-    [Inject] protected IDialogService DialogService { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
 
     #endregion
 
@@ -45,21 +43,8 @@ public partial class EditApplicationUserAddressPage : ComponentBase
     {
         StartService.SetPageTitle("Editar Endereço");
         await StartService.ValidateAccesByTokenAsync();
-        UserId = StartService.GetSelectedUserId();
-        AddressId = StartService.GetSelectedAddressId();
-        LoggedUserId = StartService.GetLoggedUserId();
-        UserId = StartService.GetSelectedUserId();
-        if (UserId == 0)
-        {
-            NavigationService.NavigateTo(OrigenUrl);
-        }
-        IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
-        if (!IsAdmin)
-        {
-            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
-            IsNotEdit = IsOwner && (LoggedUserId != UserId);
-        }
 
+        LoadStartValues();
         await LoadUserAddressAsync();
     }
 
@@ -67,6 +52,17 @@ public partial class EditApplicationUserAddressPage : ComponentBase
 
     #region Methods
 
+    private void LoadStartValues()
+    {
+        if (UserId == 0 || AddressId == 0)
+        {
+            NavigationService.NavigateTo(BackUrl);
+        }
+        if (!IsAdmin)
+        {
+            IsNotEdit = IsOwner && (LoggedUserId != UserId);
+        }
+    }
     private async Task LoadUserAddressAsync()
     {
         IsBusy = true;

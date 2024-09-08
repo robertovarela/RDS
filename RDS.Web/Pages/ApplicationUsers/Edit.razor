@@ -24,29 +24,29 @@
                                   @bind-Value="InputModel.UserId"
                                   For="@(() => InputModel.UserId)"
                                   Variant="Variant.Outlined"
-                                  Disabled/>
+                                  ReadOnly="true"/>
 
                     <MudTextField Label="E-mail"
                                   HelperText="Campo obrigatório"
                                   @bind-Value="InputModel.Email"
                                   For="@(() => InputModel.Email)"
                                   Variant="Variant.Outlined"
-                                  Disabled="true"/>
+                                  ReadOnly="true"/>
 
                     <MudTextField Label="Nome"
                                   HelperText="Campo obrigatório"
                                   @bind-Value="InputModel.Name"
                                   For="@(() => InputModel.Name)"
                                   Variant="Variant.Outlined"
-                                  Disabled="IsNotEdit"
+                                  ReadOnly="IsNotEdit"
                                   AutoFocus/>
 
                     <MudTextField Label="CPF"
                                   HelperText="&nbsp;"
                                   @bind-Value="InputModel.Cpf"
                                   For="@(() => InputModel.Cpf)"
-                                  Disabled="IsNotEdit"
-                                  Variant="Variant.Outlined"/>
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="IsNotEdit"/>
 
                     <MudDatePicker Label="Data de Nascimento"
                                    @ref="Picker"
@@ -62,7 +62,7 @@
                                    PickerVariant="PickerVariant.Dialog"
                                    Elevation="12"
                                    Class="datepicker-custom"
-                                   Disabled="IsNotEdit"/>
+                                   ReadOnly="IsNotEdit"/>
                 </MudPaper>
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <MudSpacer/>
@@ -84,7 +84,7 @@
                         </MudPaper>
                         <MudSpacer/>
                     </div>
-                <SaveAndCancelButtons CancelOrBackPage="@CancelUrl" Button1Text="@CancelOrBackButtonText" Button2Text="Atualizar" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
+                <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="@CancelOrBackButtonText" Button2Text="Atualizar" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
             </EditForm>
         }
     </Authorized>

@@ -17,7 +17,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     protected bool IsNotEdit { get; set; }
     protected const string UserAddressUrl = "/usuarios/enderecos";
     protected const string UserPhoneUrl = "/usuarios/telefones";
-    protected string CancelUrl = "/";
+    protected string BackUrl = "/";
     protected string CancelOrBackButtonText = "Cancelar";
 
     #endregion
@@ -57,7 +57,7 @@ public partial class EditApplicationUsersPage : ComponentBase
     {
         if (UserId == 0)
         {
-            NavigationService.NavigateTo(CancelUrl);
+            NavigationService.NavigateTo(BackUrl);
         }
 
         if (!IsAdmin && IsOwner && LoggedUserId != UserId)
@@ -68,7 +68,7 @@ public partial class EditApplicationUsersPage : ComponentBase
 
         if (IsAdmin || IsOwner)
         {
-            CancelUrl = "/usuarios";
+            BackUrl = "/usuarios";
         }
     }
 
@@ -110,8 +110,10 @@ public partial class EditApplicationUsersPage : ComponentBase
             cancelText: "Cancelar");
 
         if (result is true)
+        {
             await OnValidSubmitAsync();
-
+            NavigationService.NavigateTo(BackUrl);
+        }
         StateHasChanged();
     }
 

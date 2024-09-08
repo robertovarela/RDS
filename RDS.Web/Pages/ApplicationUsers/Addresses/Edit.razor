@@ -15,10 +15,9 @@
         }
         else
         {
-            <MudPaper Class="pa-8 mt-4">
-                <EditForm Model="@InputModel" OnValidSubmit="OnUpdateButtonClickedAsync" Context="editContext">
-                    <DataAnnotationsValidator/>
-
+            <EditForm Model="@InputModel" OnValidSubmit="OnUpdateButtonClickedAsync" Context="editContext">
+                <DataAnnotationsValidator/>
+                <MudPaper Class="pa-8 mt-4">
                     <MudTextField Label="CEP"
                                   @bind-Value="InputModel.PostalCode"
                                   For="@(() => InputModel.PostalCode)"
@@ -32,6 +31,7 @@
                                   InputType="InputType.Text"
                                   Variant="Variant.Outlined"
                                   Clearable
+                                  ReadOnly="IsNotEdit"
                                   AutoFocus/>
 
                     <MudTextField Label="Logradouro"
@@ -44,7 +44,8 @@
                                   HelperText="Campo obrigatório"
                                   HelperTextOnFocus="true"
                                   InputType="InputType.Text"
-                                  Variant="Variant.Outlined"/>
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="IsNotEdit"/>
 
                     <MudTextField Label="Número"
                                   @bind-Value="InputModel.Number"
@@ -56,7 +57,8 @@
                                   HelperText="Campo obrigatório"
                                   HelperTextOnFocus="true"
                                   InputType="InputType.Text"
-                                  Variant="Variant.Outlined"/>
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="IsNotEdit"/>
 
                     <MudTextField Label="Complemento"
                                   @bind-Value="InputModel.Complement"
@@ -68,7 +70,8 @@
                                   HelperText="&nbsp;"
                                   HelperTextOnFocus="true"
                                   InputType="InputType.Text"
-                                  Variant="Variant.Outlined"/>
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="IsNotEdit"/>
 
                     <MudTextField Label="Bairro"
                                   @bind-Value="InputModel.Neighborhood"
@@ -80,7 +83,8 @@
                                   HelperText="Campo obrigatório"
                                   HelperTextOnFocus="true"
                                   InputType="InputType.Text"
-                                  Variant="Variant.Outlined"/>
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="IsNotEdit"/>
 
                     <MudTextField Label="Cidade"
                                   @bind-Value="InputModel.City"
@@ -92,7 +96,8 @@
                                   HelperText="Campo obrigatório"
                                   HelperTextOnFocus="true"
                                   InputType="InputType.Text"
-                                  Variant="Variant.Outlined"/>
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="IsNotEdit"/>
 
                     <MudSelect Label="Estado"
                                @bind-Value="InputModel.State"
@@ -100,7 +105,8 @@
                                HelperText="Campo obrigatório"
                                HelperTextOnFocus="true"
                                Variant="Variant.Outlined"
-                               T="string">
+                               T="string"
+                               ReadOnly="IsNotEdit">
                         @foreach (var estado in Estados)
                         {
                             <MudSelectItem Value="@estado">@estado</MudSelectItem>
@@ -118,7 +124,8 @@
                                   HelperText="Campo obrigatório"
                                   HelperTextOnFocus="true"
                                   InputType="InputType.Text"
-                                  Variant="Variant.Outlined"/>
+                                  Variant="Variant.Outlined"
+                                  ReadOnly="IsNotEdit"/>
 
                     <MudSelect Label="Tipo de Endereço"
                                @bind-Value="InputModel.TypeOfAddress"
@@ -126,16 +133,16 @@
                                T="ETypeOfAddress"
                                ShrinkLabel
                                HelperText="&nbsp;"
-                               Variant="Variant.Outlined">
+                               Variant="Variant.Outlined"
+                               ReadOnly="IsNotEdit">
                         <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Main">Principal</MudSelectItem>
                         <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Delivery">Entrega</MudSelectItem>
                         <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Secundary">Secundário</MudSelectItem>
                     </MudSelect>
-
-                    <SaveAndCancelButtons CancelOrBackPage="@CancelUrl" Button1Text="Cancelar" Button2Text="Atualizar" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
-
-                </EditForm>
-            </MudPaper>
+                </MudPaper>
+                <MudSpacer/>
+                <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Cancelar" Button2Text="Atualizar" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
+            </EditForm>
         }
     </Authorized>
     <NotAuthorized>
