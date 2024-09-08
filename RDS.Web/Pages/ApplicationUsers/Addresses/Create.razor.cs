@@ -5,9 +5,11 @@ public partial class CreateApplicationUserAddressPage : ComponentBase
 {
     #region Properties
 
-    public CreateApplicationUserAddressRequest InputModel { get; set; } = new();
-    private long UserId { get; set; }
-    private const string OrigenUrl = "/usuarios/enderecos";
+    protected CreateApplicationUserAddressRequest InputModel { get; set; } = new();
+    private long UserId { get; } = StartService.GetSelectedUserId();
+    protected bool IsNotEdit { get; set; }
+    
+    protected const string BackUrl = "/usuarios/enderecos";
 
     #endregion
 
@@ -37,17 +39,26 @@ public partial class CreateApplicationUserAddressPage : ComponentBase
     {
         StartService.SetPageTitle("Novo Endereço");
         await StartService.ValidateAccesByTokenAsync();
-        UserId = StartService.GetSelectedUserId();
-        if (UserId == 0)
-        {
-            NavigationService.NavigateTo(OrigenUrl);
-        }
+        
+        LoadStartValues();
     }
     
     #endregion
     
     #region Methods
 
+    private void LoadStartValues()
+    {
+        if (UserId == 0)
+        {
+            NavigationService.NavigateTo(BackUrl);
+        }
+
+        if (UserId != StartService.GetLoggedUserId())
+        {
+            IsNotEdit = true;
+        }
+    }
     public async Task OnValidSubmitAsync()
     {
         try

@@ -6,6 +6,10 @@ public partial class CreateApplicationUserTelephonePage : ComponentBase
     #region Properties
 
     public CreateApplicationUserTelephoneRequest InputModel { get; set; } = new();
+    private long UserId { get; } = StartService.GetSelectedUserId();
+    protected bool IsNotEdit { get; set; }
+    
+    protected const string BackUrl = "/usuarios/telefones";
 
     #endregion
 
@@ -17,9 +21,8 @@ public partial class CreateApplicationUserTelephonePage : ComponentBase
 
     #region Services
 
-    [Inject] public IApplicationUserTelephoneHandler TelephoneHandler { get; set; } = null!;
-
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private IApplicationUserTelephoneHandler TelephoneHandler { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
 
@@ -29,13 +32,29 @@ public partial class CreateApplicationUserTelephonePage : ComponentBase
     {
         StartService.SetPageTitle("Novo Telefone");
         await StartService.ValidateAccesByTokenAsync();
-        InputModel.Type = ETypeOfPhone.Celular;
+
+        LoadStartValues();
     }
     
     #endregion
     
     #region Methods
 
+    private void LoadStartValues()
+    {
+        if (UserId == 0)
+        {
+            NavigationService.NavigateTo(BackUrl);
+        }
+
+        if (UserId != StartService.GetLoggedUserId())
+        {
+            IsNotEdit = true;
+        }
+
+        InputModel.Type = ETypeOfPhone.Celular;
+    }
+    
     public async Task OnValidSubmitAsync()
     {
         try

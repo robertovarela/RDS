@@ -3,10 +3,9 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudPaper Class="pa-8 mt-4">
-            <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
-                <DataAnnotationsValidator/>
-
+        <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
+            <DataAnnotationsValidator/>
+            <MudPaper Class="pa-8 mt-4">
                 <MudTextField Label="Número"
                               @bind-Value="InputModel.Number"
                               For="@(() => InputModel.Number)"
@@ -33,10 +32,10 @@
                     <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.WhatsApp">WhatsApp</MudSelectItem>
                     <MudSelectItem T="ETypeOfPhone" Value="ETypeOfPhone.Fixo">Fixo</MudSelectItem>
                 </MudSelect>
-
-                <SaveAndCancelButtons CancelOrBackPage="/usuarios/telefones"/>
-            </EditForm>
-        </MudPaper>
+            </MudPaper>
+            <MudSpacer/>
+            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
+        </EditForm>
     </Authorized>
     <NotAuthorized>
         @(async () => await NavigationService.NavigateToAccessNotAllowedAsync())

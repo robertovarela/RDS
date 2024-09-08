@@ -3,10 +3,9 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudPaper Class="pa-8 mt-4">
-            <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
-                <DataAnnotationsValidator/>
-
+        <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
+            <DataAnnotationsValidator/>
+            <MudPaper Class="pa-8 mt-4">
                 <MudTextField Label="CEP"
                               @bind-Value="InputModel.PostalCode"
                               For="@(() => InputModel.PostalCode)"
@@ -118,10 +117,10 @@
                     <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Delivery">Entrega</MudSelectItem>
                     <MudSelectItem T="ETypeOfAddress" Value="ETypeOfAddress.Secundary">Secundário</MudSelectItem>
                 </MudSelect>
-
-                <SaveAndCancelButtons CancelOrBackPage="/usuarios/enderecos"/>
-            </EditForm>
-        </MudPaper>
+            </MudPaper>
+            <MudSpacer/>
+            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button2Disable="IsNotEdit" Button2IsNotVisible="IsNotEdit"/>
+        </EditForm>
     </Authorized>
     <NotAuthorized>
         @(async () => await NavigationService.NavigateToAccessNotAllowedAsync())
