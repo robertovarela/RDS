@@ -9,7 +9,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
         protected List<AllUsersViewModel> PagedApplicationUsers { get; private set; } = [];
         protected GetAllCompaniesByUserIdRequest InputModel { get; } = new();
-        private bool IsAdmin { get; } = StartService.GetIsAdmin();
+        protected bool IsAdmin { get; } = StartService.GetIsAdmin();
         private bool IsOwner { get; } = StartService.GetIsOwner();
         private string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
@@ -60,6 +60,11 @@ namespace RDS.Web.Pages.ApplicationUsers
             {
                 InputModel.CompanyId = selectedCompany.CompanyId;
                 InputModel.CompanyName = selectedCompany.CompanyName;
+            }
+
+            if (IsAdmin)
+            {
+                InputModel.Role = "Admin";
             }
         }
 
@@ -170,30 +175,37 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         private async Task OnDeleteAsync(long id)
         {
-            try
+            if(IsAdmin)
             {
-                var request = new DeleteApplicationUserRequest { CompanyId = id };
-                var result = await UserHandler.DeleteAsync(request);
-                PagedApplicationUsers.RemoveAll(x => x.Id == id);
-
-                if (result is { IsSuccess: true, Data: not null })
+                try
                 {
-                    PagedApplicationUsers = PagedApplicationUsers
-                        .Where(Filter)
-                        .Skip((_currentPage - 1) * _pageSize)
-                        .Take(_pageSize)
-                        .ToList();
-                }
-                else
-                {
-                    PagedApplicationUsers = [];
-                }
+                    var request = new DeleteApplicationUserRequest { UserId = id };
+                    var result = await UserHandler.DeleteAsync(request);
+                    PagedApplicationUsers.RemoveAll(x => x.Id == id);
 
-                Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
+                    if (result is { IsSuccess: true, Data: not null })
+                    {
+                        PagedApplicationUsers = PagedApplicationUsers
+                            .Where(Filter)
+                            .Skip((_currentPage - 1) * _pageSize)
+                            .Take(_pageSize)
+                            .ToList();
+                    }
+                    else
+                    {
+                        PagedApplicationUsers = [];
+                    }
+
+                    Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
+                }
+                catch (Exception)
+                {
+                    Snackbar.Add("Não foi possível excluir o usuário", Severity.Error);
+                }
             }
-            catch (Exception)
+            else
             {
-                Snackbar.Add("Não foi possível excluir o usuário", Severity.Error);
+                Snackbar.Add("Operação não permitida", Severity.Error);
             }
         }
 
