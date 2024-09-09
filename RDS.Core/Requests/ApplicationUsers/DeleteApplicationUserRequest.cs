@@ -2,6 +2,6 @@
 {
     public class DeleteApplicationUserRequest : Request
     {
-        public string Role { get; set; } = String.Empty;
+        public bool RoleAuthorization { get; set; }
     }
 }

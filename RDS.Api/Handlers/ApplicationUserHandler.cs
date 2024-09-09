@@ -145,7 +145,7 @@ public class ApplicationUserHandler(
 
     public async Task<Response<ApplicationUser?>> DeleteAsync(DeleteApplicationUserRequest request)
     {
-        if (request.Role != "Admin") 
+        if (!request.RoleAuthorization) 
             return new Response<ApplicationUser?>(null, 403, "Operação não permitida");
         
         try

@@ -61,11 +61,6 @@ namespace RDS.Web.Pages.ApplicationUsers
                 InputModel.CompanyId = selectedCompany.CompanyId;
                 InputModel.CompanyName = selectedCompany.CompanyName;
             }
-
-            if (IsAdmin)
-            {
-                InputModel.Role = "Admin";
-            }
         }
 
         private async Task LoadUsersAsync(long companyIdFilter, string searchFilter)
@@ -179,7 +174,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             {
                 try
                 {
-                    var request = new DeleteApplicationUserRequest { UserId = id };
+                    var request = new DeleteApplicationUserRequest { RoleAuthorization = IsAdmin, UserId = id };
                     var result = await UserHandler.DeleteAsync(request);
                     PagedApplicationUsers.RemoveAll(x => x.Id == id);
 
