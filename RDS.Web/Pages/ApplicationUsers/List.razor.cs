@@ -133,11 +133,11 @@ namespace RDS.Web.Pages.ApplicationUsers
             PagedApplicationUsers = [];
         }
 
-        protected void HandleKeyDown(KeyboardEventArgs e)
+        protected async Task HandleKeyDown(KeyboardEventArgs e)
         {
             if (e.Key == "Enter")
             {
-                OnSearch();
+                await OnSearch();
             }
             else if (e.Key == "Escape" || e.CtrlKey)
             {
@@ -145,7 +145,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             }
         }
 
-        protected async void OnSearch()
+        protected async Task OnSearch()
         {
             await LoadUsersAsync(InputModel.CompanyId, SearchFilter);
             StateHasChanged();
@@ -161,20 +161,21 @@ namespace RDS.Web.Pages.ApplicationUsers
 
             if (result is true)
             {
-                await OnDeleteAsync(id);
-                //await LoadUsers(SearchFilter);
+                var token = await StartService.GetTokenFromLocalStorageAsync();
+                await OnDeleteAsync(id, token);
+                await OnSearch();
             }
 
             StateHasChanged();
         }
 
-        private async Task OnDeleteAsync(long id)
+        private async Task OnDeleteAsync(long id, string token)
         {
             if(IsAdmin)
             {
                 try
                 {
-                    var request = new DeleteApplicationUserRequest { RoleAuthorization = IsAdmin, UserId = id };
+                    var request = new DeleteApplicationUserRequest {Token = token, RoleAuthorization = IsAdmin, UserId = id };
                     var result = await UserHandler.DeleteAsync(request);
                     PagedApplicationUsers.RemoveAll(x => x.Id == id);
 

@@ -48,4 +48,4 @@ global using RDS.Core.Services;
 
 /* add global usage directives for Third party namespaces here */
 
-global using Stripe;
+//global using Stripe;

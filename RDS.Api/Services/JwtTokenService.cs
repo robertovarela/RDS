@@ -59,7 +59,7 @@ public class JwtTokenService(IConfiguration configuration, UserManager<User> use
         }
     }
 
-    public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters
         {

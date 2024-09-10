@@ -3,7 +3,7 @@
 public class ManipulateUserStateValuesService(
     UserStateService userState,
     ILocalStorageService localStorage,
-    TokenService tokenService,
+    TokenServiceCore tokenServiceCore,
     IApplicationUserHandler userHandler,
     IApplicationUserConfigurationHandler applicationUserConfigurationHandler,
     ICompanyHandler companyHandler,
@@ -84,7 +84,7 @@ public class ManipulateUserStateValuesService(
         HandleInvalidToken(blockNavigation);
     }
 
-    private async Task<string> GetTokenFromLocalStorageAsync()
+    public async Task<string> GetTokenFromLocalStorageAsync()
     {
         return await localStorage.GetItemAsync<string>("authToken") ?? string.Empty;
     }
@@ -92,7 +92,7 @@ public class ManipulateUserStateValuesService(
     private bool TrySetUserIdFromToken(string token, out long userId, bool validateTokenLifeTime = true)
     {
         userId = 0;
-        if (!long.TryParse(tokenService.GetUserIdFromToken(token, validateTokenLifeTime), out var loggedId))
+        if (!long.TryParse(tokenServiceCore.GetUserIdFromToken(token, validateTokenLifeTime), out var loggedId))
             return false;
 
         SetLoggedUserId(loggedId);

@@ -6,12 +6,14 @@ public static class ApiConfiguration
     public static string StripeApiKey { get; set; } = string.Empty;
     
     public static string JwtKey = "ZmVkYWY3ZDg4NjNiNDhlMTk3YjkyODdkNDkyYjcwOGU=";
-    public static string JwtIssuer = "https://localhost:5001";
-    public static string JwtAudience = "https://localhost:5001";
+    public static string JwtIssuer = "www.rdsweb.mysoftwares.com.br";
+    public static string JwtAudience = "GeneralAudience";
     public static readonly int JwtMinutesToRefresh = 450;
     public static readonly int JwtMinutesToExpire = 500;
+    
     public static string ApiKeyName = "api_key";
     public static string ApiKey = "RDS_api_IlTevUM/z0ey3NwCV/unrSWg==";
+    
     public static SmtpConfiguration Smtp = new();
 
     public const int PageSize = 25;

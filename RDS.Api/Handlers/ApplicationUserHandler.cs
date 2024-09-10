@@ -4,12 +4,13 @@ public class ApplicationUserHandler(
     UserManager<User> userManager,
     SignInManager<User> signInManager,
     JwtTokenService jwtTokenService,
+    UserService userService,
     ILogger<ApplicationUserHandler> logger,
     AppDbContext context
     //RoleManager<IdentityRole<long>> roleManager
 )
     : IApplicationUserHandler
-{
+{ 
     public async Task<Response<UserLogin>> LoginAsync(LoginRequest? request)
     {
         if (request is null)
@@ -145,9 +146,15 @@ public class ApplicationUserHandler(
 
     public async Task<Response<ApplicationUser?>> DeleteAsync(DeleteApplicationUserRequest request)
     {
-        if (!request.RoleAuthorization) 
+        if (!request.RoleAuthorization)
             return new Response<ApplicationUser?>(null, 403, "Operação não permitida");
-        
+       
+        if(!await userService.VerifyIfIsAdmin(request.Token))
+        {
+            return new Response<ApplicationUser?>(null, 403, "Operação não permitida");
+        }
+
+
         try
         {
             var user = await userManager.FindByIdAsync(request.UserId.ToString());

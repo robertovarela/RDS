@@ -36,13 +36,13 @@ builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<HttpClientService>();
 builder.Services.AddAuthorizationCore();
 
-builder.Services.AddScoped<TokenService>(sp =>
+builder.Services.AddScoped<TokenServiceCore>(sp =>
 {
     var jwtKey = ConfigurationWeb.JwtKey;
     var issuer = ConfigurationWeb.Issuer;
     var audience = ConfigurationWeb.Audience;
 
-    return new TokenService(jwtKey, issuer, audience);
+    return new TokenServiceCore(jwtKey, issuer, audience);
 });
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(ConfigurationWeb.BackendUrl) });

@@ -11,7 +11,7 @@ public static class BuilderExtension
         Configuration.FrontendUrl = builder.Configuration.GetValue<string>("FrontendUrl") ?? string.Empty;
         ApiConfiguration.StripeApiKey = builder.Configuration.GetValue<string>("StripeApiKey") ?? string.Empty;
 
-        StripeConfiguration.ApiKey = ApiConfiguration.StripeApiKey;
+        //StripeConfiguration.ApiKey = ApiConfiguration.StripeApiKey;
     }
 
     public static void AddKerstrel(this WebApplicationBuilder builder)
@@ -112,8 +112,17 @@ public static class BuilderExtension
 
     public static void AddServices(this WebApplicationBuilder builder)
     {
+        builder.Services.AddScoped<TokenServiceCore>(sp =>
+        {
+            var jwtKey = ApiConfiguration.JwtKey;
+            var issuer = ApiConfiguration.JwtIssuer;
+            var audience = ApiConfiguration.JwtAudience;
+
+            return new TokenServiceCore(jwtKey, issuer, audience);
+        });
         builder.Services.AddTransient<JwtTokenService>();
-        builder.Services.AddTransient<EmailService>();
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<EmailService>();
         builder.Services.AddScoped<IApplicationUserHandler, ApplicationUserHandler>();
         builder.Services.AddScoped<IApplicationUserAddressHandler, ApplicationUserAddressHandler>();
         builder.Services.AddScoped<IApplicationUserTelephoneHandler, ApplicationUserTelephoneHandler>();

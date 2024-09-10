@@ -23,8 +23,11 @@ public abstract class StartService
         => await _manipulateUserStateValuesService.ValidateSourceUrl(sourceUrl, currentUrl, navigateToAccessNotAllowed,
             showMessage);
 
-    public static async Task RefreshToken(string refreshToken, bool showMessage) =>
-        await _manipulateUserStateValuesService.RefreshToken(refreshToken, showMessage);
+    public static async Task RefreshToken(string refreshToken, bool showMessage)
+        => await _manipulateUserStateValuesService.RefreshToken(refreshToken, showMessage);
+    
+    public static async Task<string> GetTokenFromLocalStorageAsync() 
+        => await _manipulateUserStateValuesService.GetTokenFromLocalStorageAsync();
 
     public static string GetPageTitle() => _manipulateUserStateValuesService.GetPageTitle();
     public static List<string> GetSourceUrl() => _manipulateUserStateValuesService.GetSourceUrl();

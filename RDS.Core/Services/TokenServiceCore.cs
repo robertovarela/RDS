@@ -1,6 +1,6 @@
 namespace RDS.Core.Services;
 
-public class TokenService(string jwtKey, string issuer, string audience)
+public class TokenServiceCore(string jwtKey, string issuer, string audience)
 {
     private ClaimsPrincipal? ValidateToken(string token, bool validateLifeTime = true)
     {
