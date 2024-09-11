@@ -10,7 +10,7 @@ public class ApplicationUserHandler(
     //RoleManager<IdentityRole<long>> roleManager
 )
     : IApplicationUserHandler
-{ 
+{
     public async Task<Response<UserLogin>> LoginAsync(LoginRequest? request)
     {
         if (request is null)
@@ -74,7 +74,8 @@ public class ApplicationUserHandler(
         {
             if (request.RepeatPassword != request.Password)
             {
-                return new Response<ApplicationUser?>(null, 400, "As senhas digitadas não são iguais");
+                return new Response<ApplicationUser?>(
+                    null, 400, "As senhas digitadas não são iguais");
             }
 
             var user = new User
@@ -89,7 +90,8 @@ public class ApplicationUserHandler(
 
             if (!result.Succeeded)
             {
-                return new Response<ApplicationUser?>(null, 400, "Não foi possível criar o usuário");
+                return new Response<ApplicationUser?>(
+                    null, 400, "Não foi possível criar o usuário");
             }
 
             const string roleName = "User";
@@ -135,7 +137,8 @@ public class ApplicationUserHandler(
 
             return result.Succeeded
                 ? new Response<ApplicationUser?>(user, message: "Usuário atualizado com sucesso!")
-                : new Response<ApplicationUser?>(null, 400, "Não foi possível atualizar o usuário");
+                : new Response<ApplicationUser?>(
+                    null, 400, "Não foi possível atualizar o usuário");
         }
         catch (Exception ex)
         {
@@ -146,14 +149,10 @@ public class ApplicationUserHandler(
 
     public async Task<Response<ApplicationUser?>> DeleteAsync(DeleteApplicationUserRequest request)
     {
-        if (!request.RoleAuthorization)
-            return new Response<ApplicationUser?>(null, 403, "Operação não permitida");
-       
-        if(!await userService.VerifyIfIsAdmin(request.Token))
+        if (!request.RoleAuthorization || !await userService.VerifyIfIsAdmin(request.Token))
         {
             return new Response<ApplicationUser?>(null, 403, "Operação não permitida");
         }
-
 
         try
         {
@@ -168,7 +167,8 @@ public class ApplicationUserHandler(
 
             if (!result.Succeeded)
             {
-                return new Response<ApplicationUser?>(null, 400, "Não foi possível excluir o usuário");
+                return new Response<ApplicationUser?>(
+                    null, 400, "Não foi possível excluir o usuário");
             }
 
             return new Response<ApplicationUser?>(user, message: "Usuário excluído com sucesso!");
@@ -321,7 +321,8 @@ public class ApplicationUserHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "An error occurred while getting the user.");
-            return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário");
+            return new Response<ApplicationUser?>(
+                null, 500, "Não foi possível recuperar o usuário");
         }
     }
 
@@ -342,7 +343,8 @@ public class ApplicationUserHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "An error occurred while getting the user.");
-            return new Response<ApplicationUser?>(null, 500, "Não foi possível recuperar o usuário");
+            return new Response<ApplicationUser?>(
+                null, 500, "Não foi possível recuperar o usuário");
         }
     }
 
