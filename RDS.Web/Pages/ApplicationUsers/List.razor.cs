@@ -7,6 +7,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected bool IsBusy { get; private set; }
         protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
+        private CompanyIdNameViewModel? SelectedCompany { get; set; }
         protected List<AllUsersViewModel> PagedApplicationUsers { get; private set; } = [];
         protected GetAllCompaniesByUserIdRequest InputModel { get; } = new();
         protected bool IsAdmin { get; } = StartService.GetIsAdmin();
@@ -51,15 +52,21 @@ namespace RDS.Web.Pages.ApplicationUsers
             Companies = StartService.GetUserCompanies();
             if (!Companies.Any())
                 return;
+            
+            if(IsAdmin)
+            {
+                Companies.Insert(0,
+                    new CompanyIdNameViewModel { CompanyId = 9_999_999_999_999, CompanyName = "Búsqueda en todas las empresas" });
+            }
 
-            var selectedCompany = IsAdmin
-                ? Companies.OrderBy(x => x.CompanyId).FirstOrDefault()
+            SelectedCompany = IsAdmin
+                ? Companies.OrderByDescending(x => x.CompanyId).FirstOrDefault()
                 : Companies.FirstOrDefault();
 
-            if (selectedCompany != null)
+            if (SelectedCompany != null)
             {
-                InputModel.CompanyId = selectedCompany.CompanyId;
-                InputModel.CompanyName = selectedCompany.CompanyName;
+                InputModel.CompanyId = SelectedCompany.CompanyId;
+                InputModel.CompanyName = SelectedCompany.CompanyName;
             }
         }
 
@@ -93,40 +100,68 @@ namespace RDS.Web.Pages.ApplicationUsers
             }
         }
 
-        // private async Task LoadUsersDiffAdminAndOwner(long companyIdFilter, string searchFilter)
-        // {
-        //     IsBusy = true;
-        //     try
-        //     {
-        //         var result = IsAdmin switch
-        //         {
-        //             true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest
-        //                 { Filter = SearchFilter, PageSize = _pageSize }),
-        //             false => await UserHandler.GetAllByCompanyIdAsync(
-        //                 new GetAllApplicationUserRequest
-        //                 {
-        //                     CompanyId = companyIdFilter,
-        //                     Filter = searchFilter,
-        //                     PageSize = _pageSize
-        //                 })
-        //         };
-        //         PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
-        //             ? result.Data
-        //                 .Where(Filter)
-        //                 .Skip((_currentPage - 1) * _pageSize)
-        //                 .Take(_pageSize)
-        //                 .ToList()
-        //             : [];
-        //     }
-        //     catch
-        //     {
-        //         Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
-        //     }
-        //     finally
-        //     {
-        //         IsBusy = false;
-        //     }
-        // }
+        private async Task LoadAllUsersAsync(string searchFilter)
+        {
+            IsBusy = true;
+            try
+            {
+                var result = await UserHandler.GetAllAsync(
+                    new GetAllApplicationUserRequest
+                    {
+                        Filter = searchFilter,
+                        PageSize = _pageSize
+                    });
+                PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
+                    ? result.Data
+                        .Where(Filter)
+                        .Skip((_currentPage - 1) * _pageSize)
+                        .Take(_pageSize)
+                        .ToList()
+                    : [];
+            }
+            catch
+            {
+                Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+        private async Task LoadUsersDiffAdminAndOwner(long companyIdFilter, string searchFilter)
+        {
+            IsBusy = true;
+            try
+            {
+                var result = IsAdmin switch
+                {
+                    true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest
+                        { Filter = SearchFilter, PageSize = _pageSize }),
+                    false => await UserHandler.GetAllByCompanyIdAsync(
+                        new GetAllApplicationUserRequest
+                        {
+                            CompanyId = companyIdFilter,
+                            Filter = searchFilter,
+                            PageSize = _pageSize
+                        })
+                };
+                PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
+                    ? result.Data
+                        .Where(Filter)
+                        .Skip((_currentPage - 1) * _pageSize)
+                        .Take(_pageSize)
+                        .ToList()
+                    : [];
+            }
+            catch
+            {
+                Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
 
         protected void OnSelectedCompany()
         {
@@ -147,7 +182,15 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected async Task OnSearch()
         {
-            await LoadUsersAsync(InputModel.CompanyId, SearchFilter);
+            if (IsAdmin && InputModel.CompanyId == 9_999_999_999_999)
+            {
+                await LoadAllUsersAsync(SearchFilter);    
+            }
+            else
+            {
+                await LoadUsersAsync(InputModel.CompanyId, SearchFilter);
+            }
+            
             StateHasChanged();
         }
 
