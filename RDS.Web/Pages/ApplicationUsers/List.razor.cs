@@ -100,40 +100,12 @@ namespace RDS.Web.Pages.ApplicationUsers
             }
         }
 
-        private async Task LoadAllUsersAsync(string searchFilter)
-        {
-            IsBusy = true;
-            try
-            {
-                var result = await UserHandler.GetAllAsync(
-                    new GetAllApplicationUserRequest
-                    {
-                        Filter = searchFilter,
-                        PageSize = _pageSize
-                    });
-                PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
-                    ? result.Data
-                        .Where(Filter)
-                        .Skip((_currentPage - 1) * _pageSize)
-                        .Take(_pageSize)
-                        .ToList()
-                    : [];
-            }
-            catch
-            {
-                Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
         private async Task LoadUsersDiffAdminAndOwner(long companyIdFilter, string searchFilter)
         {
             IsBusy = true;
             try
             {
-                var result = IsAdmin switch
+                var result = (IsAdmin && companyIdFilter == 9_999_999_999_999) switch
                 {
                     true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest
                         { Filter = SearchFilter, PageSize = _pageSize }),
@@ -182,15 +154,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected async Task OnSearch()
         {
-            if (IsAdmin && InputModel.CompanyId == 9_999_999_999_999)
-            {
-                await LoadAllUsersAsync(SearchFilter);    
-            }
-            else
-            {
-                await LoadUsersAsync(InputModel.CompanyId, SearchFilter);
-            }
-            
+            await LoadUsersDiffAdminAndOwner(InputModel.CompanyId, SearchFilter);
             StateHasChanged();
         }
 
