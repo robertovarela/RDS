@@ -9,8 +9,8 @@ public partial class CreateUserRolePage : ComponentBase
     protected List<ApplicationUserRole?> Roles { get; set; } = [];
     private long UserId { get; set; }
     private string UserName { get; set; } = StartService.GetSelectedUserName();
-    private const string ListUrl = "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario";
-    private readonly List<string> _urlOrigen = ["/usuariosconfiguracao/roles-do-usuario/adicionar-role"];
+    private const string ListUrl = "/usuariosconfiguracao/lista-roles-do-usuario";
+    private readonly List<string> _urlOrigen = ["/usuariosconfiguracao/adicionar-role-usuario"];
 
     #endregion
 
@@ -32,8 +32,6 @@ public partial class CreateUserRolePage : ComponentBase
         StartService.SetSourceUrl(_urlOrigen);
         IsBusy = true;
         await LoadRolesFromUser();
-        StartService.SetSelectedUserId(0);
-        StartService.SetSelectedUserName("");
     }
 
     #endregion

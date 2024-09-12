@@ -13,7 +13,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         private long CompanyId { get; set; }
         private bool IsAdmin { get; set; }
         private bool IsOwner { get; set; }
-        protected const string Url = "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario";
+        protected const string Url = "/usuariosconfiguracao/lista-roles-do-usuario";
         private readonly List<string> _sourceUrl = ["/usuariosconfiguracao/usuarios-para-roles"];
 
         private readonly int _currentPage = 1;

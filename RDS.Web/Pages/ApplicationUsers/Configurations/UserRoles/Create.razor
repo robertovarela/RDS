@@ -1,4 +1,4 @@
-@page "/usuariosconfiguracao/roles-do-usuario/adicionar-role"
+@page "/usuariosconfiguracao/adicionar-role-usuario"
 @inherits CreateUserRolePage
 
 <AuthorizeView Roles="Admin, Owner">
@@ -30,7 +30,7 @@
                     }
                 </MudSelect>
 
-                <SaveAndCancelButtons CancelOrBackPage="/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario"/>
+                <SaveAndCancelButtons CancelOrBackPage="/usuariosconfiguracao/lista-roles-do-usuario"/>
             </EditForm>
         </MudPaper>
     </Authorized>

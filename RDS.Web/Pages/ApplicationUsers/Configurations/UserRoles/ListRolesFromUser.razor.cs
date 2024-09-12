@@ -5,14 +5,14 @@ public partial class ListUserRolesPage : ComponentBase
 {
     #region Properties
 
-    protected const string AddUrl = "/usuariosconfiguracao/roles-do-usuario/adicionar-role";
-    private const string CurrentUrl = "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario";
+    protected const string AddUrl = "/usuariosconfiguracao/adicionar-role-usuario";
+    private const string CurrentUrl = "/usuariosconfiguracao/lista-roles-do-usuario";
 
     private readonly List<string> _sourceUrl =
     [
-        "/usuariosconfiguracao/roles-do-usuario/lista-roles-do-usuario",
+        "/usuariosconfiguracao/lista-roles-do-usuario",
         "/usuariosconfiguracao/lista-usuarios-roles",
-        "/usuariosconfiguracao/roles-do-usuario/adicionar-role"
+        "/usuariosconfiguracao/adicionar-role-usuario"
     ];
 
     protected bool IsBusy { get; private set; }
@@ -42,8 +42,6 @@ public partial class ListUserRolesPage : ComponentBase
         UserId = StartService.GetSelectedUserId();
         IsBusy = true;
         RolesFromUser = await StartService.GetRolesFromUserAsync(UserId);
-        StartService.SetSelectedUserId(0);
-        StartService.SetSelectedUserName("");
         IsBusy = false;
     }
 
@@ -77,7 +75,7 @@ public partial class ListUserRolesPage : ComponentBase
             var result = await ApplicationUserConfigurationHandler.DeleteUserRoleAsync(request);
             if (result is { IsSuccess: true, StatusCode: 200 })
                 RolesFromUser.RemoveAll(x => x != null && x.RoleName == roleName);
-            Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
+            Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
         {
