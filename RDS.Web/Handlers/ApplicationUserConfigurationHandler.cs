@@ -1,6 +1,4 @@
-﻿using RDS.Web.Pages.Categories;
-
-namespace RDS.Web.Handlers;
+﻿namespace RDS.Web.Handlers;
 
 public class ApplicationUserConfigurationHandler(HttpClientService httpClientService)
     : IApplicationUserConfigurationHandler
@@ -85,7 +83,7 @@ public class ApplicationUserConfigurationHandler(HttpClientService httpClientSer
                ?? new PagedResponse<List<ApplicationUserRole?>>(null, 400, "Falha ao listar as roles do usuário");
     }
 
-    public async Task<PagedResponse<List<ApplicationUserRole?>>> ListRoleToAddUserAsync(GetAllApplicationUserRoleRequest request)
+    public async Task<PagedResponse<List<ApplicationUserRole?>>> ListRolesForAddToUserAsync(GetAllApplicationUserRoleRequest request)
     {
         var requestMessage = new HttpRequestMessage(HttpMethod.Post, $"v1/userconfigurations/list-roles-not-for-user")
         {

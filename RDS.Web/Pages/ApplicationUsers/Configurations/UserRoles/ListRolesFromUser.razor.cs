@@ -7,6 +7,8 @@ public partial class ListUserRolesPage : ComponentBase
 
     protected const string AddUrl = "/usuariosconfiguracao/adicionar-role-usuario";
     private const string CurrentUrl = "/usuariosconfiguracao/lista-roles-do-usuario";
+    protected const string BackUrl = "/usuariosconfiguracao/usuarios-para-roles";
+
 
     private readonly List<string> _sourceUrl =
     [

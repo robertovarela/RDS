@@ -1,7 +1,9 @@
 ﻿namespace RDS.Api.Handlers;
 
 public class ApplicationUserConfigurationHandler(
-    RoleManager<IdentityRole<long>> roleManager,
+    RoleManager<ApplicationRole> roleManager,
+    UserService userService,
+    AppDbContext appDbContext,
     UserManager<User> userManager) : IApplicationUserConfigurationHandler
 {
     public async Task<Response<ApplicationRole?>> CreateRoleAsync(CreateApplicationRoleRequest request)
@@ -14,7 +16,8 @@ public class ApplicationUserConfigurationHandler(
                 return new Response<ApplicationRole?>(null, 401, "Nome da role inválido!");
             }
 
-            var result = await roleManager.CreateAsync(new IdentityRole<long>(roleName));
+            //var result = await roleManager.CreateAsync(new IdentityRole<long>(roleName));
+            var result = await roleManager.CreateAsync(new ApplicationRole(roleName));
 
             if (!result.Succeeded) return new Response<ApplicationRole?>(null, 401, "Ocorreu um erro ao criar a role!");
             var response = new ApplicationRole { Name = roleName };
@@ -73,7 +76,7 @@ public class ApplicationUserConfigurationHandler(
                 .ThenBy(role => role.Name != "User")
                 .ThenBy(role => role.Name)
                 .ToList();
-            
+
             return new PagedResponse<List<ApplicationRole?>>(response!, 200, "Roles listadas com sucesso!");
         }
         catch
@@ -178,8 +181,9 @@ public class ApplicationUserConfigurationHandler(
                 .ThenBy(role => role.RoleName != "Owner")
                 .ThenBy(role => role.RoleName != "User")
                 .ToList();
-            
-            return new PagedResponse<List<ApplicationUserRole?>>(response!, 200, "Roles do usuário listadas com sucesso!");
+
+            return new PagedResponse<List<ApplicationUserRole?>>(response!, 200,
+                "Roles do usuário listadas com sucesso!");
         }
         catch
         {
@@ -187,16 +191,26 @@ public class ApplicationUserConfigurationHandler(
         }
     }
 
-    public async Task<PagedResponse<List<ApplicationUserRole?>>> ListRoleToAddUserAsync(
+    public async Task<PagedResponse<List<ApplicationUserRole?>>> ListRolesForAddToUserAsyncOld(
         GetAllApplicationUserRoleRequest request)
     {
+        if (!request.RoleAuthorization
+            || !userService.VerifyIfIsInRole(request.Token, request.Roles).Result.existRole)
+        {
+            return new PagedResponse<List<ApplicationUserRole?>>(
+                null, 403, "Operação não permitida");
+        }
+
+        var typeRole = userService.VerifyIfIsInRole(request.Token, request.Roles).Result.typeRole;
         var userId = request.UserId;
+        var companyId = request.CompanyId;
         try
         {
             var user = await userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
-                return new PagedResponse<List<ApplicationUserRole?>>(null, 404, "Usuário não encontrado.");
+                return new PagedResponse<List<ApplicationUserRole?>>(
+                    null, 404, "Usuário não encontrado.");
             }
 
             var allRoles = roleManager.Roles.ToList();
@@ -222,7 +236,74 @@ public class ApplicationUserConfigurationHandler(
         }
         catch
         {
-            return new PagedResponse<List<ApplicationUserRole?>>(null, 500, "Erro interno no servidor");
+            return new PagedResponse<List<ApplicationUserRole?>>(
+                null, 500, "Erro interno no servidor");
+        }
+    }
+
+    public async Task<PagedResponse<List<ApplicationUserRole?>>> ListRolesForAddToUserAsync(
+        GetAllApplicationUserRoleRequest request)
+    {
+        if (!request.RoleAuthorization
+            || !userService.VerifyIfIsInRole(request.Token, request.Roles).Result.existRole)
+        {
+            return new PagedResponse<List<ApplicationUserRole?>>(
+                null, 403, "Operação não permitida");
+        }
+
+        var typeRole = userService.VerifyIfIsInRole(request.Token, request.Roles).Result.typeRole;
+        var userId = request.UserId;
+        var companyId = request.CompanyId;
+
+        try
+        {
+            // Se o tipo de role não for "Admin", buscar os usuários correspondentes ao companyId
+            if (typeRole != "Admin")
+            {
+                var companyUsers = await appDbContext.CompanyUsers
+                    .Where(cu => cu.CompanyId == companyId)
+                    .Select(cu => cu.UserId)
+                    .ToListAsync();
+
+                // Verifica se o usuário está associado a essa empresa
+                if (!companyUsers.Contains(userId))
+                {
+                    return new PagedResponse<List<ApplicationUserRole?>>(
+                        null, 403, "Usuário não pertence à empresa especificada.");
+                }
+            }
+
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return new PagedResponse<List<ApplicationUserRole?>>(
+                    null, 404, "Usuário não encontrado.");
+            }
+
+            var allRoles = roleManager.Roles.ToList();
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            var rolesNotForUser = allRoles
+                .Where(role => !userRoles.Contains(role.Name!))
+                .Select(role => new ApplicationUserRole
+                {
+                    RoleName = role.Name!,
+                    RoleId = role.Id,
+                    UserId = userId,
+                })
+                .OrderBy(role => role.RoleName != "Admin")
+                .ThenBy(role => role.RoleName != "Owner")
+                .ThenBy(role => role.RoleName != "User")
+                .ThenBy(role => role.RoleName)
+                .ToList();
+
+            return new PagedResponse<List<ApplicationUserRole?>>(rolesNotForUser!, 200,
+                "Roles disponíveis para adicionar ao usuário listadas com sucesso!");
+        }
+        catch
+        {
+            return new PagedResponse<List<ApplicationUserRole?>>(
+                null, 500, "Erro interno no servidor");
         }
     }
 }

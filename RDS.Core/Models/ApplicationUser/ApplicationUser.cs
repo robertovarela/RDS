@@ -9,7 +9,8 @@ public class ApplicationUser : IdentityUser<long>
     public List<ApplicationUserTelephone>? Telephone { get; set; }
     public DateTime CreateAt { get; set; } = DateTime.Now;
 
-    public virtual ICollection<IdentityUserRole<long>> UserRoles { get; set; } = new List<IdentityUserRole<long>>();
+    //public virtual ICollection<IdentityUserRole<long>> UserRoles { get; set; } = new List<IdentityUserRole<long>>();
+    public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = new List<ApplicationUserRole>();
     public virtual ICollection<CompanyUser> CompanyUsers { get; set; } = new List<CompanyUser>();
 
 }

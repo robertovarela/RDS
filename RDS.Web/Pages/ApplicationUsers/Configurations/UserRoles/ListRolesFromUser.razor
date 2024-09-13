@@ -65,6 +65,8 @@
                                       PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
                 </PagerContent>
             </MudDataGrid>
+            <MudSpacer/>
+            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" Button2Text="Atualizar" Button2Disable="true" Button2IsNotVisible="true"/>
         }
     </Authorized>
     <NotAuthorized>

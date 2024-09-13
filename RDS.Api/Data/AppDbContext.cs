@@ -1,25 +1,18 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using RDS.Api.Models;
-using RDS.Core.Models;
-using RDS.Core.Models.ApplicationUser;
-using RDS.Core.Models.Reports;
-using System.Reflection;
-using RDS.Core.Models.Company;
-
 namespace RDS.Api.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options)
     : IdentityDbContext<User,
-        IdentityRole<long>,
+        ApplicationRole,
         long,
         IdentityUserClaim<long>,
-        IdentityUserRole<long>,
+        ApplicationUserRole,
         IdentityUserLogin<long>,
         IdentityRoleClaim<long>,
-        IdentityUserToken<long>>(options)
+        IdentityUserToken<long>>(options) //<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken
 {
+    public DbSet<ApplicationUser> IdentityUsers { get; set; } = null!;
+    public DbSet<ApplicationRole> IdentityRoles { get; set; } = null!;
+    public DbSet<ApplicationUserRole> IdentityUsersRoles { get; set; } = null!;
     public DbSet<ApplicationUserAddress> Addresses { get; set; } = null!;
     public DbSet<ApplicationUserTelephone> Telephones { get; set; } = null!;
     public DbSet<Company> Companies { get; set; } = null!;

@@ -24,8 +24,33 @@
                 </MudButton>
             </div>
             <MudSpacer/>
-
         </div>
+
+        <MudPaper Class="pa-2">
+            <MudSelect
+                T="long"
+                Label="Empresas"
+                @bind-Value="InputModel.CompanyId"
+                HelperText="Selecione a Empresa"
+                Placeholder="Favor selecionar"
+                AdornmentIcon="@Icons.Material.Filled.CorporateFare"
+                AdornmentColor="Color.Primary"
+                AnchorOrigin="Origin.BottomCenter"
+                Variant="Variant.Outlined"
+                OnClose="OnSelectedCompany"
+                ToStringFunc="(companyId) => Companies.FirstOrDefault(
+                c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
+
+                @foreach (var company in Companies)
+                {
+                <MudSelectItem T="long" Value="@company.CompanyId">
+                    @company.CompanyName
+                </MudSelectItem>
+                }
+            </MudSelect>
+        </MudPaper>
+        <MudSpacer/>
+        
         @if (IsBusy)
         {
             <MudPaper Class="pa-8 mt-4">
@@ -44,20 +69,6 @@
                          Filterable="true"
                          QuickFilter="Filter"
                          Hideable="true">
-                <ToolBarContent>
-                    <MudSpacer/>
-                    <MudTextField ShrinkLabel="true"
-                                  @bind-Value="@SearchTerm"
-                                  Placeholder="Filtrar..."
-                                  Adornment="Adornment.Start"
-                                  AdornmentIcon="@Icons.Material.Filled.Search"
-                                  Immediate="true"
-                                  IconSize="Size.Medium"
-                                  Class="mt-0"
-                                  Variant="Variant.Outlined"
-                                  Clearable="true">
-                    </MudTextField>
-                </ToolBarContent>
                 <Columns>
                     <PropertyColumn Class="mud-data-grid"
                                     CellClass="mud-data-grid mud-data-grid-cell"
@@ -88,6 +99,8 @@
                                       PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
                 </PagerContent>
             </MudDataGrid>
+            <MudSpacer/>
+            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" Button2Text="Atualizar" Button2Disable="true" Button2IsNotVisible="true"/>
         }
     </Authorized>
     <NotAuthorized>

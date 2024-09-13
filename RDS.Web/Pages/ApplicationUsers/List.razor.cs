@@ -17,6 +17,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected const string EditUrl = "/usuarios/editar";
         protected const string BackUrl = "/";
+        
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
 
@@ -48,17 +49,11 @@ namespace RDS.Web.Pages.ApplicationUsers
         {
             if (!IsOwner && !IsAdmin)
                 return;
-
+            
             Companies = StartService.GetUserCompanies();
             if (!Companies.Any())
                 return;
             
-            if(IsAdmin)
-            {
-                Companies.Insert(0,
-                    new CompanyIdNameViewModel { CompanyId = 9_999_999_999_999, CompanyName = "Búsqueda en todas las empresas" });
-            }
-
             SelectedCompany = IsAdmin
                 ? Companies.OrderByDescending(x => x.CompanyId).FirstOrDefault()
                 : Companies.FirstOrDefault();

@@ -1,11 +1,11 @@
 namespace RDS.Api.Data.Mappings.Identity;
 
 public class IdentityUserRoleMapping
-    : IEntityTypeConfiguration<IdentityUserRole<long>>
+    : IEntityTypeConfiguration<ApplicationUserRole>
 {
-    public void Configure(EntityTypeBuilder<IdentityUserRole<long>> builder)
+    public void Configure(EntityTypeBuilder<ApplicationUserRole> builder)
     {
         builder.ToTable("IdentityUserRole");
-        builder.HasKey(r => new { r.UserId, r.RoleId });
+        builder.HasKey(r => new { r.UserId, r.RoleId, r.CompanyId });
     }
 }

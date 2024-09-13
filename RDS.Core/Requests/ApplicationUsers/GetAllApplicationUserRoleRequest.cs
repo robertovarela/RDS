@@ -2,5 +2,8 @@
 
 public class GetAllApplicationUserRoleRequest : Request
 {
-    //public long UserId { get; set; }
+    public string Token { get; set; } = String.Empty;
+    public bool RoleAuthorization { get; set; }
+    public List<string> Roles { get; set; } = [];
+
 }

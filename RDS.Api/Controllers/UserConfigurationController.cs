@@ -44,6 +44,6 @@ public class UserConfigurationController(
     [HttpPost("list-roles-not-for-user")]
     public async Task<Response<List<ApplicationUserRole?>>> ListRolesNotForUser(GetAllApplicationUserRoleRequest request)
     {
-        return await applicationUserConfigurationHandler.ListRoleToAddUserAsync(request);
+        return await applicationUserConfigurationHandler.ListRolesForAddToUserAsync(request);
     }
 }

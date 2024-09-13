@@ -12,8 +12,8 @@ using RDS.Api.Data;
 namespace RDS.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240821131355_v1")]
-    partial class v1
+    [Migration("20240913032809_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,40 +24,6 @@ namespace RDS.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<long>", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("BIGINT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("IdentityRole", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
@@ -133,24 +99,6 @@ namespace RDS.Api.Migrations
                     b.ToTable("IdentityUserLogin", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
-                {
-                    b.Property<long>("UserId")
-                        .HasColumnType("BIGINT");
-
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("ApplicationUserId")
-                        .HasColumnType("BIGINT");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("IdentityUserRole", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
                     b.Property<long>("UserId")
@@ -170,6 +118,52 @@ namespace RDS.Api.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("IdentityUserToken", (string)null);
+                });
+
+            modelBuilder.Entity("RDS.Core.Models.ApplicationUser.ApplicationRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("BIGINT")
+                        .HasColumnOrder(1);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("BIGINT")
+                        .HasColumnOrder(5);
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("NVARCHAR(MAX)")
+                        .HasColumnOrder(4);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("NVARCHAR")
+                        .HasColumnOrder(3);
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("BIGINT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("IdentityRole", (string)null);
                 });
 
             modelBuilder.Entity("RDS.Core.Models.ApplicationUser.ApplicationUser", b =>
@@ -361,6 +355,31 @@ namespace RDS.Api.Migrations
                     b.ToTable("Address", (string)null);
                 });
 
+            modelBuilder.Entity("RDS.Core.Models.ApplicationUser.ApplicationUserRole", b =>
+                {
+                    b.Property<long>("UserId")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ApplicationUserId")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "RoleId", "CompanyId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("IdentityUserRole", (string)null);
+                });
+
             modelBuilder.Entity("RDS.Core.Models.ApplicationUser.ApplicationUserTelephone", b =>
                 {
                     b.Property<long>("Id")
@@ -412,7 +431,7 @@ namespace RDS.Api.Migrations
                     b.ToTable("Category", (string)null);
                 });
 
-            modelBuilder.Entity("RDS.Core.Models.Company", b =>
+            modelBuilder.Entity("RDS.Core.Models.Company.Company", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -429,12 +448,32 @@ namespace RDS.Api.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("NVARCHAR");
 
-                    b.Property<long>("UserId")
+                    b.Property<long>("OwnerId")
                         .HasColumnType("BIGINT");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerId");
+
                     b.ToTable("Company", (string)null);
+                });
+
+            modelBuilder.Entity("RDS.Core.Models.Company.CompanyUser", b =>
+                {
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("BIGINT");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("BIT");
+
+                    b.HasKey("CompanyId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CompanyUser", (string)null);
                 });
 
             modelBuilder.Entity("RDS.Core.Models.Order", b =>
@@ -593,13 +632,6 @@ namespace RDS.Api.Migrations
                     b.HasDiscriminator().HasValue("User");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<long>", b =>
-                {
-                    b.HasOne("RDS.Api.Models.User", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
                     b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", null)
@@ -618,19 +650,6 @@ namespace RDS.Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
-                {
-                    b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", null)
-                        .WithMany("UserRoles")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
                     b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", null)
@@ -638,6 +657,13 @@ namespace RDS.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("RDS.Core.Models.ApplicationUser.ApplicationRole", b =>
+                {
+                    b.HasOne("RDS.Api.Models.User", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("RDS.Core.Models.ApplicationUser.ApplicationUserAddress", b =>
@@ -651,6 +677,19 @@ namespace RDS.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RDS.Core.Models.ApplicationUser.ApplicationUserRole", b =>
+                {
+                    b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("RDS.Core.Models.ApplicationUser.ApplicationUserTelephone", b =>
                 {
                     b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", "User")
@@ -658,6 +697,36 @@ namespace RDS.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RDS.Core.Models.Company.Company", b =>
+                {
+                    b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("RDS.Core.Models.Company.CompanyUser", b =>
+                {
+                    b.HasOne("RDS.Core.Models.Company.Company", "Company")
+                        .WithMany("CompanyUsers")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RDS.Core.Models.ApplicationUser.ApplicationUser", "User")
+                        .WithMany("CompanyUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("User");
                 });
@@ -677,6 +746,8 @@ namespace RDS.Api.Migrations
                 {
                     b.Navigation("Address");
 
+                    b.Navigation("CompanyUsers");
+
                     b.Navigation("Telephone");
 
                     b.Navigation("UserRoles");
@@ -685,6 +756,11 @@ namespace RDS.Api.Migrations
             modelBuilder.Entity("RDS.Core.Models.Category", b =>
                 {
                     b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("RDS.Core.Models.Company.Company", b =>
+                {
+                    b.Navigation("CompanyUsers");
                 });
 
             modelBuilder.Entity("RDS.Api.Models.User", b =>

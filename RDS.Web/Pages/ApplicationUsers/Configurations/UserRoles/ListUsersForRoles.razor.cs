@@ -6,16 +6,20 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         #region Properties
 
         protected bool IsBusy { get; private set; }
+        protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
+        private CompanyIdNameViewModel? SelectedCompany { get; set; }
         protected List<AllUsersViewModel> PagedApplicationUsers { get; private set; } = [];
-        protected string SearchTerm { get; set; } = string.Empty;
+        protected GetAllCompaniesByUserIdRequest InputModel { get; } = new();
+        protected bool IsAdmin { get; } = StartService.GetIsAdmin();
+        private bool IsOwner { get; } = StartService.GetIsOwner();
+        private string SearchTerm { get; set; } = string.Empty;
         protected string SearchFilter { get; set; } = string.Empty;
-        private long LoggedUserId { get; set; }
-        private long CompanyId { get; set; }
-        private bool IsAdmin { get; set; }
-        private bool IsOwner { get; set; }
+
+        protected const string EditUrl = "/usuarios/editar";
+        protected const string BackUrl = "/";
         protected const string Url = "/usuariosconfiguracao/lista-roles-do-usuario";
         private readonly List<string> _sourceUrl = ["/usuariosconfiguracao/usuarios-para-roles"];
-
+        
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
 
@@ -36,38 +40,53 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             StartService.SetPageTitle("Usuários - Roles");
             await StartService.ValidateAccesByTokenAsync();
             if (!await StartService.PermissionOnlyAdminOrOwner()) return;
-            LoggedUserId = StartService.GetLoggedUserId();
-            CompanyId = StartService.GetSelectedCompanyId();
-            IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
-            IsOwner = await StartService.IsOwnerInRolesAsync(LoggedUserId);
-            StartService.SetSourceUrl(_sourceUrl);
+            LoadStartValues();
         }
 
         #endregion
 
         #region Methods
 
-        private async Task LoadUsers()
+        private void LoadStartValues()
+        {
+            if (!IsOwner && !IsAdmin)
+                return;
+
+            Companies = StartService.GetUserCompanies();
+            if (!Companies.Any())
+                return;
+            
+            SelectedCompany = IsAdmin
+                ? Companies.OrderByDescending(x => x.CompanyId).FirstOrDefault()
+                : Companies.FirstOrDefault();
+
+            if (SelectedCompany != null)
+            {
+                InputModel.CompanyId = SelectedCompany.CompanyId;
+                InputModel.CompanyName = SelectedCompany.CompanyName;
+                StartService.SetSelectedCompanyId(SelectedCompany.CompanyId);
+            }
+        }
+
+        private async Task LoadUsersAsync(long companyIdFilter, string searchFilter)
         {
             IsBusy = true;
             try
             {
-                var result = IsAdmin switch
-                {
-                    true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest
-                        { Filter = SearchFilter, PageSize = _pageSize }),
-                    false => await UserHandler.GetAllByCompanyIdAsync(
-                        new GetAllApplicationUserRequest
-                        {
-                            CompanyId = CompanyId,
-                            Filter = SearchFilter,
-                            PageSize = _pageSize
-                        })
-                };
-
+                var result = await UserHandler.GetAllByCompanyIdAsync(
+                    new GetAllApplicationUserRequest
+                    {
+                        CompanyId = companyIdFilter,
+                        Filter = searchFilter,
+                        PageSize = _pageSize
+                    });
                 PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
-                    ? PaginateUsers(result.Data, _currentPage, _pageSize)
-                    : new List<AllUsersViewModel>();
+                    ? result.Data
+                        .Where(Filter)
+                        .Skip((_currentPage - 1) * _pageSize)
+                        .Take(_pageSize)
+                        .ToList()
+                    : [];
             }
             catch
             {
@@ -79,21 +98,66 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             }
         }
 
-        protected void HandleKeyDown(KeyboardEventArgs e)
+        private async Task LoadUsersDiffAdminAndOwner(long companyIdFilter, string searchFilter)
         {
-            if (e.Key == "Enter")
+            IsBusy = true;
+            try
             {
-                OnSearch();
+                var result = (IsAdmin && companyIdFilter == 9_999_999_999_999) switch
+                {
+                    true => await UserHandler.GetAllAsync(new GetAllApplicationUserRequest
+                        { Filter = SearchFilter, PageSize = _pageSize }),
+                    false => await UserHandler.GetAllByCompanyIdAsync(
+                        new GetAllApplicationUserRequest
+                        {
+                            CompanyId = companyIdFilter,
+                            Filter = searchFilter,
+                            PageSize = _pageSize
+                        })
+                };
+                PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
+                    ? result.Data
+                        .Where(Filter)
+                        .Skip((_currentPage - 1) * _pageSize)
+                        .Take(_pageSize)
+                        .ToList()
+                    : [];
+            }
+            catch
+            {
+                Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
-        public async void OnSearch()
+        protected void OnSelectedCompany()
         {
-            await LoadUsers();
+            PagedApplicationUsers = [];
+            if (SelectedCompany != null) StartService.SetSelectedCompanyId(SelectedCompany.CompanyId);
+        }
+
+        protected async Task HandleKeyDown(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter")
+            {
+                await OnSearch();
+            }
+            else if (e.Key == "Escape" || e.CtrlKey)
+            {
+                SearchFilter = string.Empty;
+            }
+        }
+
+        protected async Task OnSearch()
+        {
+            await LoadUsersDiffAdminAndOwner(InputModel.CompanyId, SearchFilter);
             StateHasChanged();
         }
 
-        public Func<AllUsersViewModel, bool> Filter => applicationUser =>
+        protected Func<AllUsersViewModel, bool> Filter => applicationUser =>
         {
             if (string.IsNullOrWhiteSpace(SearchTerm))
                 return true;
@@ -101,30 +165,33 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             if (applicationUser.Id.ToString().Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (applicationUser.Name is not null &&
-                applicationUser.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+            if (applicationUser.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            if (applicationUser.Email is not null &&
-                applicationUser.Email.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
+            if (applicationUser.Email.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
                 return true;
-
-            // if (applicationUser.Cpf is not null &&
-            //     applicationUser.Cpf.Equals(SearchTerm, StringComparison.OrdinalIgnoreCase))
-            //     return true;
 
             return false;
         };
 
-        private List<AllUsersViewModel> PaginateUsers(List<AllUsersViewModel> users, int currentPage, int pageSize)
+        protected async void OnNewUserButton()
         {
-            return users
-                .Where(Filter)
-                .Skip((currentPage - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            var result = await DialogService.ShowMessageBox(
+                "ATENÇÃO",
+                $"Ao prosseguir será efetuado logout para permitir o cadastro de um novo usuário. Deseja continuar?",
+                yesText: "LOGOUT",
+                cancelText: "Cancelar");
+
+            if (result is true)
+                OnNewUser();
+        }
+
+        private void OnNewUser()
+        {
+            NavigationService.NavigateToRegister();
         }
 
         #endregion
+
     }
 }

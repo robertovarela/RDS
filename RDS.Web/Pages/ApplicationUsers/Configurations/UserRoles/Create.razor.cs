@@ -1,14 +1,16 @@
 ﻿namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class CreateUserRolePage : ComponentBase
 {
     #region Properties
 
     protected bool IsBusy { get; set; }
     protected CreateApplicationUserRoleRequest InputModel { get; set; } = new();
-    protected List<ApplicationUserRole?> Roles { get; set; } = [];
+    protected List<ApplicationUserRole?> Roles { get; private set; } = [];
     private long UserId { get; set; }
     private string UserName { get; set; } = StartService.GetSelectedUserName();
+    private string Token { get; set; } = string.Empty; 
     private const string ListUrl = "/usuariosconfiguracao/lista-roles-do-usuario";
     private readonly List<string> _urlOrigen = ["/usuariosconfiguracao/adicionar-role-usuario"];
 
@@ -31,24 +33,27 @@ public partial class CreateUserRolePage : ComponentBase
         UserId = StartService.GetSelectedUserId();
         StartService.SetSourceUrl(_urlOrigen);
         IsBusy = true;
-        await LoadRolesFromUser();
+        await LoadRolesFromUser(Token);
     }
 
     #endregion
 
     #region Methods
 
-    private async Task LoadRolesFromUser()
+    private async Task LoadRolesFromUser(string token)
     {
         try
         {
+            Token = await StartService.GetTokenFromLocalStorageAsync();
             InputModel.CompanyId = UserId;
             var request = new GetAllApplicationUserRoleRequest
             {
-                UserId = UserId
+                UserId = UserId,
+                CompanyId = StartService.GetSelectedCompanyId(),
+                Roles = [""]
             };
 
-            var result = await UserRoleHandler.ListRoleToAddUserAsync(request);
+            var result = await UserRoleHandler.ListRolesForAddToUserAsync(request);
             if (result.IsSuccess)
             {
                 Roles = result.Data ?? [];
@@ -75,11 +80,11 @@ public partial class CreateUserRolePage : ComponentBase
             var result = await UserRoleHandler.CreateUserRoleAsync(InputModel);
             if (result.IsSuccess)
             {
-                Snackbar.Add(result.Message, Severity.Success);
+                Snackbar.Add(result.Message!, Severity.Success);
                 StartService.LinkToUrlUserRole(UserId, UserName, ListUrl);
             }
             else
-                Snackbar.Add(result.Message, Severity.Error);
+                Snackbar.Add(result.Message!, Severity.Error);
         }
         catch (Exception ex)
         {

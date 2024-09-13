@@ -71,7 +71,7 @@ public static class BuilderExtension
             .AddDbContext<AppDbContext>(x => { x.UseSqlServer(Configuration.ConnectionString); });
 
         builder.Services
-            .AddIdentity<User, IdentityRole<long>>(options =>
+            .AddIdentity<User, ApplicationRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
                 options.User.AllowedUserNameCharacters =
@@ -81,7 +81,7 @@ public static class BuilderExtension
             .AddEntityFrameworkStores<AppDbContext>()
             .AddSignInManager()
             .AddUserManager<UserManager<User>>()
-            .AddRoleManager<RoleManager<IdentityRole<long>>>()
+            .AddRoleManager<RoleManager<ApplicationRole>>()
             .AddDefaultTokenProviders();
 
         using (var scope = builder.Services.BuildServiceProvider().CreateScope())
