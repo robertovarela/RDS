@@ -4,25 +4,6 @@ namespace RDS.Web.Pages.Identity;
 
 public partial class RegisterPage : ComponentBase
 {
-    #region Dependencies
-
-    [Inject]
-    AuthenticationService AuthenticationService { get; set; } = null!;
-    
-    [Inject]
-    AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
-    
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
-
-    [Inject]
-    public IApplicationUserHandler Handler { get; set; } = null!;
-
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
-
-    #endregion
-
     #region Properties
 
     protected bool IsBusy { get; set; } = false;
@@ -30,11 +11,20 @@ public partial class RegisterPage : ComponentBase
     public CreateApplicationUserRequest InputModel { get; set; } = new();
 
     #endregion
+    
+    #region Services
+
+    [Inject] AuthenticationService AuthenticationService { get; set; } = null!;
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public IApplicationUserHandler Handler { get; set; } = null!;
+    [Inject] public NavigationManager NavigationManager { get; set; } = null!;
+
+    #endregion
 
     #region Parameters
 
     [Parameter] public InputType PasswordInput { get; set; } = InputType.Password;
-    
     [Parameter] public string PasswordInputIcon { get; set; } = Icons.Material.Filled.VisibilityOff;
 
     #endregion
@@ -66,11 +56,11 @@ public partial class RegisterPage : ComponentBase
 
             if (result.IsSuccess)
             {
-                Snackbar.Add(result.Message, Severity.Success);
+                Snackbar.Add(result.Message!, Severity.Success);
                 NavigationManager.NavigateTo("/login");
             }
             else
-                Snackbar.Add(result.Message, Severity.Error);
+                Snackbar.Add(result.Message!, Severity.Error);
         }
         catch (Exception ex)
         {

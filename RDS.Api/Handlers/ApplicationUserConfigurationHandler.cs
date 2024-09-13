@@ -17,13 +17,17 @@ public class ApplicationUserConfigurationHandler(
             }
 
             //var result = await roleManager.CreateAsync(new IdentityRole<long>(roleName));
-            var result = await roleManager.CreateAsync(new ApplicationRole(roleName));
+            //var result = await roleManager.CreateAsync(new ApplicationRole(roleName));
+            var role = new ApplicationRole { Name = roleName };
+            var result = await roleManager.CreateAsync(role);
+            if (!result.Succeeded)
+                return new Response<ApplicationRole?>(
+                    null, 401, "Ocorreu um erro ao criar a role!");
 
-            if (!result.Succeeded) return new Response<ApplicationRole?>(null, 401, "Ocorreu um erro ao criar a role!");
             var response = new ApplicationRole { Name = roleName };
             return new Response<ApplicationRole?>(response, 201, "Role criada com sucesso!");
         }
-        catch
+        catch(Exception ex)
         {
             return new Response<ApplicationRole?>(null, 500, "Erro interno no servidor");
         }
