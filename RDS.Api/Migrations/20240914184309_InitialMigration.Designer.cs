@@ -12,8 +12,8 @@ using RDS.Api.Data;
 namespace RDS.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240913121806_v2")]
-    partial class v2
+    [Migration("20240914184309_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

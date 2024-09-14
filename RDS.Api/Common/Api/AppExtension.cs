@@ -49,4 +49,24 @@ public static class AppExtension
         app.UseAuthentication();
         app.UseAuthorization();
     }
+    
+    public static async Task SeedDatabase(this WebApplication app)
+    {
+        // ReSharper disable once ConvertToUsingDeclaration
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+
+            try
+            {
+                await SeedData.InitializeAsync(services);
+            }
+            catch (Exception ex)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "Ocorreu um erro ao semear o banco de dados.");
+            }
+        }
+
+    }
 }

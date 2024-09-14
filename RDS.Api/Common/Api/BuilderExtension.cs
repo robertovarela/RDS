@@ -84,6 +84,7 @@ public static class BuilderExtension
             .AddRoleManager<RoleManager<ApplicationRole>>()
             .AddDefaultTokenProviders();
 
+        // ReSharper disable once ConvertToUsingDeclaration
         using (var scope = builder.Services.BuildServiceProvider().CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();

@@ -11,4 +11,5 @@ builder.AddServices();
 
 var app = builder.Build();
 app.AppConfiguration();
+await app.SeedDatabase();
 app.Run();
