@@ -59,7 +59,12 @@ public static class AppExtension
 
             try
             {
-                await SeedData.InitializeAsync(services);
+                var context = services.GetRequiredService<AppDbContext>();
+                var userManager = services.GetRequiredService<UserManager<User>>();
+                var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+                
+                var seedData = new SeedData(context, userManager, roleManager);
+                await seedData.InitializeAsync();
             }
             catch (Exception ex)
             {

@@ -2,25 +2,21 @@
 
 namespace RDS.Api.Services;
 
-public static class SeedData
+public class SeedData(
+    AppDbContext context,
+    UserManager<User> userManager,
+    RoleManager<ApplicationRole> roleManager)
 {
-    public static async Task InitializeAsync(IServiceProvider serviceProvider)
+    public async Task InitializeAsync()
     {
-        using var scope = serviceProvider.CreateScope();
-        var services = scope.ServiceProvider;
-
-        var context = services.GetRequiredService<AppDbContext>();
-        var userManager = services.GetRequiredService<UserManager<User>>();
-        var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
-
         await context.Database.EnsureCreatedAsync();
 
-        await SeedRolesAsync(context, roleManager);
-        await SeedUsersAsync(context, userManager);
-        await SeedCompaniesAsync(context, userManager);
+        await SeedRolesAsync();
+        await SeedUsersAsync();
+        await SeedCompaniesAsync();
     }
 
-    private static async Task ResetIdentityIdsAsync(AppDbContext context, string table)
+    private async Task ResetIdentityIdsAsync(string table)
     {
         var sql = "DBCC CHECKIDENT (@TableName, RESEED, 0)";
         var parameter = new SqlParameter("@TableName", table);
@@ -28,7 +24,7 @@ public static class SeedData
         await context.Database.ExecuteSqlRawAsync(sql, parameter);
     }
 
-    private static async Task SeedRolesAsync(AppDbContext context, RoleManager<ApplicationRole> roleManager)
+    private async Task SeedRolesAsync()
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
@@ -36,7 +32,7 @@ public static class SeedData
             if (!roleManager.Roles.Any())
             {
                 var table = "IdentityRole";
-                await ResetIdentityIdsAsync(context, table);
+                await ResetIdentityIdsAsync(table);
                 var roles = new[] { "Admin", "Owner", "User" };
                 foreach (var role in roles)
                 {
@@ -55,7 +51,7 @@ public static class SeedData
         }
     }
 
-    private static async Task SeedUsersAsync(AppDbContext context, UserManager<User> userManager)
+    private async Task SeedUsersAsync()
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
@@ -63,7 +59,7 @@ public static class SeedData
             if (!context.IdentityUsers.Any())
             {
                 var table = "IdentityUser";
-                await ResetIdentityIdsAsync(context, table);
+                await ResetIdentityIdsAsync(table);
                 var adminUser = new User
                 {
                     UserName = "rdsadmin@mysoftwares.com.br",
@@ -96,7 +92,7 @@ public static class SeedData
         }
     }
 
-    private static async Task SeedCompaniesAsync(AppDbContext context, UserManager<User> userManager)
+    private async Task SeedCompaniesAsync()
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
@@ -104,7 +100,7 @@ public static class SeedData
             if (!context.Companies.Any())
             {
                 var table = "Company";
-                await ResetIdentityIdsAsync(context, table);
+                await ResetIdentityIdsAsync(table);
                 var adminUser = await userManager.FindByEmailAsync("rdsadmin@mysoftwares.com.br");
                 if (adminUser != null)
                 {
