@@ -93,16 +93,18 @@ public class ApplicationUserConfigurationHandler(
     {
         await using var transaction = await appDbContext.Database.BeginTransactionAsync();
         var roleName = request.RoleName.Capitalize();
+        var roleId = request.RoleId.ToString();
         try
         {
-            var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
+            var user = await userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
             {
                 return new Response<ApplicationUserRole?>(null, 404, "Usuário não encontrado.");
             }
 
-            var roleExist = await roleManager.RoleExistsAsync(roleName);
-            if (!roleExist)
+            var roleExist = await roleManager.FindByIdAsync(roleId);
+            
+            if (roleExist == null)
             {
                 return new Response<ApplicationUserRole?>(null, 404, "Role não encontrada..");
             }
@@ -262,14 +264,15 @@ public class ApplicationUserConfigurationHandler(
     public async Task<PagedResponse<List<ApplicationUserRole?>>> ListRolesForAddToUserAsync(
         GetAllApplicationUserRoleRequest request)
     {
+        var resultInRole = userService.VerifyIfIsInRole(request.Token, request.Roles);
         if (!request.RoleAuthorization
-            || !userService.VerifyIfIsInRole(request.Token, request.Roles).Result.existRole)
+            || !resultInRole.Result.existRole)
         {
             return new PagedResponse<List<ApplicationUserRole?>>(
                 null, 403, "Operação não permitida");
         }
 
-        var typeRole = userService.VerifyIfIsInRole(request.Token, request.Roles).Result.typeRole;
+        var typeRole = resultInRole.Result.typeRole;
         var userId = request.UserId;
         var companyId = request.CompanyId;
 

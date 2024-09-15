@@ -42,14 +42,20 @@ public partial class ListUserRolesPage : ComponentBase
         if(!await StartService.PermissionOnlyAdmin()) return;
         
         UserId = StartService.GetSelectedUserId();
-        IsBusy = true;
-        RolesFromUser = await StartService.GetRolesFromUserAsync(UserId);
-        IsBusy = false;
+
+        await LoadRolesFromUser();
     }
 
     #endregion
 
     #region Methods
+
+    private async Task LoadRolesFromUser()
+    {
+        IsBusy = true;
+        RolesFromUser = await StartService.GetRolesFromUserAsync(UserId);
+        IsBusy = false;
+    }
 
     public async void OnDeleteButtonClickedAsync(long userId, string roleName)
     {

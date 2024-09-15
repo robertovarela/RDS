@@ -303,7 +303,7 @@ public class ManipulateUserStateValuesService(
         return false;
     }
 
-    public async Task<bool> IsHabilitedInRolesAsync(long userId, string roleName)
+    public async Task<bool> IsHabilitedInRoleAsync(long userId, string roleName)
     {
         var roles = await GetRolesFromUserAsync(userId);
 

@@ -9,8 +9,11 @@ public partial class CreateUserRolePage : ComponentBase
     protected CreateApplicationUserRoleRequest InputModel { get; set; } = new();
     protected List<ApplicationUserRole?> UserRoles { get; private set; } = [];
     protected List<ApplicationRole?> Roles { get; private set; } = [];
-    private long UserId { get; set; }
+    private long LoggedUserId { get; set; } = StartService.GetLoggedUserId();
+    private long UserId { get; set; } = StartService.GetSelectedUserId();
+    private long CompanyId { get; set; } = StartService.GetSelectedCompanyId();
     private string UserName { get; set; } = StartService.GetSelectedUserName();
+    private List<ApplicationUserRole?> RolesFromLoggedUserId { get; set; } = [];
     private string Token { get; set; } = string.Empty; 
     private const string ListUrl = "/usuariosconfiguracao/lista-roles-do-usuario";
     private readonly List<string> _urlOrigen = ["/usuariosconfiguracao/adicionar-role-usuario"];
@@ -30,10 +33,12 @@ public partial class CreateUserRolePage : ComponentBase
     {
         StartService.SetPageTitle("Nova Role");
         await StartService.ValidateAccesByTokenAsync();
-        if(!await StartService.PermissionOnlyAdmin()) return;
-        UserId = StartService.GetSelectedUserId();
+        if(!await StartService.PermissionOnlyAdminOrOwner()) return;
+        
         StartService.SetSourceUrl(_urlOrigen);
-        IsBusy = true;
+        
+        Token = await StartService.GetTokenFromLocalStorageAsync();
+        await GetRolesFromLoggedUserIdAsync();
         await LoadRolesFromUser(Token);
     }
 
@@ -41,24 +46,35 @@ public partial class CreateUserRolePage : ComponentBase
 
     #region Methods
 
+    private async Task GetRolesFromLoggedUserIdAsync()
+    {
+        RolesFromLoggedUserId = await StartService.GetRolesFromUserAsync(LoggedUserId);
+    }
     private async Task LoadRolesFromUser(string token)
     {
         try
         {
-            Token = await StartService.GetTokenFromLocalStorageAsync();
-            InputModel.CompanyId = UserId;
+            IsBusy = true;
             var request = new GetAllApplicationUserRoleRequest
             {
                 UserId = UserId,
-                CompanyId = StartService.GetSelectedCompanyId(),
-                Roles = [""]
+                CompanyId = CompanyId,
+                Roles = ["Admin", "Owner"],
+                Token = token,
+                RoleAuthorization = true
             };
 
             var result = await UserRoleHandler.ListRolesForAddToUserAsync(request);
             if (result.IsSuccess)
             {
                 UserRoles = result.Data ?? [];
-                InputModel.RoleName = UserRoles.FirstOrDefault()?.RoleName ?? "";
+                if (UserRoles.Count != 0)
+                {
+                    InputModel.UserId = UserId;
+                    InputModel.CompanyId = CompanyId;
+                    InputModel.RoleId = UserRoles.FirstOrDefault()!.RoleId!;
+                    InputModel.RoleName = UserRoles.FirstOrDefault()!.RoleName; 
+                }
                 StateHasChanged();
             }
         }

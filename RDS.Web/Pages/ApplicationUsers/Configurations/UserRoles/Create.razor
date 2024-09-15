@@ -3,36 +3,46 @@
 
 <AuthorizeView Roles="Admin, Owner">
     <Authorized>
-        <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
-            <DataAnnotationsValidator/>
-            <MudPaper Class="pa-8 mt-4">
-                <MudSpacer/>
-                <MudText Class="responsive-text subtitle-screen" Align="Align.Center">
-                    @StartService.GetSelectedUserName()
-                </MudText>
-                <MudSpacer/>
-                <MudSelect
-                    T="string"
-                    Label="Role"
-                    @bind-Value="InputModel.RoleName"
-                    HelperText="Selecione a Role"
-                    Placeholder="Please Select"
-                    AdornmentIcon="@Icons.Material.Outlined.Assignment"
-                    AdornmentColor="Color.Primary"
-                    AnchorOrigin="Origin.BottomCenter"
-                    Variant="Variant.Outlined"
-                    AutoFocus>
-                    @foreach (var role in UserRoles)
-                    {
-                        <MudSelectItem T="string" Value="@role!.RoleName">
-                            @role.RoleName
-                        </MudSelectItem>
-                    }
-                </MudSelect>
-            </MudPaper>
-            <SaveAndCancelButtons CancelOrBackPage="/usuariosconfiguracao/lista-roles-do-usuario"/>
-        </EditForm>
-
+        @if (IsBusy)
+        {
+        <MudPaper Class="pa-8 mt-4">
+            <MudSkeleton Height="55px"/>
+            <MudSkeleton Height="110px"/>
+            <MudSkeleton Height="55px"/>
+        </MudPaper>
+        }
+        else
+        {
+            <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
+                <DataAnnotationsValidator/>
+                <MudPaper Class="pa-8 mt-4">
+                    <MudSpacer/>
+                    <MudText Class="responsive-text subtitle-screen" Align="Align.Center">
+                        @StartService.GetSelectedUserName()
+                    </MudText>
+                    <MudSpacer/>
+                    <MudSelect
+                        T="long"
+                        Label="Role"
+                        @bind-Value="InputModel.RoleId"
+                        HelperText="Selecione a Role"
+                        Placeholder="Please Select"
+                        AdornmentIcon="@Icons.Material.Outlined.Assignment"
+                        AdornmentColor="Color.Primary"
+                        AnchorOrigin="Origin.BottomCenter"
+                        Variant="Variant.Outlined"
+                        AutoFocus>
+                        @foreach (var role in UserRoles)
+                        {
+                            <MudSelectItem T="long" Value="@role!.RoleId">
+                                @role.RoleName
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudPaper>
+                <SaveAndCancelButtons CancelOrBackPage="/usuariosconfiguracao/lista-roles-do-usuario"/>
+            </EditForm>
+        }
     </Authorized>
     <NotAuthorized>
         @(async () => await NavigationService.NavigateToAccessNotAllowedAsync())

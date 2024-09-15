@@ -96,7 +96,7 @@ public abstract class StartService
         => await _manipulateUserStateValuesService.IsOwnerInRolesAsync(userId);
 
     public static async Task<bool> IsHabilitedInRolesAsync(long userId, string roleName)
-        => await _manipulateUserStateValuesService.IsHabilitedInRolesAsync(userId, roleName);
+        => await _manipulateUserStateValuesService.IsHabilitedInRoleAsync(userId, roleName);
 
     public static async Task<List<string>> GetHabilitedRolesAsync(long userId, List<string> listRoleNames)
         => await _manipulateUserStateValuesService.GetHabilitedRolesAsync(userId, listRoleNames);

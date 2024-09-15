@@ -87,27 +87,7 @@ public class ApplicationUserHandler(
             };
 
             var result = await userManager.CreateAsync(user, request.Password);
-
-            if (!result.Succeeded)
-            {
-                return new Response<ApplicationUser?>(
-                    null, 400, "Não foi possível criar o usuário");
-            }
-
-            // const string roleName = "User";
-            // var resultRole = await userManager.AddToRoleAsync(user, roleName);
-
-            var userRole = new ApplicationUserRole
-            {
-                UserId = 1,
-                RoleId = 3,
-                CompanyId = 0,
-                RoleName = "User"
-            };
-            await context.IdentityUsersRoles.AddAsync(userRole);
-            var saveResult = await context.SaveChangesAsync();
-
-            return saveResult > 0
+            return result.Succeeded
                 ? new Response<ApplicationUser?>(user, 201, "Usuário criado com sucesso!")
                 : new Response<ApplicationUser?>(null, 400, "Não foi possível criar o usuário");
         }
