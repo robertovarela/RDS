@@ -25,8 +25,8 @@ public abstract class StartService
 
     public static async Task RefreshToken(string refreshToken, bool showMessage)
         => await _manipulateUserStateValuesService.RefreshToken(refreshToken, showMessage);
-    
-    public static async Task<string> GetTokenFromLocalStorageAsync() 
+
+    public static async Task<string> GetTokenFromLocalStorageAsync()
         => await _manipulateUserStateValuesService.GetTokenFromLocalStorageAsync();
 
     public static string GetPageTitle() => _manipulateUserStateValuesService.GetPageTitle();
@@ -40,7 +40,10 @@ public abstract class StartService
     public static long GetSelectedAddressId() => _manipulateUserStateValuesService.GetSelectedAddressId();
     public static long GetSelectedTelephoneId() => _manipulateUserStateValuesService.GetSelectedTelephoneId();
     public static long GetSelectedCompanyId() => _manipulateUserStateValuesService.GetSelectedCompanyId();
-    public static List<CompanyIdNameViewModel> GetUserCompanies() => _manipulateUserStateValuesService.GetUserCompanies();
+
+    public static List<CompanyIdNameViewModel> GetUserCompanies() =>
+        _manipulateUserStateValuesService.GetUserCompanies();
+
     public static long GetSelectedCategoryId() => _manipulateUserStateValuesService.GetSelectedCategoryId();
     public static long GetSelectedTransactionId() => _manipulateUserStateValuesService.GetSelectedTransactionId();
 
@@ -62,11 +65,11 @@ public abstract class StartService
 
     public static void SetSelectedTelephoneId(long telephoneId)
         => _manipulateUserStateValuesService.SetSelectedTelephoneId(telephoneId);
-    
+
     public static void SetSelectedCompanyId(long companyId)
         => _manipulateUserStateValuesService.SetSelectedCompanyId(companyId);
-    
-    public static void SetUserCompanies(List<CompanyIdNameViewModel> companies) 
+
+    public static void SetUserCompanies(List<CompanyIdNameViewModel> companies)
         => _manipulateUserStateValuesService.SetUserCompanies(companies);
 
     public static void SetSelectedCategoryId(long categoryId)
@@ -80,6 +83,9 @@ public abstract class StartService
         => await _manipulateUserStateValuesService.VerifyIfLoggedInAsync(destinationUrlNotLoggedIn,
             destinationUrlLoggedIn);
 
+    public static async Task<List<ApplicationRole?>> GetRolesAsync()
+        => await _manipulateUserStateValuesService.GetRolesAsync();
+
     public static async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long userId)
         => await _manipulateUserStateValuesService.GetRolesFromUserAsync(userId);
 
@@ -88,24 +94,24 @@ public abstract class StartService
 
     public static async Task<bool> IsOwnerInRolesAsync(long userId)
         => await _manipulateUserStateValuesService.IsOwnerInRolesAsync(userId);
-    
+
     public static async Task<bool> IsHabilitedInRolesAsync(long userId, string roleName)
-    => await _manipulateUserStateValuesService.IsHabilitedInRolesAsync(userId, roleName);
-    
+        => await _manipulateUserStateValuesService.IsHabilitedInRolesAsync(userId, roleName);
+
     public static async Task<List<string>> GetHabilitedRolesAsync(long userId, List<string> listRoleNames)
-    => await _manipulateUserStateValuesService.GetHabilitedRolesAsync(userId, listRoleNames);
+        => await _manipulateUserStateValuesService.GetHabilitedRolesAsync(userId, listRoleNames);
 
 
     public static async Task<long> GetSelectedUserIdIfAdminAsync()
         => await _manipulateUserStateValuesService.GetSelectedUserIdIfAdminAsync();
 
-    public static async Task<bool> PermissionOnlyAdmin() 
+    public static async Task<bool> PermissionOnlyAdmin()
         => await _manipulateUserStateValuesService.PermissionOnlyAdmin();
 
-    public static async Task<bool> PermissionOnlyOwner() 
+    public static async Task<bool> PermissionOnlyOwner()
         => await _manipulateUserStateValuesService.PermissionOnlyOwner();
 
-    public static async Task<bool> PermissionOnlyAdminOrOwner() 
+    public static async Task<bool> PermissionOnlyAdminOrOwner()
         => await _manipulateUserStateValuesService.PermissionOnlyAdminOrOwner();
 
 
@@ -136,7 +142,7 @@ public abstract class StartService
         SetSelectedTelephoneId(telephoneId);
         NavigationService.NavigateTo(url);
     }
-    
+
     public static void LinkToUrlCompany(string url = "", long companyId = 0)
     {
         SetSelectedCompanyId(companyId);

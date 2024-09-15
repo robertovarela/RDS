@@ -7,7 +7,8 @@ public partial class CreateUserRolePage : ComponentBase
 
     protected bool IsBusy { get; set; }
     protected CreateApplicationUserRoleRequest InputModel { get; set; } = new();
-    protected List<ApplicationUserRole?> Roles { get; private set; } = [];
+    protected List<ApplicationUserRole?> UserRoles { get; private set; } = [];
+    protected List<ApplicationRole?> Roles { get; private set; } = [];
     private long UserId { get; set; }
     private string UserName { get; set; } = StartService.GetSelectedUserName();
     private string Token { get; set; } = string.Empty; 
@@ -56,8 +57,8 @@ public partial class CreateUserRolePage : ComponentBase
             var result = await UserRoleHandler.ListRolesForAddToUserAsync(request);
             if (result.IsSuccess)
             {
-                Roles = result.Data ?? [];
-                InputModel.RoleName = Roles.FirstOrDefault()?.RoleName ?? "";
+                UserRoles = result.Data ?? [];
+                InputModel.RoleName = UserRoles.FirstOrDefault()?.RoleName ?? "";
                 StateHasChanged();
             }
         }

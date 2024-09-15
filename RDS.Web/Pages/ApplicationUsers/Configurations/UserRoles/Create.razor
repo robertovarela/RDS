@@ -22,7 +22,7 @@
                     AnchorOrigin="Origin.BottomCenter"
                     Variant="Variant.Outlined"
                     AutoFocus>
-                    @foreach (var role in Roles)
+                    @foreach (var role in UserRoles)
                     {
                         <MudSelectItem T="string" Value="@role!.RoleName">
                             @role.RoleName

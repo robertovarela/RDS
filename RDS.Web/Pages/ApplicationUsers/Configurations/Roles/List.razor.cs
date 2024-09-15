@@ -16,7 +16,7 @@ public partial class ListRolesPage : ComponentBase
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] private IDialogService DialogService { get; set; } = null!;
-    [Inject] public IApplicationUserConfigurationHandler Handler { get; set; } = null!;
+    [Inject] public IApplicationUserConfigurationHandler ApplicationUserConfigurationHandler { get; set; } = null!;
 
     #endregion
 
@@ -26,7 +26,7 @@ public partial class ListRolesPage : ComponentBase
     {
         StartService.SetPageTitle("Roles");
         await StartService.ValidateAccesByTokenAsync();
-        if(!await StartService.PermissionOnlyAdmin()) return;
+        if (!await StartService.PermissionOnlyAdmin()) return;
         await LoadRolesAsync();
     }
 
@@ -37,22 +37,10 @@ public partial class ListRolesPage : ComponentBase
     private async Task LoadRolesAsync()
     {
         IsBusy = true;
-        try
-        {
-            var result = await Handler.ListRoleAsync();
-            if (result.IsSuccess)
-                Roles = result.Data ?? [];
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add(ex.Message, Severity.Error);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
+        Roles = await StartService.GetRolesAsync();
+        IsBusy = false;
     }
-    public async void OnDeleteButtonClickedAsync(string roleName)
+    protected async void OnDeleteButtonClickedAsync(string roleName)
     {
         var result = await DialogService.ShowMessageBox(
             "ATENÇÃO",
@@ -71,10 +59,11 @@ public partial class ListRolesPage : ComponentBase
         try
         {
             var request = new DeleteApplicationRoleRequest { Name = roleName };
-            var result = await Handler.DeleteRoleAsync(request);
+            var result = await ApplicationUserConfigurationHandler.DeleteRoleAsync(request);
             if (result is { IsSuccess: true, StatusCode: 200 })
                 Roles.RemoveAll(x => x != null && x.Name == roleName);
-            Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
+
+            Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
         {
@@ -82,7 +71,7 @@ public partial class ListRolesPage : ComponentBase
         }
     }
 
-    public Func<ApplicationRole?, bool> Filter => role =>
+    protected Func<ApplicationRole?, bool> Filter => role =>
     {
         if (string.IsNullOrWhiteSpace(SearchTerm))
             return true;

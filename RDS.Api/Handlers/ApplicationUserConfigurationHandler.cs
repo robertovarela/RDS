@@ -27,7 +27,7 @@ public class ApplicationUserConfigurationHandler(
             var response = new ApplicationRole { Name = roleName };
             return new Response<ApplicationRole?>(response, 201, "Role criada com sucesso!");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return new Response<ApplicationRole?>(null, 500, "Erro interno no servidor");
         }
@@ -91,6 +91,7 @@ public class ApplicationUserConfigurationHandler(
 
     public async Task<Response<ApplicationUserRole?>> CreateUserRoleAsync(CreateApplicationUserRoleRequest request)
     {
+        await using var transaction = await appDbContext.Database.BeginTransactionAsync();
         var roleName = request.RoleName.Capitalize();
         try
         {
@@ -106,20 +107,33 @@ public class ApplicationUserConfigurationHandler(
                 return new Response<ApplicationUserRole?>(null, 404, "Role não encontrada..");
             }
 
-            var result = await userManager.AddToRoleAsync(user, roleName);
-            if (!result.Succeeded)
+            //var result = await userManager.AddToRoleAsync(user, roleName);
+            var userRole = new ApplicationUserRole
+            {
+                UserId = user.Id,
+                RoleId = request.RoleId,
+                CompanyId = request.CompanyId,
+                RoleName = request.RoleName
+            };
+            await appDbContext.IdentityUsersRoles.AddAsync(userRole);
+            var saveResult = await appDbContext.SaveChangesAsync();
+            
+            if (saveResult < 1)
                 return new Response<ApplicationUserRole?>(null, 401, "Erro ao atribuir a Role ao usuário.");
-
+            
             var response = new ApplicationUserRole
             {
                 UserId = request.CompanyId,
                 RoleId = request.RoleId,
             };
 
+            await transaction.CommitAsync();
+
             return new Response<ApplicationUserRole?>(response, 201, "Role atribuída ao usuário com sucesso!");
         }
         catch
         {
+            await transaction.RollbackAsync();
             return new Response<ApplicationUserRole?>(null, 500, "Erro interno no servidor");
         }
     }

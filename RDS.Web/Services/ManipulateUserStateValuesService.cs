@@ -11,7 +11,6 @@ public class ManipulateUserStateValuesService(
     DeviceService deviceService,
     ISnackbar snackbar)
 {
-    private List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
     private List<CompanyIdNameViewModel> CompanyIdsFromUser { get; set; } = [];
 
     public void SetNotLoggedUserId()
@@ -240,21 +239,39 @@ public class ManipulateUserStateValuesService(
         return CompanyIdsFromUser;
     }
 
-    public async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long userId)
+    public async Task<List<ApplicationRole?>> GetRolesAsync()
     {
+        var listRoles = new List<ApplicationRole?>();
         try
         {
-            var request = new GetAllApplicationUserRoleRequest { UserId = userId };
-            var result = await applicationUserConfigurationHandler.ListUserRoleAsync(request);
+            var result = await applicationUserConfigurationHandler.ListRoleAsync();
             if (result.IsSuccess)
-                RolesFromUser = result.Data ?? [];
+                listRoles = result.Data ?? [];
         }
         catch (Exception ex)
         {
             snackbar.Add(ex.Message, Severity.Error);
         }
 
-        return RolesFromUser;
+        return listRoles;
+    }
+    
+    public async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long userId)
+    {
+        var rolesFromUser = new List<ApplicationUserRole?>();
+        try
+        {
+            var request = new GetAllApplicationUserRoleRequest { UserId = userId };
+            var result = await applicationUserConfigurationHandler.ListUserRoleAsync(request);
+            if (result.IsSuccess)
+                rolesFromUser = result.Data ?? [];
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(ex.Message, Severity.Error);
+        }
+
+        return rolesFromUser;
     }
 
     public async Task<bool> IsAdminInRolesAsync(long userId)
