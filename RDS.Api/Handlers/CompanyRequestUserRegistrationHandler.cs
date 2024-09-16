@@ -10,7 +10,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-            var confirmationCode = GenerateConfirmationCode();
+            var confirmationCode = GenerateConfirmationCodeFromGuid();
             var companyRequestUser = new CompanyRequestUserRegistration()
             {
                 CompanyId = request.CompanyId,
@@ -18,20 +18,10 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
                 OwnerId = request.OwnerId,
                 Email = request.Email,
                 ConfirmationCode = confirmationCode,
-                ConfirmationDate = DateTime.Now,
+                ExpirationDate = DateTime.Now.AddDays(request.DaysForExpirationDate)
             };
 
             await context.CompaniesRequestUsersRegistration.AddAsync(companyRequestUser);
-            await context.SaveChangesAsync();
-
-            var companyUser = new CompanyUser
-            {
-                CompanyId = companyRequestUser.Id,
-                UserId = request.OwnerId,
-                IsAdmin = true
-            };
-
-            await context.CompanyUsers.AddAsync(companyUser);
             await context.SaveChangesAsync();
 
             await transaction.CommitAsync();
@@ -39,95 +29,193 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
             return new Response<CompanyRequestUserRegistration?>(companyRequestUser, 201,
                 "Requisição criada com sucesso!");
         }
+        catch(Exception ex)
+        {
+            await transaction.RollbackAsync();
+            return new Response<CompanyRequestUserRegistration?>(
+                null, 500, "Não foi possível criar a requisição");
+        }
+    }
+
+    public async Task<Response<CompanyRequestUserRegistration?>> UpdateAsync(UpdateCompanyRequestUserRegistrationRequest request)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        try
+        {
+            var confimationCodebyUser = request.ConfirmationCode;
+            var confirmationDate = DateTime.Now;
+            
+            
+            
+            var companyRequestUser = await context
+                .CompaniesRequestUsersRegistration
+                .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
+
+            if (companyRequestUser is null)
+                return new Response<CompanyRequestUserRegistration?>(null, 404, "Requisição não encontrada");
+
+            companyRequestUser.ConfirmationDate = confirmationDate;
+
+            context.CompaniesRequestUsersRegistration.Update(companyRequestUser);
+            await context.SaveChangesAsync();
+            
+            await transaction.CommitAsync();
+            
+            return new Response<CompanyRequestUserRegistration?>(companyRequestUser, message: "Requisição atualizada com sucesso");
+        }
         catch
         {
             await transaction.RollbackAsync();
-            return new Response<CompanyRequestUserRegistration?>(null, 500, "Não foi possível criar a requisição");
+            return new Response<CompanyRequestUserRegistration?>(null, 500, "Não foi possível alterar a requisição");
         }
     }
 
     public async Task<Response<CompanyRequestUserRegistration?>> DeleteAsync(
         DeleteCompanyRequestUserRegistrationRequest request)
     {
-        throw new NotImplementedException();
+        if (!request.IsOwner)
+            return new Response<CompanyRequestUserRegistration?>(
+                null, 500, "Não foi possível excluir a requisição, verifique as permissões");
+        
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        try
+        {
+            var companyRequestUser = await context
+                .CompaniesRequestUsersRegistration
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
+
+            if (companyRequestUser is null)
+                return new Response<CompanyRequestUserRegistration?>(
+                    null, 404, "Requisição não encontrada");
+
+            context.CompaniesRequestUsersRegistration.Remove(companyRequestUser);
+            await context.SaveChangesAsync();
+            
+            await transaction.CommitAsync();
+
+            return new Response<CompanyRequestUserRegistration?>(
+                companyRequestUser, message: "Requisição excluída com sucesso!");
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            return new Response<CompanyRequestUserRegistration?>(
+                null, 500, "Não foi possível excluir a requisição");
+        }
     }
 
-    public async Task<PagedResponse<List<CompanyRequestUserRegistration?>>> GetAllAsync(
+    public async Task<PagedResponse<List<CompanyRequestUserRegistration>>> GetAllAsync(
         GetAllCompaniesRequestUserRegistrationRequest request)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var query = context
+                .CompaniesRequestUsersRegistration
+                .AsNoTracking()
+                .OrderBy(x => x.Id);
+
+            var companiesRequestUser = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToListAsync();
+
+            var count = await query.CountAsync();
+
+            return new PagedResponse<List<CompanyRequestUserRegistration>>(
+                companiesRequestUser,
+                count,
+                request.PageNumber,
+                request.PageSize);
+        }
+        catch
+        {
+            return new PagedResponse<List<CompanyRequestUserRegistration>>
+                (null, 500, "Não foi possível consultar as requisições");
+        }
     }
 
     public async Task<Response<CompanyRequestUserRegistration?>> GetCompanyRequestUserRegistrationByUserEmailAsync(
         GetCompanyRequestUserRegistrationByUserEmailRequest request)
     {
-        throw new NotImplementedException();
-    }
-
-    private string GenerateConfirmationCode()
-    {
-        const int totalLength = 25;
-        const int segmentLength = 5;
-        const int numSegments = totalLength / segmentLength;
-        var random = new Random();
-        var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        var confirmationCodeBuilder =
-            new StringBuilder(totalLength + numSegments - 1);
-
-        for (int i = 0; i < numSegments; i++)
+        try
         {
-            for (int j = 0; j < segmentLength; j++)
-            {
-                confirmationCodeBuilder.Append(characters[random.Next(characters.Length)]);
-            }
+            var companyRequestUser = await context
+                .CompaniesRequestUsersRegistration
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
 
-            if (i < numSegments - 1)
-            {
-                confirmationCodeBuilder.Append('-');
-            }
+            return companyRequestUser is null
+                ? new Response<CompanyRequestUserRegistration?>(null, 404, "Requisição não encontrada")
+                : new Response<CompanyRequestUserRegistration?>(companyRequestUser, 200, "");
         }
-
-        return confirmationCodeBuilder.ToString();
+        catch
+        {
+            return new Response<CompanyRequestUserRegistration?>
+                (null, 500, "Não foi possível consultar as requisições");
+        }
     }
+
+    // private string GenerateConfirmationCode()
+    // {
+    //     const int totalLength = 25;
+    //     const int segmentLength = 5;
+    //     const int numSegments = totalLength / segmentLength;
+    //     var random = new Random();
+    //     var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    //     var confirmationCodeBuilder = new StringBuilder(totalLength + numSegments - 1);
+    //
+    //     for (int i = 0; i < numSegments; i++)
+    //     {
+    //         for (int j = 0; j < segmentLength; j++)
+    //         {
+    //             confirmationCodeBuilder.Append(characters[random.Next(characters.Length)]);
+    //         }
+    //
+    //         if (i < numSegments - 1)
+    //         {
+    //             confirmationCodeBuilder.Append('-');
+    //         }
+    //     }
+    //
+    //     return confirmationCodeBuilder.ToString();
+    // }
     
     private string GenerateConfirmationCodeFromGuid()
     {
         var guid = Guid.NewGuid().ToString("N").ToUpper()[7..32];
 
-        const int totalLength = 25;
-        const int segmentLength = 5;
-        var result = new StringBuilder(totalLength + totalLength / segmentLength - 1);
-        for (int i = 0; i < totalLength; i++)
-        {
-            if (i > 0 && i % 5 == 0)
-                result.Append('-');
+        const int separatorLength = 5;
+        var segments = new StringBuilder(guid.Length + 4);
 
-            result.Append(characters[data[i] % characters.Length]);
+        for (int i = 0; i < guid.Length; i++)
+        {
+            if (i > 0 && i % separatorLength == 0)
+            {
+                segments.Append('-');
+            }
+            segments.Append(guid[i]);
         }
-        
-        return result.ToString();
-        
+
+        return segments.ToString();
     }
 
-
-    private string GenerateSecureConfirmationCode(int length = 25)
+    private string GenerateConfirmationCodeFromGuid2()
     {
-        const string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        var data = new byte[length];
-        using (var rng = new RNGCryptoServiceProvider())
+        var guid = Guid.NewGuid().ToString("N").ToUpper()[7..32];
+
+        const int separetorLength = 5;
+        var segments = new StringBuilder();
+
+        for (int i = 0; i < guid.Length; i += separetorLength)
         {
-            rng.GetBytes(data);
+            if (segments.Length > 0)
+            {
+                segments.Append('-');
+            }
+
+            segments.Append(guid.Substring(i, Math.Min(separetorLength, guid.Length - i)));
         }
 
-        var result = new StringBuilder(length + length / 5 - 1);
-        for (int i = 0; i < length; i++)
-        {
-            if (i > 0 && i % 5 == 0)
-                result.Append('-');
-
-            result.Append(characters[data[i] % characters.Length]);
-        }
-
-        return result.ToString();
+        return segments.ToString();
     }
 }

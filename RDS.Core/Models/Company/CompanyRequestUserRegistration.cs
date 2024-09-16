@@ -9,5 +9,5 @@ public class CompanyRequestUserRegistration
     public string Email { get; set; } = null!;
     public string ConfirmationCode { get; set; } = null!;
     public DateTime ExpirationDate { get; set; }
-    public DateTime ConfirmationDate { get; set; }
+    public DateTime? ConfirmationDate { get; set; }
 }

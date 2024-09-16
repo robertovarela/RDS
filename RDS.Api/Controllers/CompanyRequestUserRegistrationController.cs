@@ -14,6 +14,14 @@ public class CompanyRequestUserRegistrationController(ICompanyRequestUserRegistr
         return await handler.CreateAsync(request);
     }
 
+    [HttpPut]
+    [Route("update")]
+    public async Task<Response<CompanyRequestUserRegistration?>>  UpdateAsync(
+        [FromBody] UpdateCompanyRequestUserRegistrationRequest request)
+    {
+        return await handler.UpdateAsync(request);
+    }
+    
     [HttpDelete]
     [Route("delete")]
     public async Task<Response<CompanyRequestUserRegistration?>>  DeleteAsync(
@@ -22,7 +30,7 @@ public class CompanyRequestUserRegistrationController(ICompanyRequestUserRegistr
         return await handler.DeleteAsync(request);
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("get-all")]
     public async Task<PagedResponse<List<CompanyRequestUserRegistration?>>> GetAllAsync(
         [FromBody] GetAllCompaniesRequestUserRegistrationRequest request)
@@ -30,7 +38,7 @@ public class CompanyRequestUserRegistrationController(ICompanyRequestUserRegistr
         return await handler.GetAllAsync(request);
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("get-by-email")]
     public async Task<Response<CompanyRequestUserRegistration?>> GetByEmailAsync(
         [FromBody] GetCompanyRequestUserRegistrationByUserEmailRequest request)

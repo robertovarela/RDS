@@ -33,14 +33,14 @@ public class
         builder.Property(x => x.ConfirmationCode)
             .IsRequired()
             .HasColumnType("nvarchar")
-            .HasMaxLength(25);
+            .HasMaxLength(29);
 
         builder.Property(x => x.ExpirationDate)
             .IsRequired()
             .HasColumnType("DATETIME");
 
         builder.Property(x => x.ConfirmationDate)
-            .IsRequired()
+            .IsRequired(false)
             .HasColumnType("DATETIME");
     }
 }
