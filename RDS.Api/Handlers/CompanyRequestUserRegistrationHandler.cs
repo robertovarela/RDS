@@ -29,7 +29,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
             return new Response<CompanyRequestUserRegistration?>(companyRequestUser, 201,
                 "Requisição criada com sucesso!");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             await transaction.RollbackAsync();
             return new Response<CompanyRequestUserRegistration?>(
@@ -37,16 +37,16 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
         }
     }
 
-    public async Task<Response<CompanyRequestUserRegistration?>> UpdateAsync(UpdateCompanyRequestUserRegistrationRequest request)
+    public async Task<Response<CompanyRequestUserRegistration?>> UpdateAsync(
+        UpdateCompanyRequestUserRegistrationRequest request)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
             var confimationCodebyUser = request.ConfirmationCode;
             var confirmationDate = DateTime.Now;
-            
-            
-            
+
+
             var companyRequestUser = await context
                 .CompaniesRequestUsersRegistration
                 .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
@@ -58,10 +58,11 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
 
             context.CompaniesRequestUsersRegistration.Update(companyRequestUser);
             await context.SaveChangesAsync();
-            
+
             await transaction.CommitAsync();
-            
-            return new Response<CompanyRequestUserRegistration?>(companyRequestUser, message: "Requisição atualizada com sucesso");
+
+            return new Response<CompanyRequestUserRegistration?>(companyRequestUser,
+                message: "Requisição atualizada com sucesso");
         }
         catch
         {
@@ -76,7 +77,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
         if (!request.IsOwner)
             return new Response<CompanyRequestUserRegistration?>(
                 null, 500, "Não foi possível excluir a requisição, verifique as permissões");
-        
+
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
@@ -90,7 +91,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
 
             context.CompaniesRequestUsersRegistration.Remove(companyRequestUser);
             await context.SaveChangesAsync();
-            
+
             await transaction.CommitAsync();
 
             return new Response<CompanyRequestUserRegistration?>(
@@ -109,14 +110,12 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
     {
         try
         {
-            var query = context
-                .CompaniesRequestUsersRegistration
-                .AsNoTracking()
-                .OrderBy(x => x.Id);
+            var query = context.CompaniesRequestUsersRegistration.AsNoTracking();
 
             var companiesRequestUser = await query
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
+                //.OrderBy(x => x.Id)
                 .ToListAsync();
 
             var count = await query.CountAsync();
@@ -142,7 +141,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
             var companyRequestUser = await context
                 .CompaniesRequestUsersRegistration
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == request.CompanyId);
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
 
             return companyRequestUser is null
                 ? new Response<CompanyRequestUserRegistration?>(null, 404, "Requisição não encontrada")
@@ -179,7 +178,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
     //
     //     return confirmationCodeBuilder.ToString();
     // }
-    
+
     private string GenerateConfirmationCodeFromGuid()
     {
         var guid = Guid.NewGuid().ToString("N").ToUpper()[7..32];
@@ -193,6 +192,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
             {
                 segments.Append('-');
             }
+
             segments.Append(guid[i]);
         }
 
