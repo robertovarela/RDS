@@ -1,4 +1,6 @@
-﻿namespace RDS.Web.Services;
+﻿using RDS.Core.Models.ViewModels.Company;
+
+namespace RDS.Web.Services;
 
 public class ManipulateUserStateValuesService(
     UserStateService userState,

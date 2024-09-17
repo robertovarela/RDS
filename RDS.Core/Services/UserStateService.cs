@@ -1,4 +1,4 @@
-﻿using RDS.Core.Models.ViewModels.company;
+﻿using RDS.Core.Models.ViewModels.Company;
 
 namespace RDS.Core.Services
 {

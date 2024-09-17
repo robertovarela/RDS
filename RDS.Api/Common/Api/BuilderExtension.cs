@@ -113,7 +113,7 @@ public static class BuilderExtension
 
     public static void AddServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<TokenServiceCore>(sp =>
+        builder.Services.AddScoped<TokenServiceCore>(_ =>
         {
             var jwtKey = ApiConfiguration.JwtKey;
             var issuer = ApiConfiguration.JwtIssuer;

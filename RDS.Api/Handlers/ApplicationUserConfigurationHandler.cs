@@ -27,7 +27,7 @@ public class ApplicationUserConfigurationHandler(
             var response = new ApplicationRole { Name = roleName };
             return new Response<ApplicationRole?>(response, 201, "Role criada com sucesso!");
         }
-        catch (Exception ex)
+        catch
         {
             return new Response<ApplicationRole?>(null, 500, "Erro interno no servidor");
         }
@@ -92,7 +92,6 @@ public class ApplicationUserConfigurationHandler(
     public async Task<Response<ApplicationUserRole?>> CreateUserRoleAsync(CreateApplicationUserRoleRequest request)
     {
         await using var transaction = await appDbContext.Database.BeginTransactionAsync();
-        var roleName = request.RoleName.Capitalize();
         var roleId = request.RoleId.ToString();
         try
         {
@@ -109,13 +108,12 @@ public class ApplicationUserConfigurationHandler(
                 return new Response<ApplicationUserRole?>(null, 404, "Role não encontrada..");
             }
 
-            //var result = await userManager.AddToRoleAsync(user, roleName);
             var userRole = new ApplicationUserRole
             {
                 UserId = user.Id,
                 RoleId = request.RoleId,
                 CompanyId = request.CompanyId,
-                RoleName = request.RoleName
+                RoleName = request.RoleName.Capitalize()
             };
             await appDbContext.IdentityUsersRoles.AddAsync(userRole);
             var saveResult = await appDbContext.SaveChangesAsync();
@@ -221,9 +219,9 @@ public class ApplicationUserConfigurationHandler(
                 null, 403, "Operação não permitida");
         }
 
-        var typeRole = userService.VerifyIfIsInRole(request.Token, request.Roles).Result.typeRole;
+        //var typeRole = userService.VerifyIfIsInRole(request.Token, request.Roles).Result.typeRole;
         var userId = request.UserId;
-        var companyId = request.CompanyId;
+        //var companyId = request.CompanyId;
         try
         {
             var user = await userManager.FindByIdAsync(userId.ToString());

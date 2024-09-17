@@ -1,6 +1,4 @@
-﻿using RDS.Core.Requests.Companies;
-
-namespace RDS.Api.Controllers;
+﻿namespace RDS.Api.Controllers;
 
 [ApiController]
 [Microsoft.AspNetCore.Mvc.Route("v1/companies-request-user-registration")]

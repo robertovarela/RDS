@@ -1,8 +1,4 @@
-﻿using RDS.Core.Models.Company;
-using RDS.Core.Models.ViewModels.company;
-using RDS.Core.Requests.Companies;
-
-namespace RDS.Api.Handlers;
+﻿namespace RDS.Api.Handlers;
 
 public class CompanyHandler(AppDbContext context) : ICompanyHandler
 {

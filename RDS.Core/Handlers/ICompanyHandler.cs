@@ -1,5 +1,5 @@
 ﻿using RDS.Core.Models.Company;
-using RDS.Core.Models.ViewModels.company;
+using RDS.Core.Models.ViewModels.Company;
 using UpdateCompanyRequest = RDS.Core.Requests.Companies.UpdateCompanyRequest;
 
 namespace RDS.Core.Handlers;

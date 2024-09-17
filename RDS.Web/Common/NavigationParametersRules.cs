@@ -1,4 +1,6 @@
-﻿namespace RDS.Web.Common;
+﻿using RDS.Core.Models.ViewModels.Company;
+
+namespace RDS.Web.Common;
 
 public class NavigationParametersRules
 {

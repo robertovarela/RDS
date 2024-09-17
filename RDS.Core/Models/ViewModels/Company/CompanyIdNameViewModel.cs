@@ -1,4 +1,4 @@
-﻿namespace RDS.Core.Models.ViewModels.company;
+﻿namespace RDS.Core.Models.ViewModels.Company;
 
 public class CompanyIdNameViewModel
 {

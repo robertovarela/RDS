@@ -1,3 +1,5 @@
+using RDS.Core.Models.ViewModels.Company;
+
 namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
 {
     // ReSharper disable once PartialTypeWithSinglePart

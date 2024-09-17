@@ -1,6 +1,4 @@
-﻿using RDS.Core.Requests.Companies;
-
-namespace RDS.Api.Handlers;
+﻿namespace RDS.Api.Handlers;
 
 public class CompanyRequestUserRegistrationHandler(AppDbContext context) : ICompanyRequestUserRegistrationHandler
 {
@@ -29,7 +27,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
             return new Response<CompanyRequestUserRegistration?>(companyRequestUser, 201,
                 "Requisição criada com sucesso!");
         }
-        catch (Exception ex)
+        catch
         {
             await transaction.RollbackAsync();
             return new Response<CompanyRequestUserRegistration?>(
@@ -65,7 +63,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
             await transaction.CommitAsync();
 
             return new Response<CompanyRequestUserRegistration?>(
-                companyRequestUser, 200, message: "Requisição atualizada com sucesso");
+                companyRequestUser, message: "Requisição atualizada com sucesso");
         }
         catch
         {

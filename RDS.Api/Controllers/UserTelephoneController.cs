@@ -1,7 +1,7 @@
 ﻿namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("v1/users/telephones")]
+[Route("v1/users/telephones")]
 public class UserTelephoneController(IApplicationUserTelephoneHandler applicationUserTelephoneHandler) : ControllerBase
 {
     [HttpPost("createusertelephone")]
@@ -33,7 +33,7 @@ public class UserTelephoneController(IApplicationUserTelephoneHandler applicatio
     }
     
     [HttpPost("usertelephonebyid")]
-    public async Task<Response<ApplicationUserTelephone>> GetByIdAsync(
+    public async Task<Response<ApplicationUserTelephone?>> GetByIdAsync(
         [FromBody] GetApplicationUserTelephoneByIdRequest request)
     {
         return await applicationUserTelephoneHandler.GetByIdAsync(request);

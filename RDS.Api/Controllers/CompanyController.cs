@@ -1,12 +1,9 @@
-﻿using RDS.Core.Models.Company;
-using RDS.Core.Models.ViewModels.company;
-using RDS.Core.Requests.Companies;
-using UpdateCompanyRequest = RDS.Core.Requests.Companies.UpdateCompanyRequest;
+﻿using UpdateCompanyRequest = RDS.Core.Requests.Companies.UpdateCompanyRequest;
 
 namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("v1/companies")]
+[Route("v1/companies")]
 public class CompanyController(ICompanyHandler companyHandler) : ControllerBase
 {
     [HttpPost("create")]

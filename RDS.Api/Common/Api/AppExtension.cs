@@ -37,7 +37,8 @@ public static class AppExtension
         app.UseStaticFiles();
         app.UseResponseCompression();
     }
-    public static void ConfigureDevEnvironment(this WebApplication app)
+
+    private static void ConfigureDevEnvironment(this WebApplication app)
     {
         app.UseSwagger();
         app.UseSwaggerUI();

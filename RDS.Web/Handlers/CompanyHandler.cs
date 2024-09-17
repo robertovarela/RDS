@@ -1,4 +1,6 @@
-﻿namespace RDS.Web.Handlers;
+﻿using RDS.Core.Models.ViewModels.Company;
+
+namespace RDS.Web.Handlers;
 
 public class CompanyHandler(HttpClientService httpClientService) : ICompanyHandler
 {
