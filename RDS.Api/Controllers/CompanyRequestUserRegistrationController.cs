@@ -32,7 +32,7 @@ public class CompanyRequestUserRegistrationController(ICompanyRequestUserRegistr
 
     [HttpPost]
     [Route("get-all")]
-    public async Task<PagedResponse<List<CompanyRequestUserRegistration?>>> GetAllAsync(
+    public async Task<PagedResponse<List<CompanyRequestUserRegistration>>> GetAllAsync(
         [FromBody] GetAllCompaniesRequestUserRegistrationRequest request)
     {
         return await handler.GetAllAsync(request);
@@ -43,6 +43,15 @@ public class CompanyRequestUserRegistrationController(ICompanyRequestUserRegistr
     public async Task<Response<CompanyRequestUserRegistration?>> GetByEmailAsync(
         [FromBody] GetCompanyRequestUserRegistrationByUserEmailRequest request)
     {
-        return await handler.GetCompanyRequestUserRegistrationByUserEmailAsync(request);
+        return await handler.GetByUserEmailAsync(request);
+    }
+    
+    
+    [HttpPost]
+    [Route("get-by-confirmation-code")]
+    public async Task<Response<CompanyRequestUserRegistration?>> GetByConfirmationCodeAsync(
+        [FromBody] GetCompanyRequestUserRegistrationByConfirmationCodeRequest request)
+    {
+        return await handler.GetByConfirmationCodeAsync(request);
     }
 }

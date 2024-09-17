@@ -86,7 +86,7 @@ public class CompanyHandler(AppDbContext context) : ICompanyHandler
             context.Companies.Update(company);
             await context.SaveChangesAsync();
 
-            return new Response<Company?>(company, message: "Empresa atualizada com sucesso");
+            return new Response<Company?>(company, 200, message: "Empresa atualizada com sucesso");
         }
         catch
         {
