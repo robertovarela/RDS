@@ -1,6 +1,7 @@
 ﻿namespace RDS.Api.Handlers;
 
-public class CompanyRequestUserRegistrationHandler(AppDbContext context) : ICompanyRequestUserRegistrationHandler
+public class CompanyRequestUserRegistrationHandler(AppDbContext context, EmailService emailService)
+    : ICompanyRequestUserRegistrationHandler
 {
     public async Task<Response<CompanyRequestUserRegistration?>> CreateAsync(
         CreateCompanyRequestUserRegistrationRequest request)
@@ -8,6 +9,15 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
+            var user = context.Users.FirstOrDefault(u => u.Email == request.Email);
+
+            if (user == null)
+            {
+                await transaction.RollbackAsync();
+                return new Response<CompanyRequestUserRegistration?>(
+                    null, 404, "Usuário não encontrado");
+            }
+
             var confirmationCode = GenerateConfirmationCodeFromGuid();
             var companyRequestUser = new CompanyRequestUserRegistration()
             {
@@ -23,6 +33,9 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context) : IComp
             await context.SaveChangesAsync();
 
             await transaction.CommitAsync();
+
+            emailService.Send(user.Name, request.Email, $"Bem vindo a {request.CompanyName}!",
+                $"Efetue o login no App, copie e cole a chave {confirmationCode} na página de solicitações");
 
             return new Response<CompanyRequestUserRegistration?>(companyRequestUser, 201,
                 "Requisição criada com sucesso!");
