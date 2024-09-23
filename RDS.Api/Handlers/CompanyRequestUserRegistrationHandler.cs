@@ -1,23 +1,62 @@
 ﻿namespace RDS.Api.Handlers;
 
-public class CompanyRequestUserRegistrationHandler(AppDbContext context, EmailService emailService)
+public class CompanyRequestUserRegistrationHandler(
+    AppDbContext context,
+    EmailService emailService,
+    ICompanyHandler companyHandler)
     : ICompanyRequestUserRegistrationHandler
 {
     public async Task<Response<CompanyRequestUserRegistration?>> CreateAsync(
         CreateCompanyRequestUserRegistrationRequest request)
     {
+        var requestCompany = new GetCompanyByIdRequest { CompanyId = request.CompanyId };
+        var resultCompany = await companyHandler.GetByIdAsync(requestCompany);
+
+        if (resultCompany.Data == null)
+        {
+            return new Response<CompanyRequestUserRegistration?>(
+                null, 404, "Empresa não encontrada.");
+        }
+
+        if (resultCompany.Data.OwnerId != request.OwnerId)
+        {
+            return new Response<CompanyRequestUserRegistration?>(
+                null, 403, "Permissão negada para criar a requisição.");
+        }
+
+        var user = context.Users.FirstOrDefault(u => u.Email == request.Email);
+
+        if (user == null)
+        {
+            return new Response<CompanyRequestUserRegistration?>(
+                null, 404, "Usuário não encontrado.");
+        }
+
+        var requestUserRegistration = new GetCompanyRequestUserRegistrationByUserEmailRequest
+        {
+            CompanyId = request.CompanyId,
+            Email = request.Email
+        };
+
+        var resultUserRegistration = await GetByUserEmailAsync(
+            requestUserRegistration);
+
+        if (resultUserRegistration.Data != null)
+        {
+            var deletedUserRegistration = new DeleteCompanyRequestUserRegistrationRequest
+            {
+                CompanyId = request.CompanyId,
+                UserId = resultUserRegistration.Data.Id,
+                Id = resultUserRegistration.Data.Id,
+                IsOwner = true
+            };
+
+            await DeleteAsync(deletedUserRegistration);
+        }
+
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-            var user = context.Users.FirstOrDefault(u => u.Email == request.Email);
-
-            if (user == null)
-            {
-                await transaction.RollbackAsync();
-                return new Response<CompanyRequestUserRegistration?>(
-                    null, 404, "Usuário não encontrado");
-            }
-
             var confirmationCode = GenerateConfirmationCodeFromGuid();
             var companyRequestUser = new CompanyRequestUserRegistration()
             {
@@ -34,8 +73,19 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context, EmailSe
 
             await transaction.CommitAsync();
 
+            var site = $"{Configuration.FrontendUrl}/registration-confirmation?email={request.Email}&confirmationCode={confirmationCode}";
+            
             emailService.Send(user.Name, request.Email, $"Bem vindo a {request.CompanyName}!",
-                $"Efetue o login no App, copie e cole a chave {confirmationCode} na página de solicitações");
+                $"<html><body><h1>Bem vindo a {request.CompanyName}!</h1>" +
+                $"<p>Clique no link abaixo para aceitar a solicitação</p>" +
+                $"<a href=\"{site}{confirmationCode}\">Confirmar solicitação de cadastro</a>" +
+                $"<p></p>" +
+                $"<p>Caso tenha algum problema com o link, siga as instruções abaixo:</p>" +
+                $"<p>Copie a chave <strong>{confirmationCode}</strong></p>" +
+                $"<p>Efetue o login no App</p>" +
+                $"<p>Acesse o menu Minha Conta => Solicitações</p>" +
+                $"<p>Cole a chave no local indicado</p>" +
+                $"</body></html>");
 
             return new Response<CompanyRequestUserRegistration?>(companyRequestUser, 201,
                 "Requisição criada com sucesso!");
@@ -67,8 +117,11 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context, EmailSe
                 return new Response<CompanyRequestUserRegistration?>(
                     null, 404, "Requisição não encontrada");
 
-            if (companyRequestUser.ExpirationDate > confirmationDate)
-                companyRequestUser.ConfirmationDate = confirmationDate;
+            if (companyRequestUser.ExpirationDate < confirmationDate) 
+                return new Response<CompanyRequestUserRegistration?>(
+                    null, 410, "Data de registro expirada");
+                
+            companyRequestUser.ConfirmationDate = confirmationDate;
 
             context.CompaniesRequestUsersRegistration.Update(companyRequestUser);
             await context.SaveChangesAsync();
@@ -166,7 +219,7 @@ public class CompanyRequestUserRegistrationHandler(AppDbContext context, EmailSe
         catch
         {
             return new Response<CompanyRequestUserRegistration?>
-                (null, 500, "Não foi possível consultar as requisições");
+                (null, 500, "Não foi possível consultar a requisição");
         }
     }
 
