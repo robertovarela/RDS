@@ -104,9 +104,9 @@ public class ApplicationUserConfigurationHandler(
                 return new Response<ApplicationUserRole?>(null, 404, "Usuário não encontrado.");
             }
 
-            var roleExist = await roleManager.FindByIdAsync(roleId);
+            var roleToAdd = await roleManager.FindByIdAsync(roleId);
 
-            if (roleExist == null)
+            if (roleToAdd == null)
             {
                 return new Response<ApplicationUserRole?>(null, 404, "Role não encontrada..");
             }
@@ -116,7 +116,7 @@ public class ApplicationUserConfigurationHandler(
                 UserId = user.Id,
                 RoleId = request.RoleId,
                 CompanyId = request.CompanyId,
-                RoleName = request.RoleName.Capitalize()
+                RoleName = roleToAdd.Name!.Capitalize()
             };
             await context.IdentityUsersRoles.AddAsync(userRole);
             var saveResult = await context.SaveChangesAsync();

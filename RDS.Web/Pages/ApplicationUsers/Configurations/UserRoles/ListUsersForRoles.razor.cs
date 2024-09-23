@@ -134,7 +134,8 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         protected void OnSelectedCompany()
         {
             PagedApplicationUsers = [];
-            if (SelectedCompany != null) StartService.SetSelectedCompanyId(SelectedCompany.CompanyId);
+            if (SelectedCompany != null) StartService.SetSelectedCompanyId(InputModel.CompanyId);
+            var newCompany = StartService.GetSelectedCompanyId();
         }
 
         protected async Task HandleKeyDown(KeyboardEventArgs e)
