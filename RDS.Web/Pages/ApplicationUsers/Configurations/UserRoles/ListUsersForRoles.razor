@@ -31,6 +31,7 @@
                 T="long"
                 Label="Empresas"
                 @bind-Value="InputModel.CompanyId"
+                @bind-Value:event="change"
                 HelperText="Selecione a Empresa"
                 Placeholder="Favor selecionar"
                 AdornmentIcon="@Icons.Material.Filled.CorporateFare"
@@ -38,19 +39,18 @@
                 AnchorOrigin="Origin.BottomCenter"
                 Variant="Variant.Outlined"
                 OnClose="OnSelectedCompany"
-                ToStringFunc="(companyId) => Companies.FirstOrDefault(
-                c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
+                ToStringFunc="(companyId) => Companies.FirstOrDefault(c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
 
                 @foreach (var company in Companies)
                 {
-                <MudSelectItem T="long" Value="@company.CompanyId">
-                    @company.CompanyName
-                </MudSelectItem>
+                    <MudSelectItem T="long" Value="@company.CompanyId">
+                        @company.CompanyName
+                    </MudSelectItem>
                 }
             </MudSelect>
         </MudPaper>
         <MudSpacer/>
-        
+
         @if (IsBusy)
         {
             <MudPaper Class="pa-8 mt-4">
