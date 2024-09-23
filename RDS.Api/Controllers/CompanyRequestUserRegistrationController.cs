@@ -1,7 +1,7 @@
 ﻿namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("v1/companies-request-user-registration")]
+[Route("v1/companies-request-user-registration")]
 public class CompanyRequestUserRegistrationController(ICompanyRequestUserRegistrationHandler handler) : ControllerBase
 {
     [HttpPost]

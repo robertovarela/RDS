@@ -1,6 +1,8 @@
 ﻿namespace RDS.Api.Handlers;
 
-public class CompanyHandler(AppDbContext context) : ICompanyHandler
+public class CompanyHandler(
+    AppDbContext context,
+    IApplicationUserConfigurationHandler applicationUserConfigurationHandler) : ICompanyHandler
 {
     public async Task<Response<Company?>> CreateAsync(CreateCompanyRequest request)
     {
@@ -27,7 +29,29 @@ public class CompanyHandler(AppDbContext context) : ICompanyHandler
             await context.CompanyUsers.AddAsync(companyUser);
             await context.SaveChangesAsync();
 
+            var companyId = company.Id;
             await transaction.CommitAsync();
+
+            var userRole = new CreateApplicationUserRoleRequest
+            {
+                UserId = request.OwnerId,
+                CompanyId = company.Id,
+                RoleId = 2,
+                RoleName = "Owner"
+            };
+
+            var resultUserRole = applicationUserConfigurationHandler.CreateUserRoleAsync(userRole);
+            if (!resultUserRole.Result.IsSuccess)
+            {
+                var resultDeleteCompany = new DeleteCompanyRequest
+                {
+                    IsAdmin = true,
+                    CompanyId = companyId
+                };
+                await DeleteAsync(resultDeleteCompany);
+                return new Response<Company?>(
+                    null, 400, "Não foi possível criar as permissões, por favor tente novamente.");
+            }
 
             return new Response<Company?>(company, 201, "Empresa criada com sucesso!");
         }
@@ -67,6 +91,7 @@ public class CompanyHandler(AppDbContext context) : ICompanyHandler
 
     public async Task<Response<Company?>> UpdateAsync(UpdateCompanyRequest request)
     {
+        await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
             var company = await context
@@ -81,17 +106,20 @@ public class CompanyHandler(AppDbContext context) : ICompanyHandler
 
             context.Companies.Update(company);
             await context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
-            return new Response<Company?>(company, 200, message: "Empresa atualizada com sucesso");
+            return new Response<Company?>(company, message: "Empresa atualizada com sucesso");
         }
         catch
         {
+            await transaction.RollbackAsync();
             return new Response<Company?>(null, 500, "Não foi possível alterar a empresa");
         }
     }
 
     public async Task<Response<Company?>> DeleteAsync(DeleteCompanyRequest request)
     {
+        await using var transaction = await context.Database.BeginTransactionAsync();
         if (!request.IsAdmin)
             return new Response<Company?>(null,
                 500,
@@ -107,11 +135,25 @@ public class CompanyHandler(AppDbContext context) : ICompanyHandler
 
             context.Companies.Remove(company);
             await context.SaveChangesAsync();
+            
+            var companyId = request.CompanyId;
+            var rolesToDelete = context.IdentityUsersRoles
+                .Where(userRole => userRole.CompanyId == companyId)
+                .ToList();
+
+            if (rolesToDelete.Count > 0)
+            {
+                context.IdentityUsersRoles.RemoveRange(rolesToDelete);
+                await context.SaveChangesAsync();
+            }
+            
+            await transaction.CommitAsync();
 
             return new Response<Company?>(company, message: "Empresa excluída com sucesso!");
         }
         catch
         {
+            await transaction.RollbackAsync();
             return new Response<Company?>(null, 500, "Não foi possível excluir a empresa");
         }
     }

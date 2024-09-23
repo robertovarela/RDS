@@ -3,7 +3,7 @@
 public class ApplicationUserConfigurationHandler(
     RoleManager<ApplicationRole> roleManager,
     UserService userService,
-    AppDbContext appDbContext,
+    AppDbContext context,
     UserManager<User> userManager) : IApplicationUserConfigurationHandler
 {
     public async Task<Response<ApplicationRole?>> CreateRoleAsync(CreateApplicationRoleRequest request)
@@ -39,7 +39,8 @@ public class ApplicationUserConfigurationHandler(
         try
         {
             if (roleName is "Admin" or "Owner" or "User")
-                return new Response<ApplicationRole?>(null, 401, "Não é possível excluir a Role Admin ou User.");
+                return new Response<ApplicationRole?>(
+                    null, 401, "Não é possível excluir a Role Admin ou User.");
 
             var role = await roleManager.FindByNameAsync(roleName);
             if (role == null)
@@ -81,17 +82,19 @@ public class ApplicationUserConfigurationHandler(
                 .ThenBy(role => role.Name)
                 .ToList();
 
-            return new PagedResponse<List<ApplicationRole?>>(response!, 200, "Roles listadas com sucesso!");
+            return new PagedResponse<List<ApplicationRole?>>(
+                response!, 200, "Roles listadas com sucesso!");
         }
         catch
         {
-            return new PagedResponse<List<ApplicationRole?>>(null, 500, "Erro interno no servidor");
+            return new PagedResponse<List<ApplicationRole?>>(
+                null, 500, "Erro interno no servidor");
         }
     }
 
     public async Task<Response<ApplicationUserRole?>> CreateUserRoleAsync(CreateApplicationUserRoleRequest request)
     {
-        await using var transaction = await appDbContext.Database.BeginTransactionAsync();
+        await using var transaction = await context.Database.BeginTransactionAsync();
         var roleId = request.RoleId.ToString();
         try
         {
@@ -102,7 +105,7 @@ public class ApplicationUserConfigurationHandler(
             }
 
             var roleExist = await roleManager.FindByIdAsync(roleId);
-            
+
             if (roleExist == null)
             {
                 return new Response<ApplicationUserRole?>(null, 404, "Role não encontrada..");
@@ -115,12 +118,13 @@ public class ApplicationUserConfigurationHandler(
                 CompanyId = request.CompanyId,
                 RoleName = request.RoleName.Capitalize()
             };
-            await appDbContext.IdentityUsersRoles.AddAsync(userRole);
-            var saveResult = await appDbContext.SaveChangesAsync();
-            
+            await context.IdentityUsersRoles.AddAsync(userRole);
+            var saveResult = await context.SaveChangesAsync();
+
             if (saveResult < 1)
-                return new Response<ApplicationUserRole?>(null, 401, "Erro ao atribuir a Role ao usuário.");
-            
+                return new Response<ApplicationUserRole?>(
+                    null, 401, "Erro ao atribuir a Role ao usuário.");
+
             var response = new ApplicationUserRole
             {
                 UserId = request.CompanyId,
@@ -129,7 +133,8 @@ public class ApplicationUserConfigurationHandler(
 
             await transaction.CommitAsync();
 
-            return new Response<ApplicationUserRole?>(response, 201, "Role atribuída ao usuário com sucesso!");
+            return new Response<ApplicationUserRole?>(
+                response, 201, "Role atribuída ao usuário com sucesso!");
         }
         catch
         {
@@ -144,9 +149,10 @@ public class ApplicationUserConfigurationHandler(
         try
         {
             if (roleName is "Admin" or "Owner" or "User")
-                return new Response<ApplicationUserRole?>(null, 401, $"Não é possível excluir a Role {roleName}.");
+                return new Response<ApplicationUserRole?>(
+                    null, 401, $"Não é possível excluir a Role {roleName}.");
 
-            var user = await userManager.FindByIdAsync(request.CompanyId.ToString());
+            var user = await userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
             {
                 return new Response<ApplicationUserRole?>(null, 404, "Usuário não encontrado.");
@@ -160,7 +166,8 @@ public class ApplicationUserConfigurationHandler(
 
             var result = await userManager.RemoveFromRoleAsync(user, roleName);
             if (!result.Succeeded)
-                return new Response<ApplicationUserRole?>(null, 401, "Erro ao excluir a Role ao usuário.");
+                return new Response<ApplicationUserRole?>(
+                    null, 401, "Erro ao excluir a Role ao usuário.");
 
             var response = new ApplicationUserRole
             {
@@ -168,7 +175,8 @@ public class ApplicationUserConfigurationHandler(
                 RoleId = request.RoleId,
             };
 
-            return new Response<ApplicationUserRole?>(response, 200, "Role do usuário excluída com sucesso!");
+            return new Response<ApplicationUserRole?>(
+                response, 200, "Role do usuário excluída com sucesso!");
         }
         catch
         {
@@ -185,7 +193,8 @@ public class ApplicationUserConfigurationHandler(
             var user = await userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
-                return new PagedResponse<List<ApplicationUserRole?>>([], 404, "Usuário não encontrado.");
+                return new PagedResponse<List<ApplicationUserRole?>>(
+                    [], 404, "Usuário não encontrado.");
             }
 
             var roles = await userManager.GetRolesAsync(user);
@@ -205,7 +214,8 @@ public class ApplicationUserConfigurationHandler(
         }
         catch
         {
-            return new PagedResponse<List<ApplicationUserRole?>>(null, 500, "Erro interno no servidor");
+            return new PagedResponse<List<ApplicationUserRole?>>(
+                null, 500, "Erro interno no servidor");
         }
     }
 
@@ -279,7 +289,7 @@ public class ApplicationUserConfigurationHandler(
             // Se o tipo de role não for "Admin", buscar os usuários correspondentes ao companyId
             if (typeRole != "Admin")
             {
-                var companyUsers = await appDbContext.CompanyUsers
+                var companyUsers = await context.CompanyUsers
                     .Where(cu => cu.CompanyId == companyId)
                     .Select(cu => cu.UserId)
                     .ToListAsync();
