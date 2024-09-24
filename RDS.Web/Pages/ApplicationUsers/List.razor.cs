@@ -63,7 +63,7 @@ namespace RDS.Web.Pages.ApplicationUsers
             if (SelectedCompany != null)
             {
                 InputModel.CompanyId = SelectedCompany.CompanyId;
-                InputModel.CompanyName = SelectedCompany.CompanyName;
+                //InputModel.CompanyName = SelectedCompany.CompanyName;
             }
         }
 
@@ -134,7 +134,7 @@ namespace RDS.Web.Pages.ApplicationUsers
 
         protected void OnSelectedCompany()
         {
-            PagedApplicationUsers = [];
+            PagedApplicationUsers.Clear();
         }
 
         protected async Task HandleKeyDown(KeyboardEventArgs e)

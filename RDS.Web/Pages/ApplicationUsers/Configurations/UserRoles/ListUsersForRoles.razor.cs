@@ -61,7 +61,6 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
             if (SelectedCompany != null)
             {
                 InputModel.CompanyId = SelectedCompany.CompanyId;
-                InputModel.CompanyName = SelectedCompany.CompanyName;
                 StartService.SetSelectedCompanyId(SelectedCompany.CompanyId);
             }
         }
@@ -133,9 +132,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
 
         protected void OnSelectedCompany()
         {
-            PagedApplicationUsers = [];
-            if (SelectedCompany != null) StartService.SetSelectedCompanyId(InputModel.CompanyId);
-            var newCompany = StartService.GetSelectedCompanyId();
+            PagedApplicationUsers.Clear();
         }
 
         protected async Task HandleKeyDown(KeyboardEventArgs e)
@@ -152,6 +149,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
 
         protected async Task OnSearch()
         {
+            if (SelectedCompany != null) StartService.SetSelectedCompanyId(InputModel.CompanyId);
             await LoadUsersDiffAdminAndOwner(InputModel.CompanyId, SearchFilter);
             StateHasChanged();
         }
