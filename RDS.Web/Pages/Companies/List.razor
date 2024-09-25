@@ -16,7 +16,7 @@
     </Authorized>
 </AuthorizeView>
 
-<AuthorizeView>
+<AuthorizeView Roles="Admin, Owner">
     <Authorized>
         @if (IsBusy)
         {
@@ -36,7 +36,6 @@
                 QuickFilter="Filter"
                 Hideable="true">
                 <ToolBarContent>
-                    <MudSpacer/>
                     <MudTextField
                         @bind-Value="@SearchTerm"
                         Placeholder="Filtrar..."
@@ -49,6 +48,7 @@
                         Clearable="true"
                         AutoFocus>
                     </MudTextField>
+                    <MudSpacer/>
                 </ToolBarContent>
                 <Columns>
                     <PropertyColumn Class="mud-data-grid"
@@ -90,6 +90,8 @@
                                       PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
                 </PagerContent>
             </MudDataGrid>
+            <MudSpacer/>
+            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" Button2Text="Atualizar" Button2Disable="true" Button2IsNotVisible="true"/>
         }
     </Authorized>
     <NotAuthorized>

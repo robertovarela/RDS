@@ -12,7 +12,7 @@ public partial class ListCompaniesPage : ComponentBase
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string AddUrl = "/empresas/adicionar";
     protected const string EditUrl = "/empresas/editar";
-    protected const string UrlOrigen = "/categorias";
+    protected const string BackUrl = "/";
 
     #endregion
 
@@ -20,7 +20,7 @@ public partial class ListCompaniesPage : ComponentBase
 
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] private IDialogService DialogService { get; set; } = null!;
-    [Inject] public ICompanyHandler CompanyHandler { get; set; } = null!;
+    [Inject] private ICompanyHandler CompanyHandler { get; set; } = null!;
 
     #endregion
 
@@ -30,8 +30,8 @@ public partial class ListCompaniesPage : ComponentBase
     {
         StartService.SetPageTitle("Empresas");
         await StartService.ValidateAccesByTokenAsync();
+        await StartService.PermissionOnlyAdminOrOwner();
         LoggedUserId = StartService.GetLoggedUserId();
-        //StartService.SetSelectedUserId(0);
         IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
 
         await LoadCompaniesAsync();

@@ -7,25 +7,25 @@
         {
             <MudDataGrid T="AllUsersViewModel" Items="@FilteredUsers" Filterable="true" Hideable="true">
                 <ToolBarContent>
-                        <MudTextField @bind-Value="@SearchFilter"
-                                      Class="mr-4"
-                                      Placeholder="Informe o proprietário da empresa"
-                                      Adornment="Adornment.Start"
-                                      AdornmentIcon="@Icons.Material.Filled.Search"
-                                      Immediate="true"
-                                      Variant="Variant.Outlined"
-                                      Clearable="true"
-                                      OnKeyDown="HandleKeyDown"
-                                      AutoFocus/>
-                        <div class="d-flex mt-2 mb-2">
-                            <MudButton Class="mr-4"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       OnClick="OnSearch">
-                                Buscar
-                            </MudButton>
-                        </div>
-                        <MudSpacer/>
+                    <MudTextField @bind-Value="@SearchFilter"
+                                  Class="mr-4"
+                                  Placeholder="Informe o proprietário da empresa"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Immediate="true"
+                                  Variant="Variant.Outlined"
+                                  Clearable="true"
+                                  OnKeyDown="HandleKeyDown"
+                                  AutoFocus/>
+                    <div class="d-flex mt-2 mb-2">
+                        <MudButton Class="mr-4"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   OnClick="OnSearch">
+                            Buscar
+                        </MudButton>
+                    </div>
+                    <MudSpacer/>
                 </ToolBarContent>
                 <Columns>
                     <PropertyColumn Class="mud-data-grid"
@@ -81,7 +81,7 @@
                                       For="@(() => OwnerDisplayText)"
                                       Variant="Variant.Outlined"
                                       ReadOnly="true"/>
-                        
+
                         <MudTextField Label="Nome"
                                       HelperText="Campo obrigatório"
                                       @bind-Value="InputModel.Name"
@@ -95,10 +95,10 @@
                                       @bind-Value="InputModel.Description"
                                       For="@(() => InputModel.Description)"
                                       Variant="Variant.Outlined"/>
-                        
-                        <SaveAndCancelButtons CancelOrBackPage="/empresas"/>
                     </EditForm>
                 </MudPaper>
+                <MudSpacer/>
+                <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" Button2Text="Atualizar" Button2Disable="true" Button2IsNotVisible="true"/>
             }
         }
     </Authorized>

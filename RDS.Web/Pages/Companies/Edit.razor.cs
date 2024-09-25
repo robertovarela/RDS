@@ -9,6 +9,7 @@ public class EditCompanyPage : ComponentBase
     protected bool IsBusy { get; set; }
     protected UpdateCompanyRequest InputModel { get; set; } = new();
     private long CompanyId { get; set; }
+    protected const string BackUrl = "/empresas";
 
     #endregion
 

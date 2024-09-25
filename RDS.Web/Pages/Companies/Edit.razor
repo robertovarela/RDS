@@ -5,34 +5,33 @@
     <Authorized>
         @if (IsBusy)
         {
-        <MudPaper Class="pa-8 mt-4">
-            <MudSkeleton Height="55px"/>
-            <MudSkeleton Height="110px"/>
-            <MudSkeleton Height="55px"/>
-            <MudSkeleton Height="110px"/>
-            <MudSkeleton Height="55px"/>
-        </MudPaper>
+            <MudPaper Class="pa-8 mt-4">
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="55px"/>
+                <MudSkeleton Height="110px"/>
+                <MudSkeleton Height="55px"/>
+            </MudPaper>
         }
         else
         {
-        <MudPaper Class="pa-8 mt-4">
             <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="editContext">
-                <DataAnnotationsValidator/>
+                    <MudPaper Class="pa-8 mt-4">
+                        <DataAnnotationsValidator/>
 
-                <MudTextField Label="Título"
-                              HelperText="Campo obrigatório"
-                              @bind-Value="InputModel.Name"
-                              For="@(() => InputModel.Name)"/>
+                        <MudTextField Label="Título"
+                                      HelperText="Campo obrigatório"
+                                      @bind-Value="InputModel.Name"
+                                      For="@(() => InputModel.Name)"/>
 
-                <MudTextField Label="Descrição"
-                              Lines="5"
-                              HelperText="Campo obrigatório"
-                              @bind-Value="InputModel.Description"
-                              For="@(() => InputModel.Description)"/>
-
-                <SaveAndCancelButtons CancelOrBackPage="/empresas"/>
+                        <MudTextField Label="Descrição"
+                                      HelperText="Campo obrigatório"
+                                      @bind-Value="InputModel.Description"
+                                      For="@(() => InputModel.Description)"/>
+                    </MudPaper>
+                    <MudSpacer/>
+                <SaveAndCancelButtons CancelOrBackPage="@BackUrl"/>
             </EditForm>
-        </MudPaper>
         }
     </Authorized>
     <NotAuthorized>

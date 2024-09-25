@@ -11,6 +11,7 @@ public class CreateCompanyPage : ComponentBase
     protected List<AllUsersViewModel> FilteredUsers { get; set; } = [];
     protected string SearchFilter { get; set; } = string.Empty;
     public string OwnerDisplayText { get; set; } = string.Empty;
+    protected const string BackUrl = "/empresas";
 
     #endregion
 
