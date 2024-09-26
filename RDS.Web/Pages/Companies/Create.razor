@@ -1,9 +1,9 @@
 ﻿@page "/empresas/adicionar"
 @inherits RDS.Web.Pages.Companies.CreateCompanyPage
 
-<AuthorizeView>
+<AuthorizeView Roles="Admin">
     <Authorized>
-        @if (!OwnerSelected)
+        @if (!SelectedCompanyOwner)
         {
             <MudDataGrid T="AllUsersViewModel" Items="@FilteredUsers" Filterable="true" Hideable="true">
                 <ToolBarContent>
@@ -50,13 +50,15 @@
                     </TemplateColumn>
                 </Columns>
                 <PagerContent>
-                    <MudDataGridPager T="ApplicationUser"
+                    <MudDataGridPager T="AllUsersViewModel"
                                       Class="custom-pager mud-typography"
                                       RowsPerPageString="Registros por página"
                                       InfoFormat="{first_item} - {last_item} de {all_items}"
                                       PageSizeOptions="new[] { 5, 10, 25, 50, 100 }"/>
                 </PagerContent>
             </MudDataGrid>
+            <MudSpacer/>
+            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" Button2Text="Adicionar" Button2Disable="true" Button2IsNotVisible="true"/>
         }
         else
         {
@@ -71,10 +73,9 @@
             }
             else
             {
-                <MudPaper Class="pa-8 mt-4">
-                    <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
-                        <DataAnnotationsValidator/>
-
+                <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync" Context="createContext">
+                    <DataAnnotationsValidator/>
+                    <MudPaper Class="pa-8 mt-4">
                         <MudTextField Label="Proprietário"
                                       Lines="1"
                                       @bind-Value="OwnerDisplayText"
@@ -95,10 +96,10 @@
                                       @bind-Value="InputModel.Description"
                                       For="@(() => InputModel.Description)"
                                       Variant="Variant.Outlined"/>
-                    </EditForm>
-                </MudPaper>
-                <MudSpacer/>
-                <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" Button2Text="Atualizar" Button2Disable="true" Button2IsNotVisible="true"/>
+                    </MudPaper>
+                    <MudSpacer/>
+                    <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Cancelar" Button2Text="Adicionar"/>
+                </EditForm>
             }
         }
     </Authorized>

@@ -65,28 +65,28 @@ public partial class ListCompaniesPage : ComponentBase
         }
     }
 
-    private async Task LoadCompaniesAsyncByFunc()
-    {
-        IsBusy = true;
-        try
-        {
-            Func<Task<PagedResponse<List<Company>>>> getCompaniesTask = IsAdmin
-                ? () => CompanyHandler.GetAllAsync(new GetAllCompaniesRequest())
-                : () => CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest { UserId = LoggedUserId });
-
-            var result = await getCompaniesTask();
-            if (result.IsSuccess)
-                Companies = result.Data ?? [];
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add(ex.Message, Severity.Error);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
+    // private async Task LoadCompaniesAsyncByFunc()
+    // {
+    //     IsBusy = true;
+    //     try
+    //     {
+    //         Func<Task<PagedResponse<List<Company>>>> getCompaniesTask = IsAdmin
+    //             ? () => CompanyHandler.GetAllAsync(new GetAllCompaniesRequest())
+    //             : () => CompanyHandler.GetAllByUserIdAsync(new GetAllCompaniesByUserIdRequest { UserId = LoggedUserId });
+    //
+    //         var result = await getCompaniesTask();
+    //         if (result.IsSuccess)
+    //             Companies = result.Data ?? [];
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Snackbar.Add(ex.Message, Severity.Error);
+    //     }
+    //     finally
+    //     {
+    //         IsBusy = false;
+    //     }
+    // }
 
     public async void OnDeleteButtonClickedAsync(long id, string title)
     {

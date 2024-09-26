@@ -63,7 +63,7 @@ public partial class ListRolesPage : ComponentBase
             if (result is { IsSuccess: true, StatusCode: 200 })
                 Roles.RemoveAll(x => x != null && x.Name == roleName);
 
-            Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
+            Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
         {

@@ -8,8 +8,8 @@ public static class ApiConfiguration
     public static string JwtKey = "ZmVkYWY3ZDg4NjNiNDhlMTk3YjkyODdkNDkyYjcwOGU=";
     public static string JwtIssuer = "www.rdsweb.mysoftwares.com.br";
     public static string JwtAudience = "GeneralAudience";
-    public static readonly int JwtMinutesToRefresh = 450;
-    public static readonly int JwtMinutesToExpire = 500;
+    public static readonly int JwtMinutesToRefresh = 4950;
+    public static readonly int JwtMinutesToExpire = 5000;
     
     public static string ApiKeyName = "api_key";
     public static string ApiKey = "RDS_api_IlTevUM/z0ey3NwCV/unrSWg==";

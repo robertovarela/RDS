@@ -5,21 +5,20 @@ public class CreateCompanyPage : ComponentBase
     #region Properties
 
     protected bool IsBusy { get; private set; }
-    protected bool OwnerSelected { get; set; }
+    protected bool SelectedCompanyOwner { get; set; }
     protected CreateCompanyRequest InputModel { get; set; } = new();
-    //protected List<Company> Companies { get; set; } = [];
     protected List<AllUsersViewModel> FilteredUsers { get; set; } = [];
     protected string SearchFilter { get; set; } = string.Empty;
-    public string OwnerDisplayText { get; set; } = string.Empty;
+    protected string OwnerDisplayText { get; set; } = string.Empty;
     protected const string BackUrl = "/empresas";
 
     #endregion
 
     #region Services
 
-    [Inject] public ICompanyHandler CompanyHandler { get; set; } = null!;
-    [Inject] public IApplicationUserHandler ApplicationUserHandler { get; set; } = null!;
-    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private ICompanyHandler CompanyHandler { get; set; } = null!;
+    [Inject] private IApplicationUserHandler ApplicationUserHandler { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     #endregion
 
@@ -29,6 +28,7 @@ public class CreateCompanyPage : ComponentBase
     {
         StartService.SetPageTitle("Nova Empresa");
         await StartService.ValidateAccesByTokenAsync();
+        await StartService.PermissionOnlyAdmin();
     }
 
     #endregion
@@ -78,13 +78,13 @@ public class CreateCompanyPage : ComponentBase
     
     protected async Task OnSelect(long userId)
     {
-        OwnerSelected = true;
+        SelectedCompanyOwner = true;
         await LoadUsers(filter: userId.ToString());
         OwnerDisplayText = FilteredUsers.FirstOrDefault()?.Id + " - " + FilteredUsers.FirstOrDefault()?.Name;
         StateHasChanged();
     }
     
-    public async Task OnValidSubmitAsync()
+    protected async Task OnValidSubmitAsync()
     {
         IsBusy = true;
         try
@@ -93,7 +93,7 @@ public class CreateCompanyPage : ComponentBase
             if (result.IsSuccess)
             {
                 Snackbar.Add(result.Message, Severity.Success);
-                NavigationService.NavigateTo("/empresas");
+                NavigationService.NavigateTo(BackUrl);
             }
             else
                 Snackbar.Add(result.Message, Severity.Error);

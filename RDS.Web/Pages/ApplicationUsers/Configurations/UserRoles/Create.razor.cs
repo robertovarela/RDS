@@ -97,11 +97,11 @@ public partial class CreateUserRolePage : ComponentBase
             var result = await UserRoleHandler.CreateUserRoleAsync(InputModel);
             if (result.IsSuccess)
             {
-                Snackbar.Add(result.Message!, Severity.Success);
+                Snackbar.Add(result.Message, Severity.Success);
                 StartService.LinkToUrlUserRole(UserId, UserName, ListUrl);
             }
             else
-                Snackbar.Add(result.Message!, Severity.Error);
+                Snackbar.Add(result.Message, Severity.Error);
         }
         catch (Exception ex)
         {

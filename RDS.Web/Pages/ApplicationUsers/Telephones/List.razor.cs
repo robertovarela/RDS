@@ -103,7 +103,7 @@ public partial class ListApplicationUserTelephonesPage : ComponentBase
             };
             var result = await TelephoneHandler.DeleteAsync(request);
             ApplicationUsersTelephone.RemoveAll(x => x.UserId == userId && x.Id == id);
-            Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
+            Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
         {

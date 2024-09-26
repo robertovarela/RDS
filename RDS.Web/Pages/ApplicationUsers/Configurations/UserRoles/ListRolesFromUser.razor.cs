@@ -83,7 +83,7 @@ public partial class ListUserRolesPage : ComponentBase
             var result = await ApplicationUserConfigurationHandler.DeleteUserRoleAsync(request);
             if (result is { IsSuccess: true, StatusCode: 200 })
                 RolesFromUser.RemoveAll(x => x != null && x.RoleName == roleName);
-            Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
+            Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
         {

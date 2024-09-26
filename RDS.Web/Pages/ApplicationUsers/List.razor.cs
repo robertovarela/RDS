@@ -67,35 +67,35 @@ namespace RDS.Web.Pages.ApplicationUsers
             }
         }
 
-        private async Task LoadUsersAsync(long companyIdFilter, string searchFilter)
-        {
-            IsBusy = true;
-            try
-            {
-                var result = await UserHandler.GetAllByCompanyIdAsync(
-                    new GetAllApplicationUserRequest
-                    {
-                        CompanyId = companyIdFilter,
-                        Filter = searchFilter,
-                        PageSize = _pageSize
-                    });
-                PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
-                    ? result.Data
-                        .Where(Filter)
-                        .Skip((_currentPage - 1) * _pageSize)
-                        .Take(_pageSize)
-                        .ToList()
-                    : [];
-            }
-            catch
-            {
-                Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
+        // private async Task LoadUsersAsync(long companyIdFilter, string searchFilter)
+        // {
+        //     IsBusy = true;
+        //     try
+        //     {
+        //         var result = await UserHandler.GetAllByCompanyIdAsync(
+        //             new GetAllApplicationUserRequest
+        //             {
+        //                 CompanyId = companyIdFilter,
+        //                 Filter = searchFilter,
+        //                 PageSize = _pageSize
+        //             });
+        //         PagedApplicationUsers = result is { IsSuccess: true, Data: not null }
+        //             ? result.Data
+        //                 .Where(Filter)
+        //                 .Skip((_currentPage - 1) * _pageSize)
+        //                 .Take(_pageSize)
+        //                 .ToList()
+        //             : [];
+        //     }
+        //     catch
+        //     {
+        //         Snackbar.Add("Não foi possível obter a lista de usuários", Severity.Error);
+        //     }
+        //     finally
+        //     {
+        //         IsBusy = false;
+        //     }
+        // }
 
         private async Task LoadUsersDiffAdminAndOwner(long companyIdFilter, string searchFilter)
         {
@@ -196,7 +196,7 @@ namespace RDS.Web.Pages.ApplicationUsers
                         PagedApplicationUsers = [];
                     }
 
-                    Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
+                    Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
                 }
                 catch (Exception)
                 {

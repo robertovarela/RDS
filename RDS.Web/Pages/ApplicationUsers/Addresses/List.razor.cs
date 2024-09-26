@@ -108,7 +108,7 @@ public partial class ListApplicationUserAddressesPage : ComponentBase
             };
             var result = await AddressHandler.DeleteAsync(request);
             ApplicationUsersAddress.RemoveAll(x => x.UserId == userId && x.Id == id);
-            Snackbar.Add(result.Message!, result.Data != null ? Severity.Success : Severity.Warning);
+            Snackbar.Add(result.Message, result.Data != null ? Severity.Success : Severity.Warning);
         }
         catch (Exception ex)
         {

@@ -8,7 +8,7 @@ public class Response<TData>
     public Response(
         TData? data = default,
         int statusCode = Configuration.DefaultStatusCode,
-        string? message = null)
+        string message = "")
     {
         Data = data;
         StatusCode = statusCode;
@@ -16,7 +16,7 @@ public class Response<TData>
     }
 
     public TData? Data { get; set; }
-    public string? Message { get; set; }
+    public string Message { get; set; }
 
     [JsonIgnore] public bool IsSuccess => StatusCode >= 200 && StatusCode <= 299;
 }

@@ -63,11 +63,11 @@ public partial class CreateApplicationUserTelephonePage : ComponentBase
             var result = await TelephoneHandler.CreateAsync(InputModel);
             if (result.IsSuccess)
             {
-                Snackbar.Add(result.Message!, Severity.Success);
+                Snackbar.Add(result.Message, Severity.Success);
                 NavigationService.NavigateTo("/usuarios/telefones");
             }
             else
-                Snackbar.Add(result.Message!, Severity.Error);
+                Snackbar.Add(result.Message, Severity.Error);
         }
         catch (Exception ex)
         {
