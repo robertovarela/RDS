@@ -31,7 +31,7 @@ public class SeedData(
         {
             if (!roleManager.Roles.Any())
             {
-                var table = "IdentityRole";
+                const string table = "IdentityRole";
                 await ResetIdentityIdsAsync(table);
                 var roles = new[] { "Admin", "Owner", "User" };
                 foreach (var role in roles)
@@ -58,7 +58,7 @@ public class SeedData(
         {
             if (!context.IdentityUsers.Any())
             {
-                var table = "IdentityUser";
+                const string table = "IdentityUser";
                 await ResetIdentityIdsAsync(table);
                 var adminUser = new User
                 {
@@ -99,7 +99,7 @@ public class SeedData(
         {
             if (!context.Companies.Any())
             {
-                var table = "Company";
+                const string table = "Company";
                 await ResetIdentityIdsAsync(table);
                 var adminUser = await userManager.FindByEmailAsync("rdsadmin@mysoftwares.com.br");
                 if (adminUser != null)
