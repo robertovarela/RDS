@@ -18,7 +18,7 @@ public partial class LoginPage : ComponentBase
 
     [Inject] public DeviceService DeviceService { get; set; } = null!;
     [Inject] private ILogger<Login> Logger { get; set; } = null!;
-    [Inject] public IApplicationUserHandler UserHandler { get; set; } = null!;
+    [Inject] private IApplicationUserHandler UserHandler { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
     #endregion

@@ -35,14 +35,21 @@ public class ManipulateUserStateValuesService(
         SetSelectedCategoryId(0);
         SetSelectedTransactionId(0);
 
-        if (loggedUserId != 0)
+        if (loggedUserId == 0)
         {
-            var isAdmin = await IsAdminInRolesAsync(loggedUserId);
-            var isOwner = isAdmin || await IsOwnerInRolesAsync(loggedUserId);
+            SetUserCompanies([]);
+            SetSelectedCompanyId(0);
+            return;
+        }
+        
+        var isAdmin = await IsAdminInRolesAsync(loggedUserId);
+        var isOwner = isAdmin || await IsOwnerInRolesAsync(loggedUserId);
 
-            SetIsAdmin(isAdmin);
-            SetIsOwner(isOwner);
+        SetIsAdmin(isAdmin);
+        SetIsOwner(isOwner);
 
+        if(isAdmin || isOwner)
+        {
             var roleDefault = isAdmin ? "Admin" : "Owner";
             var companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, roleDefault);
             if (isAdmin && !companies.Exists(x => x.CompanyId == 9_999_999_999_999))
@@ -54,11 +61,6 @@ public class ManipulateUserStateValuesService(
 
             SetUserCompanies(companies);
             SetSelectedCompanyId(companies.FirstOrDefault()?.CompanyId ?? 0);
-        }
-        else
-        {
-            SetUserCompanies([]);
-            SetSelectedCompanyId(0);
         }
     }
 
