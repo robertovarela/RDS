@@ -40,19 +40,21 @@ namespace RDS.Web.Pages.ApplicationUsers
             StartService.SetPageTitle("Usuários");
             await StartService.ValidateAccesByTokenAsync();
             if (!await StartService.PermissionOnlyAdminOrOwner()) return;
-            LoadStartValues();
+            await LoadStartValuesAsync();
         }
 
         #endregion
 
         #region Methods
 
-        private void LoadStartValues()
+        private async Task LoadStartValuesAsync()
         {
             if (!IsOwner && !IsAdmin)
                 return;
             
+            await StartService.SetCompaniesForUser();
             Companies = StartService.GetUserCompanies();
+            
             if (!Companies.Any())
                 return;
             
@@ -65,6 +67,8 @@ namespace RDS.Web.Pages.ApplicationUsers
                 InputModel.CompanyId = SelectedCompany.CompanyId;
                 //InputModel.CompanyName = SelectedCompany.CompanyName;
             }
+            
+            StateHasChanged();
         }
 
         // private async Task LoadUsersAsync(long companyIdFilter, string searchFilter)

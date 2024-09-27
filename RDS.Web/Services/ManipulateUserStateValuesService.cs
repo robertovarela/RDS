@@ -48,10 +48,33 @@ public class ManipulateUserStateValuesService(
         SetIsAdmin(isAdmin);
         SetIsOwner(isOwner);
 
+        await SetCompaniesForUser();
+        
+        // if(isAdmin || isOwner)
+        // {
+        //     var roleDefault = isAdmin ? "Admin" : "Owner";
+        //     var companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, roleDefault);
+        //     if (isAdmin && !companies.Exists(x => x.CompanyId == 9_999_999_999_999))
+        //     {
+        //         companies.Insert(0,
+        //             new CompanyIdNameViewModel
+        //                 { CompanyId = 9_999_999_999_999, CompanyName = "Busca em todas as empresas" });
+        //     }
+        //
+        //     SetUserCompanies(companies);
+        //     SetSelectedCompanyId(companies.FirstOrDefault()?.CompanyId ?? 0);
+        // }
+    }
+
+    public async Task SetCompaniesForUser()
+    {
+        var isAdmin = GetIsAdmin();
+        var isOwner = GetIsOwner();
+        
         if(isAdmin || isOwner)
         {
             var roleDefault = isAdmin ? "Admin" : "Owner";
-            var companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, roleDefault);
+            var companies = await GetAllCompanyIdNameByRoleAsync(GetLoggedUserId(), roleDefault);
             if (isAdmin && !companies.Exists(x => x.CompanyId == 9_999_999_999_999))
             {
                 companies.Insert(0,

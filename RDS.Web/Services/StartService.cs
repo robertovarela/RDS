@@ -57,6 +57,7 @@ public abstract class StartService
     public static void SetNotLoggedUserId() => _manipulateUserStateValuesService.SetNotLoggedUserId();
     public static void SetLoggedId(long userId) => _manipulateUserStateValuesService.SetLoggedUserId(userId);
     public static async Task SetDefaultValuesAsync() => await _manipulateUserStateValuesService.SetDefaultValuesAsync();
+    public static async Task SetCompaniesForUser() => await _manipulateUserStateValuesService.SetCompaniesForUser();
     public static void SetSelectedUserId(long userId) => _manipulateUserStateValuesService.SetSelectedUserId(userId);
 
     public static void SetSelectedUserName(string userName)

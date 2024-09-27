@@ -39,7 +39,7 @@
                 Variant="Variant.Outlined"
                 OnClose="OnSelectedCompany"
                 ToStringFunc="(companyId) => Companies.FirstOrDefault(
-                c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
+                    c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
 
                 @foreach (var company in Companies)
                 {

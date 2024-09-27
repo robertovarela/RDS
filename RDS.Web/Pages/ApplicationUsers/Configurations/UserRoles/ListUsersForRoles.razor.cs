@@ -20,7 +20,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         protected const string BackUrl = "/";
         protected const string Url = "/usuariosconfiguracao/lista-roles-do-usuario";
         private readonly List<string> _sourceUrl = ["/usuariosconfiguracao/usuarios-para-roles"];
-        
+
         private readonly int _currentPage = 1;
         private readonly int _pageSize = Configuration.DefaultPageSize;
 
@@ -51,9 +51,15 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         private void LoadStartValues()
         {
             Companies = StartService.GetUserCompanies();
+
             if (!Companies.Any())
                 return;
-            
+
+            if (Companies[0].CompanyId == 9999999999999)
+            {
+                Companies.RemoveAt(0);
+            }
+
             SelectedCompany = IsAdmin
                 ? Companies.OrderByDescending(x => x.CompanyId).FirstOrDefault()
                 : Companies.FirstOrDefault();
@@ -189,6 +195,5 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
         }
 
         #endregion
-
     }
 }
