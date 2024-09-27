@@ -206,7 +206,7 @@ public class ApplicationUserConfigurationHandler(
                     [], 404, "Usuário não encontrado.");
             }
 
-            var roles = await userManager.GetRolesAsync(user);
+            var roles = (await userManager.GetRolesAsync(user)).Distinct().ToList();
             var response = roles.Select(roleName => new ApplicationUserRole
                 {
                     RoleName = roleName,
