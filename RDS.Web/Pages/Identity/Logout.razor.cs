@@ -14,7 +14,7 @@ public class LogoutPage : ComponentBase
     {
         await AuthenticationService.LogoutAsync();
         StartService.SetNotLoggedUserId();
-        await StartService.SetDefaultValues();
+        await StartService.SetDefaultValuesAsync();
         await base.OnInitializedAsync();
         await NavigateToLoginAsync();
     }

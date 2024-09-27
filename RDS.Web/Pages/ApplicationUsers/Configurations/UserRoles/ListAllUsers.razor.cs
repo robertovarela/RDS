@@ -32,7 +32,7 @@ public partial class ListAllUsersPage : ComponentBase
     {
         StartService.SetPageTitle("Usuários");
         await StartService.ValidateAccesByTokenAsync();
-        await StartService.SetDefaultValues();
+        await StartService.SetDefaultValuesAsync();
     }
 
     #endregion

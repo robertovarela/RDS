@@ -9,7 +9,7 @@ namespace RDS.Web.Pages.ApplicationUsers.Configurations.UserRoles
 
         protected bool IsBusy { get; private set; }
         protected List<CompanyIdNameViewModel> Companies { get; set; } = [];
-        private CompanyIdNameViewModel? SelectedCompany { get; set; }
+        protected CompanyIdNameViewModel? SelectedCompany { get; set; }
         protected List<AllUsersViewModel> PagedApplicationUsers { get; private set; } = [];
         protected GetAllCompaniesByUserIdRequest InputModel { get; } = new();
         private bool IsAdmin { get; } = StartService.GetIsAdmin();

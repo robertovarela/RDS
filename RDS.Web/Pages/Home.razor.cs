@@ -26,7 +26,8 @@ public partial class HomePage : ComponentBase
     {
         StartService.SetPageTitle("RDS - Desenvolvimento de SoftWares");
         await StartService.ValidateAccesByTokenAsync(blockNavigation: false);
-        await StartService.SetDefaultValues();
+        await StartService.SetDefaultValuesAsync();
+        
         LoadStartValues();
     }
 
@@ -38,15 +39,14 @@ public partial class HomePage : ComponentBase
     {
         IsAdmin = StartService.GetIsAdmin();
         IsOwner = StartService.GetIsOwner();
+
+        if (!IsOwner && !IsAdmin) return;
         
-        if (IsOwner || IsAdmin)
-        {
-            CompanyId = StartService.GetSelectedCompanyId();
-            Companies = StartService.GetUserCompanies();
-        }
+        CompanyId = StartService.GetSelectedCompanyId();
+        Companies = StartService.GetUserCompanies();
     }
     
-    public void SelectCompany(long companyId)
+    protected void SelectCompany(long companyId)
     {
         StartService.SetSelectedCompanyId(companyId);
         Snackbar.Add("Empresa Selecionada", Severity.Success);

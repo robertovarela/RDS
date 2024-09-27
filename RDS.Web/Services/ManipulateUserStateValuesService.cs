@@ -22,7 +22,7 @@ public class ManipulateUserStateValuesService(
 
     public async Task SetDefaultValuesAsync()
     {
-        long loggedUserId = GetLoggedUserId();
+        var loggedUserId = GetLoggedUserId();
 
         SetSelectedUserName("");
         SetPageTitle("");
@@ -38,16 +38,18 @@ public class ManipulateUserStateValuesService(
         if (loggedUserId != 0)
         {
             var isAdmin = await IsAdminInRolesAsync(loggedUserId);
-            var isOwner = await IsOwnerInRolesAsync(loggedUserId);
+            var isOwner = isAdmin || await IsOwnerInRolesAsync(loggedUserId);
 
             SetIsAdmin(isAdmin);
             SetIsOwner(isOwner);
 
             var roleDefault = isAdmin ? "Admin" : "Owner";
             var companies = await GetAllCompanyIdNameByRoleAsync(loggedUserId, roleDefault);
-            if(isAdmin && !companies.Exists(x => x.CompanyId == 9_999_999_999_999))            {
+            if (isAdmin && !companies.Exists(x => x.CompanyId == 9_999_999_999_999))
+            {
                 companies.Insert(0,
-                    new CompanyIdNameViewModel { CompanyId = 9_999_999_999_999, CompanyName = "Busca em todas as empresas" });
+                    new CompanyIdNameViewModel
+                        { CompanyId = 9_999_999_999_999, CompanyName = "Busca em todas as empresas" });
             }
 
             SetUserCompanies(companies);
@@ -257,13 +259,17 @@ public class ManipulateUserStateValuesService(
 
         return listRoles;
     }
-    
+
     public async Task<List<ApplicationUserRole?>> GetRolesFromUserAsync(long userId)
     {
         var rolesFromUser = new List<ApplicationUserRole?>();
         try
         {
-            var request = new GetAllApplicationUserRoleRequest { UserId = userId };
+            var request = new GetAllApplicationUserRoleRequest
+            {
+                UserId = userId,
+                CompanyId = GetSelectedCompanyId()
+            };
             var result = await applicationUserConfigurationHandler.ListUserRoleAsync(request);
             if (result.IsSuccess)
                 rolesFromUser = result.Data ?? [];

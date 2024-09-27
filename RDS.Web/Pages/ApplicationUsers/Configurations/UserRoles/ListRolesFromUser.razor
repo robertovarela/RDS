@@ -9,7 +9,7 @@
                 Variant="Variant.Filled"
                 Color="Color.Primary"
                 StartIcon="@Icons.Material.TwoTone.Add"
-                OnClick="@(() => StartService.LinkToUrlUserRole(UserId, UserName, AddUrl))">
+                OnClick="@(() => StartService.LinkToUrlUserRole(UserId, UserName, CompanyId, AddUrl))">
                 ADICIONAR
             </MudButton>
         </div>
@@ -43,6 +43,9 @@
                     <PropertyColumn Class="mud-data-grid"
                                     CellClass="mud-data-grid mud-data-grid-cell"
                                     Property="x => x!.RoleName" Title="Role"/>
+                    <PropertyColumn Class="mud-data-grid"
+                                    CellClass="mud-data-grid mud-data-grid-cell"
+                                    Property="x => x!.CompanyId" Title="Company"/>
                     <TemplateColumn Class="d-flex justify-end" Title="&nbsp;">
                         <CellTemplate Context="cellContext">
                             <MudStack Row>

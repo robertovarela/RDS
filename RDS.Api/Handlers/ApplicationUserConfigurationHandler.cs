@@ -3,7 +3,7 @@
 public class ApplicationUserConfigurationHandler(
     RoleManager<ApplicationRole> roleManager,
     UserService userService,
-    AppDbContext context,
+    AppDbContext appDbContext,
     UserManager<User> userManager) : IApplicationUserConfigurationHandler
 {
     public async Task<Response<ApplicationRole?>> CreateRoleAsync(CreateApplicationRoleRequest request)
@@ -94,7 +94,7 @@ public class ApplicationUserConfigurationHandler(
 
     public async Task<Response<ApplicationUserRole?>> CreateUserRoleAsync(CreateApplicationUserRoleRequest request)
     {
-        await using var transaction = await context.Database.BeginTransactionAsync();
+        await using var transaction = await appDbContext.Database.BeginTransactionAsync();
         var roleId = request.RoleId.ToString();
         try
         {
@@ -118,8 +118,8 @@ public class ApplicationUserConfigurationHandler(
                 CompanyId = request.CompanyId,
                 RoleName = roleToAdd.Name!.Capitalize()
             };
-            await context.IdentityUsersRoles.AddAsync(userRole);
-            var saveResult = await context.SaveChangesAsync();
+            await appDbContext.IdentityUsersRoles.AddAsync(userRole);
+            var saveResult = await appDbContext.SaveChangesAsync();
 
             if (saveResult < 1)
                 return new Response<ApplicationUserRole?>(
@@ -188,8 +188,17 @@ public class ApplicationUserConfigurationHandler(
         GetAllApplicationUserRoleRequest request)
     {
         var userId = request.UserId;
+        var companyId = request.CompanyId;
         try
         {
+            // var company = await appDbContext.Companies.FirstOrDefaultAsync(c => c.Id == companyId);
+            // if (company == null)
+            //     return  new PagedResponse<List<ApplicationUserRole?>>(
+            //         null, 500, "NFC - Erro interno no servidor");
+            //
+            //var companyName = company?.Name ?? string.Empty;
+
+
             var user = await userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
@@ -201,7 +210,9 @@ public class ApplicationUserConfigurationHandler(
             var response = roles.Select(roleName => new ApplicationUserRole
                 {
                     RoleName = roleName,
-                    RoleId = roleManager.Roles.FirstOrDefault(x => x.Name == roleName)?.Id ?? 0,
+                    RoleId = roleManager.Roles.FirstOrDefault(
+                        x => x.Name == roleName)?.Id ?? 0,
+                    CompanyId = companyId,
                     UserId = userId,
                 })
                 .OrderBy(role => role.RoleName != "Admin")
@@ -289,7 +300,7 @@ public class ApplicationUserConfigurationHandler(
             // Se o tipo de role não for "Admin", buscar os usuários correspondentes ao companyId
             if (typeRole != "Admin")
             {
-                var companyUsers = await context.CompanyUsers
+                var companyUsers = await appDbContext.CompanyUsers
                     .Where(cu => cu.CompanyId == companyId)
                     .Select(cu => cu.UserId)
                     .ToListAsync();

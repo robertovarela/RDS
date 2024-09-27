@@ -98,7 +98,7 @@ public partial class CreateUserRolePage : ComponentBase
             if (result.IsSuccess)
             {
                 Snackbar.Add(result.Message, Severity.Success);
-                StartService.LinkToUrlUserRole(UserId, UserName, ListUrl);
+                StartService.LinkToUrlUserRole(UserId, UserName, CompanyId,ListUrl);
             }
             else
                 Snackbar.Add(result.Message, Severity.Error);

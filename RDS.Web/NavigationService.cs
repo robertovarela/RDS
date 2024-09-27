@@ -33,7 +33,7 @@
         
         public static async Task NavigateToAccessNotAllowedAsync()
         {
-            await StartService.SetDefaultValues();
+            await StartService.SetDefaultValuesAsync();
             StartService.SetSourceUrl([]);
             _navigationManager?.NavigateTo("/access-not-allowed");
         }

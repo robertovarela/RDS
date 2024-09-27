@@ -38,7 +38,8 @@
                 AnchorOrigin="Origin.BottomCenter"
                 Variant="Variant.Outlined"
                 OnClose="OnSelectedCompany"
-                ToStringFunc="(companyId) => Companies.FirstOrDefault(c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
+                ToStringFunc="(companyId) => Companies.FirstOrDefault(
+                c => c.CompanyId == companyId)?.CompanyName ?? string.Empty">
 
                 @foreach (var company in Companies)
                 {
@@ -84,7 +85,11 @@
                                 <MudIconButton
                                     Icon="@Icons.Material.Filled.Edit"
                                     Color="Color.Primary"
-                                    OnClick="@(() => StartService.LinkToUrlUserRole(cellContext.Item.Id, cellContext.Item.Name, Url))">
+                                    OnClick="@(() => StartService.LinkToUrlUserRole(
+                                                 cellContext.Item.Id, 
+                                                 cellContext.Item.Name, 
+                                                 StartService.GetSelectedCompanyId(), 
+                                                 Url))">
                                 </MudIconButton>
                             </MudStack>
                         </CellTemplate>
@@ -99,7 +104,8 @@
                 </PagerContent>
             </MudDataGrid>
             <MudSpacer/>
-            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" Button2Text="Atualizar" Button2Disable="true" Button2IsNotVisible="true"/>
+            <SaveAndCancelButtons CancelOrBackPage="@BackUrl" Button1Text="Voltar" 
+                                  Button2Text="Atualizar" Button2Disable="true" Button2IsNotVisible="true"/>
         }
     </Authorized>
     <NotAuthorized>

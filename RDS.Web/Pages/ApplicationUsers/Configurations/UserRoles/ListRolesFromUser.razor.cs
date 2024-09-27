@@ -5,10 +5,17 @@ public partial class ListUserRolesPage : ComponentBase
 {
     #region Properties
 
+    protected bool IsBusy { get; private set; }
+    protected List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
+    protected long UserId { get; set; }
+    protected string UserName { get; set; } = StartService.GetSelectedUserName();
+    private bool IsAdmin { get; } = StartService.GetIsAdmin();
+    private bool IsOwner { get; } = StartService.GetIsOwner();
+    protected long CompanyId { get; set; } = StartService.GetSelectedCompanyId();
+
     protected const string AddUrl = "/usuariosconfiguracao/adicionar-role-usuario";
     private const string CurrentUrl = "/usuariosconfiguracao/lista-roles-do-usuario";
     protected const string BackUrl = "/usuariosconfiguracao/usuarios-para-roles";
-
 
     private readonly List<string> _sourceUrl =
     [
@@ -16,11 +23,6 @@ public partial class ListUserRolesPage : ComponentBase
         "/usuariosconfiguracao/lista-usuarios-roles",
         "/usuariosconfiguracao/adicionar-role-usuario"
     ];
-
-    protected bool IsBusy { get; private set; }
-    protected List<ApplicationUserRole?> RolesFromUser { get; set; } = [];
-    protected long UserId { get; set; }
-    protected string UserName { get; set; } = StartService.GetSelectedUserName();
 
     #endregion
 
@@ -39,8 +41,8 @@ public partial class ListUserRolesPage : ComponentBase
         StartService.SetPageTitle("Roles");
         //StartService.ValidateSourceUrl(_sourceUrl, CurrentUrl, true, true);
         await StartService.ValidateAccesByTokenAsync();
-        if(!await StartService.PermissionOnlyAdmin()) return;
-        
+        if (!await StartService.PermissionOnlyAdminOrOwner()) return;
+
         UserId = StartService.GetSelectedUserId();
 
         await LoadRolesFromUser();
@@ -54,6 +56,7 @@ public partial class ListUserRolesPage : ComponentBase
     {
         IsBusy = true;
         RolesFromUser = await StartService.GetRolesFromUserAsync(UserId);
+        //RolesFromUser[0].CompanyId = CompanyId;
         IsBusy = false;
     }
 
