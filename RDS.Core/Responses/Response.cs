@@ -18,7 +18,7 @@ public class Response<TData>
     public TData? Data { get; set; }
     public string Message { get; set; }
 
-    [JsonIgnore] public bool IsSuccess => StatusCode >= 200 && StatusCode <= 299;
+    [JsonIgnore] public bool IsSuccess => StatusCode is >= 200 and <= 299;
 }
 // public class Response<TData>
 // {
