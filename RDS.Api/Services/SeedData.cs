@@ -18,7 +18,7 @@ public class SeedData(
 
     private async Task ResetIdentityIdsAsync(string table)
     {
-        var sql = "DBCC CHECKIDENT (@TableName, RESEED, 0)";
+        const string sql = "DBCC CHECKIDENT (@TableName, RESEED, 0)";
         var parameter = new SqlParameter("@TableName", table);
 
         await context.Database.ExecuteSqlRawAsync(sql, parameter);
