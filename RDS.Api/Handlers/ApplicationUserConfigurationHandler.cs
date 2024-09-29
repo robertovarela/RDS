@@ -297,6 +297,13 @@ public class ApplicationUserConfigurationHandler(
 
         try
         {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return new PagedResponse<List<ApplicationUserRole?>>(
+                    null, 404, "Usuário não encontrado.");
+            }
+            
             // Se o tipo de role não for "Admin", buscar os usuários correspondentes ao companyId
             if (typeRole != "Admin")
             {
@@ -313,16 +320,9 @@ public class ApplicationUserConfigurationHandler(
                 }
             }
 
-            var user = await userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
-            {
-                return new PagedResponse<List<ApplicationUserRole?>>(
-                    null, 404, "Usuário não encontrado.");
-            }
-
             var allRoles = roleManager.Roles.ToList();
-            var userRoles = await userManager.GetRolesAsync(user);
-
+            var userRoles = (await userManager.GetRolesAsync(user)).Distinct().ToList();
+            
             var rolesNotForUser = allRoles
                 .Where(role => !userRoles.Contains(role.Name!))
                 .Select(role => new ApplicationUserRole
@@ -336,6 +336,11 @@ public class ApplicationUserConfigurationHandler(
                 .ThenBy(role => role.RoleName != "User")
                 .ThenBy(role => role.RoleName)
                 .ToList();
+
+            if (typeRole != "Admin")
+            {
+                rolesNotForUser.RemoveAll(x => x.RoleName == "Admin" || x.RoleName == "Owner");
+            }
 
             return new PagedResponse<List<ApplicationUserRole?>>(rolesNotForUser!, 200,
                 "Roles disponíveis para adicionar ao usuário listadas com sucesso!");

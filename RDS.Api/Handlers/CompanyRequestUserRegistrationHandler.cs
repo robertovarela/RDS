@@ -78,7 +78,7 @@ public class CompanyRequestUserRegistrationHandler(
             emailService.Send(user.Name, request.Email, $"Bem vindo a {request.CompanyName}!",
                 $"<html><body><h1>Bem vindo a {request.CompanyName}!</h1>" +
                 $"<p>Clique no link abaixo para aceitar a solicitação</p>" +
-                $"<a href=\"{site}{confirmationCode}\">Confirmar solicitação de cadastro</a>" +
+                $"<a href=\"{site}\">Confirmar solicitação de cadastro</a>" +
                 $"<p></p>" +
                 $"<p>Caso tenha algum problema com o link, siga as instruções abaixo:</p>" +
                 $"<p>Copie a chave <strong>{confirmationCode}</strong></p>" +
