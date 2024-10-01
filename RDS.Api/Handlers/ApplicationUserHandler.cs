@@ -320,6 +320,11 @@ public class ApplicationUserHandler(
     {
         try
         {
+            if (string.IsNullOrEmpty(request.Cpf))
+            {
+                return new Response<ApplicationUser?>(null, 400, "CPF não pode estar vazio");
+            }
+
             var user = await context.Users
                 .FirstOrDefaultAsync(u => u.Cpf == request.Cpf);
 

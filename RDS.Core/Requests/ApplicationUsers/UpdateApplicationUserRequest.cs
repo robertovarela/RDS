@@ -13,7 +13,7 @@ public class UpdateApplicationUserRequest : Request
 
     [RegularExpression(@"^\d{11}$", ErrorMessage = "O CPF deve conter 11 dígitos.")]
     [Cpf(ErrorMessage = "CPF inválido")]
-    public string? Cpf { get; set; } = null!;
+    public string? Cpf { get; set; }
 
     [DataType(DataType.Date, ErrorMessage = "Data inválida")]
     public DateOnly? BirthDate { get; set; }

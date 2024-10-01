@@ -1,22 +1,23 @@
 ﻿namespace RDS.Web.Pages.Companies;
 
-public class CreateCompanyPage : ComponentBase
+public partial class AddEmployeeToCompanyPage : ComponentBase
 {
     #region Properties
 
     protected bool IsBusy { get; private set; }
-    protected bool SelectedCompanyOwner { get; set; }
-    protected CreateCompanyRequest InputModel { get; set; } = new();
-    protected List<AllUsersViewModel> FilteredUsers { get; set; } = [];
+    protected CreateCompanyRequestUserRegistrationRequest InputModel { get; set; } = new();
+    protected ApplicationUser? VerifyUserToEmployee { get; set; }
+    private bool UserHasBeenVerified { get; set; }
     protected string SearchFilter { get; set; } = string.Empty;
     protected string OwnerDisplayText { get; set; } = string.Empty;
     protected const string BackUrl = "/empresas";
+    protected string Button2Value = "Verificar";
 
     #endregion
 
     #region Services
 
-    [Inject] private ICompanyHandler CompanyHandler { get; set; } = null!;
+    [Inject] private ICompanyRequestUserRegistrationHandler CompanyHandler { get; set; } = null!;
     [Inject] private IApplicationUserHandler ApplicationUserHandler { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
@@ -26,9 +27,9 @@ public class CreateCompanyPage : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        StartService.SetPageTitle("Nova Empresa");
+        StartService.SetPageTitle("Adicionar Funcionário");
         await StartService.ValidateAccesByTokenAsync();
-        await StartService.PermissionOnlyAdminAsync();
+        await StartService.PermissionOnlyOwnerAsync();
     }
 
     #endregion
@@ -42,28 +43,39 @@ public class CreateCompanyPage : ComponentBase
             OnSearch();
         }
     }
+
     protected async void OnSearch()
     {
-        await LoadUsers(SearchFilter);
+        await VerifyUser(SearchFilter);
         StateHasChanged();
     }
 
-    private async Task LoadUsers(string filter = "")
+    private async Task VerifyUser(string cpf = "")
     {
         IsBusy = true;
+        UserHasBeenVerified = false;
+        Button2Value = "Verificar";
 
         try
         {
-            var request = new GetAllApplicationUserRequest
+            var request = new GetApplicationUserByCpfRequest
             {
-                Filter = filter
+                Cpf = cpf
             };
-            var result = await ApplicationUserHandler.GetAllAsync(request);
-            if (result.IsSuccess)
+            var result = await ApplicationUserHandler.GetByCpfAsync(request);
+            if (result is { IsSuccess: true, Data.Id: > 0, StatusCode: 200 })
             {
-                FilteredUsers = result.Data ?? [];
-                InputModel.OwnerId = FilteredUsers.FirstOrDefault()?.Id ?? 0;
-                StateHasChanged();
+                VerifyUserToEmployee = result.Data;
+
+                if (VerifyUserToEmployee.Email != InputModel.Email)
+                {
+                    Snackbar.Add($"E-mail: {VerifyUserToEmployee.Email} é inválido", Severity.Error);
+                }
+                else
+                {
+                    UserHasBeenVerified = true;
+                    Button2Value = "Adicionar";
+                }
             }
         }
         catch (Exception ex)
@@ -73,17 +85,10 @@ public class CreateCompanyPage : ComponentBase
         finally
         {
             IsBusy = false;
+            StateHasChanged();
         }
     }
-    
-    protected async Task OnSelect(long userId)
-    {
-        SelectedCompanyOwner = true;
-        await LoadUsers(filter: userId.ToString());
-        OwnerDisplayText = FilteredUsers.FirstOrDefault()?.Id + " - " + FilteredUsers.FirstOrDefault()?.Name;
-        StateHasChanged();
-    }
-    
+
     protected async Task OnValidSubmitAsync()
     {
         IsBusy = true;

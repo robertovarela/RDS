@@ -387,7 +387,7 @@ public class ManipulateUserStateValuesService(
         return GetSelectedUserId();
     }
 
-    public async Task<bool> PermissionOnlyAdmin()
+    public async Task<bool> PermissionOnlyAdminAsync()
     {
         var isAdmin = await StartService.IsAdminInRolesAsync(GetLoggedUserId());
         if (!isAdmin)
@@ -398,7 +398,7 @@ public class ManipulateUserStateValuesService(
         return isAdmin;
     }
 
-    public async Task<bool> PermissionOnlyOwner()
+    public async Task<bool> PermissionOnlyOwnerAsync()
     {
         var isAdmin = await IsAdminInRolesAsync(GetLoggedUserId());
         var isOwner = await IsOwnerInRolesAsync(GetLoggedUserId());
@@ -410,7 +410,7 @@ public class ManipulateUserStateValuesService(
         return isAdmin;
     }
 
-    public async Task<bool> PermissionOnlyAdminOrOwner()
+    public async Task<bool> PermissionOnlyAdminOrOwnerAsync()
     {
         var isAllowed = await IsAdminOrOwnerInRolesAsync(GetLoggedUserId());
         if (!isAllowed)

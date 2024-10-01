@@ -108,14 +108,14 @@ public abstract class StartService
     public static async Task<long> GetSelectedUserIdIfAdminAsync()
         => await _manipulateUserStateValuesService.GetSelectedUserIdIfAdminAsync();
 
-    public static async Task<bool> PermissionOnlyAdmin()
-        => await _manipulateUserStateValuesService.PermissionOnlyAdmin();
+    public static async Task<bool> PermissionOnlyAdminAsync()
+        => await _manipulateUserStateValuesService.PermissionOnlyAdminAsync();
 
-    public static async Task<bool> PermissionOnlyOwner()
-        => await _manipulateUserStateValuesService.PermissionOnlyOwner();
+    public static async Task<bool> PermissionOnlyOwnerAsync()
+        => await _manipulateUserStateValuesService.PermissionOnlyOwnerAsync();
 
-    public static async Task<bool> PermissionOnlyAdminOrOwner()
-        => await _manipulateUserStateValuesService.PermissionOnlyAdminOrOwner();
+    public static async Task<bool> PermissionOnlyAdminOrOwnerAsync()
+        => await _manipulateUserStateValuesService.PermissionOnlyAdminOrOwnerAsync();
 
 
     // These methods are used to set and get the selected user id and name in the application and are used in the LinkUserStateService

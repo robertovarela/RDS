@@ -26,7 +26,7 @@ public partial class ListRolesPage : ComponentBase
     {
         StartService.SetPageTitle("Roles");
         await StartService.ValidateAccesByTokenAsync();
-        if (!await StartService.PermissionOnlyAdmin()) return;
+        if (!await StartService.PermissionOnlyAdminAsync()) return;
         await LoadRolesAsync();
     }
 

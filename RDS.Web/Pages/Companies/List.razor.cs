@@ -11,6 +11,7 @@ public partial class ListCompaniesPage : ComponentBase
     protected bool IsAdmin { get; set; }
     protected string SearchTerm { get; set; } = string.Empty;
     protected const string AddUrl = "/empresas/adicionar";
+    protected const string AddEmployeeUrl = "/empresas/adicionar-funcionario";
     protected const string EditUrl = "/empresas/editar";
     protected const string BackUrl = "/";
 
@@ -30,7 +31,7 @@ public partial class ListCompaniesPage : ComponentBase
     {
         StartService.SetPageTitle("Empresas");
         await StartService.ValidateAccesByTokenAsync();
-        await StartService.PermissionOnlyAdminOrOwner();
+        await StartService.PermissionOnlyAdminOrOwnerAsync();
         LoggedUserId = StartService.GetLoggedUserId();
         IsAdmin = await StartService.IsAdminInRolesAsync(LoggedUserId);
 

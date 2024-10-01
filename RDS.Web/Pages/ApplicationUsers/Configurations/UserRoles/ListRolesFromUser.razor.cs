@@ -41,7 +41,7 @@ public partial class ListUserRolesPage : ComponentBase
         StartService.SetPageTitle("Roles");
         //StartService.ValidateSourceUrl(_sourceUrl, CurrentUrl, true, true);
         await StartService.ValidateAccesByTokenAsync();
-        if (!await StartService.PermissionOnlyAdminOrOwner()) return;
+        if (!await StartService.PermissionOnlyAdminOrOwnerAsync()) return;
 
         UserId = StartService.GetSelectedUserId();
 

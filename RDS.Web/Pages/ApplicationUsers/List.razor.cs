@@ -39,7 +39,7 @@ namespace RDS.Web.Pages.ApplicationUsers
         {
             StartService.SetPageTitle("Usuários");
             await StartService.ValidateAccesByTokenAsync();
-            if (!await StartService.PermissionOnlyAdminOrOwner()) return;
+            if (!await StartService.PermissionOnlyAdminOrOwnerAsync()) return;
             await LoadStartValuesAsync();
         }
 

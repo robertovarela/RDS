@@ -33,7 +33,7 @@ public partial class CreateUserRolePage : ComponentBase
     {
         StartService.SetPageTitle("Nova Role");
         await StartService.ValidateAccesByTokenAsync();
-        if(!await StartService.PermissionOnlyAdminOrOwner()) return;
+        if(!await StartService.PermissionOnlyAdminOrOwnerAsync()) return;
         
         StartService.SetSourceUrl(_urlOrigen);
         
