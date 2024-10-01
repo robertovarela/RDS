@@ -1,29 +1,18 @@
 ﻿@page "/empresas"
 @inherits RDS.Web.Pages.Companies.ListCompaniesPage
 
-<AuthorizeView Roles="Admin, Owner">
+<AuthorizeView Roles="Admin">
     <Authorized>
         <div class="d-flex justify-end pt-2 pb-2 mt-2 mb-2">
-            @if(IsAdmin)
-            {
-                <MudButton
-                    Class="pt-2 pb-2"
-                    Variant="Variant.Filled"
-                    Color="Color.Primary"
-                    StartIcon="@Icons.Material.TwoTone.Add"
-                    OnClick="@(() => NavigationService.NavigateTo(AddUrl))">
-                    ADICIONAR EMPRESA
-                </MudButton>
-                <MudSpacer/>
-            }
             <MudButton
                 Class="pt-2 pb-2"
                 Variant="Variant.Filled"
                 Color="Color.Primary"
                 StartIcon="@Icons.Material.TwoTone.Add"
-                OnClick="@(() => NavigationService.NavigateTo(AddEmployeeUrl))">
-                ADICIONAR FUNCIONÁRIO
+                OnClick="@(() => NavigationService.NavigateTo(AddUrl))">
+                ADICIONAR EMPRESA
             </MudButton>
+            <MudSpacer/>
         </div>
     </Authorized>
 </AuthorizeView>
@@ -81,7 +70,7 @@
                                     OnClick="@(() => StartService.LinkToUrlCompany(EditUrl, cellContext.Item.Id))">
                                     Color="Color.Primary">
                                 </MudIconButton>
-                                @if(IsAdmin)
+                                @if (IsAdmin)
                                 {
                                     <MudIconButton
                                         Icon="@Icons.Material.Filled.Delete"

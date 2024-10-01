@@ -94,6 +94,8 @@ public partial class AddEmployeeToCompanyPage : ComponentBase
         IsBusy = true;
         try
         {
+            InputModel.CompanyId = StartService.GetSelectedCompanyId();
+            InputModel.CompanyName = 
             var result = await CompanyHandler.CreateAsync(InputModel);
             if (result.IsSuccess)
             {
