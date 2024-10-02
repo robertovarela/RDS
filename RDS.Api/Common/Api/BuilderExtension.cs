@@ -129,7 +129,7 @@ public static class BuilderExtension
         builder.Services.AddScoped<IApplicationUserTelephoneHandler, ApplicationUserTelephoneHandler>();
         builder.Services.AddScoped<IApplicationUserConfigurationHandler, ApplicationUserConfigurationHandler>();
         builder.Services.AddScoped<ICompanyHandler, CompanyHandler>();
-        builder.Services.AddScoped<ICompanyRequestUserRegistrationHandler,CompanyRequestUserRegistrationHandler>();
+        builder.Services.AddScoped<ICompanyRequestUserRegistrationHandler, CompanyRequestUserRegistrationHandler>();
         builder.Services.AddScoped<ICategoryHandler, CategoryHandler>();
         builder.Services.AddScoped<ITransactionHandler, TransactionHandler>();
     }

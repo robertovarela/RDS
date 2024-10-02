@@ -52,6 +52,7 @@ builder.Services.AddTransient<IApplicationUserAddressHandler, ApplicationUserAdd
 builder.Services.AddTransient<IApplicationUserTelephoneHandler, ApplicationUserTelephoneHandler>();
 builder.Services.AddTransient<IApplicationUserConfigurationHandler, ApplicationUserConfigurationHandler>();
 builder.Services.AddTransient<ICompanyHandler, CompanyHandler>();
+builder.Services.AddScoped<ICompanyRequestUserRegistrationHandler, CompanyRequestUserRegistrationHandler>();
 builder.Services.AddTransient<ICategoryHandler, CategoryHandler>();
 builder.Services.AddTransient<ITransactionHandler, TransactionHandler>();
 builder.Services.AddTransient<IReportHandler, ReportHandler>();

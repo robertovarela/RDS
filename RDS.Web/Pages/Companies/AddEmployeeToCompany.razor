@@ -1,7 +1,6 @@
 ﻿@page "/empresas/adicionar-funcionario"
 @inherits AddEmployeeToCompanyPage;
 
-
 <AuthorizeView Roles="Owner">
     <Authorized>
         @if (IsBusy)
@@ -23,7 +22,7 @@
                                   @bind-Value="InputModel.Email"
                                   For="@(() => InputModel.Email)"
                                   Variant="Variant.Outlined"
-                                  AutoFocus=""/>
+                                  AutoFocus/>
 
                     <MudTextField Label="CPF"
                                   HelperText="Campo obrigatório"

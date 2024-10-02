@@ -1,5 +1,6 @@
 ﻿namespace RDS.Web.Pages.Companies;
 
+// ReSharper disable once PartialTypeWithSinglePart
 public partial class AddEmployeeToCompanyPage : ComponentBase
 {
     #region Properties
@@ -91,11 +92,23 @@ public partial class AddEmployeeToCompanyPage : ComponentBase
 
     protected async Task OnValidSubmitAsync()
     {
+        if (!UserHasBeenVerified)
+        {
+            await VerifyUser();
+        }
+        else
+        {
+            await CreateRequestToUserAsync();
+        }
+    }
+
+    private async Task CreateRequestToUserAsync()
+    {
         IsBusy = true;
         try
         {
             InputModel.CompanyId = StartService.GetSelectedCompanyId();
-            InputModel.CompanyName = 
+            //InputModel.CompanyName = 
             var result = await CompanyHandler.CreateAsync(InputModel);
             if (result.IsSuccess)
             {
@@ -114,6 +127,5 @@ public partial class AddEmployeeToCompanyPage : ComponentBase
             IsBusy = false;
         }
     }
-
     #endregion
 }
