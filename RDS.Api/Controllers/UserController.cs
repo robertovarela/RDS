@@ -1,10 +1,8 @@
-using RDS.Core.Models.ViewModels.ApplicationUser;
-
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 namespace RDS.Api.Controllers;
 
 [ApiController]
-[Microsoft.AspNetCore.Mvc.Route("v1/users")]
+[Route("v1/users")]
 public class UserController(IApplicationUserHandler applicationUserHandler) : ControllerBase
 {
     [HttpPost("userlogin")]
